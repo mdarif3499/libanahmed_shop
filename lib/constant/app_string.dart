@@ -58,7 +58,7 @@ class AppString {
   final String phoneNumber = "Phone Number";
   final String hintPhone = "Enter your phone number";
   final String storeLocation = "Store Location";
-  final String storeVerification = "Store Verification";
+  final String storeVerification = "Store Description";
   final String storeName = "Store Name";
   final String storeImage = "Store Image";
   final String storeLicense = "Store License";

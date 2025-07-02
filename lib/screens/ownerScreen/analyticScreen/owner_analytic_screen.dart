@@ -113,50 +113,6 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
   }
 
   // Widget for the filter button with dropdown
-  Widget _buildFilterButton() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.red,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withAlpha(51),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selectedFilter,
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            color: Colors.white,
-          ),
-          dropdownColor: Colors.red,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedFilter = newValue!;
-              // In a real app, you would update the chart data here based on the filter
-            });
-          },
-          items: _filterOptions.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
 
   // Widget for the Line Chart
   Widget _buildLineChart() {

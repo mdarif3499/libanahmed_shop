@@ -59,4 +59,5 @@ class ApiUrls {
   final String ownerAllProducts = "/product/seller";
   final String ownerProfileSettings = "/setting";
   final String ownerShopCreation = "/shop/create-shop";
+  final String ownerProductCreate = "/product/create-product";
 }

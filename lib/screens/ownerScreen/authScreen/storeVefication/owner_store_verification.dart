@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
@@ -75,7 +73,6 @@ class OwnerStoreVerification extends StatelessWidget {
                   validator: controller.validateStoreDescription,
                   maxLines: 3,
                 ),
-
                 // Store Images Section
                 AppText(
                   text: AppString.instance.storeImage,

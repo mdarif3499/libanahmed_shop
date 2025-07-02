@@ -28,7 +28,7 @@ class OwnerBottomNav extends StatelessWidget {
       appBar: _buildAppBar(context),
       body: Obx(() => controller.pages[controller.selectedIndex.value]),
       bottomNavigationBar: _buildBottomNavBar(controller),
-      drawer: const OwnerMenuDrawer(), // Add the drawer here
+      drawer: const OwnerMenuDrawer(),
     );
   }
 
