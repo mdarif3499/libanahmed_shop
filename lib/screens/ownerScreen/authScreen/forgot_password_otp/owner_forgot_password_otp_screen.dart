@@ -1,0 +1,111 @@
+import 'package:ahmed_shop/constant/app_assert_icons.dart';
+import 'package:ahmed_shop/constant/app_colors.dart';
+import 'package:ahmed_shop/constant/app_string.dart';
+import 'package:ahmed_shop/screens/userScreen/authScreen/forgot_password_otp/controller/forgot_password_otp_screen_controller.dart';
+import 'package:ahmed_shop/utils/gap.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button.dart';
+import 'package:ahmed_shop/widgets/texts/app_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
+
+class OwnerForgotPasswordOtpScreen extends StatelessWidget {
+  const OwnerForgotPasswordOtpScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(ForgotPasswordOtpScreenController());
+
+    return Scaffold(
+      backgroundColor: AppColors.instance.ownerPhoneBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.instance.ownerPhoneBackground,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
+        ),
+        title: AppText(
+          text: AppString.instance.back,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          fontFamily: 1,
+        ),
+        titleSpacing: -7,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Center(
+              child: AppText(
+                text: AppString.instance.otpVerification,
+                fontSize: 32,
+                fontWeight: FontWeight.w700,
+                fontFamily: 2,
+              ),
+            ),
+            Gap(height: 15),
+            Pinput(
+              controller: controller.otpController,
+              length: 6,
+              pinAnimationType: PinAnimationType.slide,
+              defaultPinTheme: PinTheme(
+                width: 50,
+                height: 50,
+                textStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            Gap(height: 15),
+            Obx(() {
+              return AppButton(
+                title: controller.isLoading.value
+                    ? "Verifying..."
+                    : AppString.instance.verify,
+                onTap: () {
+                  controller
+                      .verifyForgotPasswordOtp(); // Call the OTP verification method
+                },
+                backgroundColor: AppColors.instance.red500,
+                titleColor: AppColors.instance.white50,
+                borderradius: 10,
+                height: 50,
+                isLoading: controller.isLoading.value, // Show loading indicator
+              );
+            }),
+            Gap(height: 20),
+            Obx(() {
+              if (!controller.canResend.value) {
+                return AppText(
+                  text: "Resend OTP in ${controller.timer.value}s",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 1,
+                  color: Colors.grey,
+                );
+              } else {
+                return TextButton(
+                  onPressed: controller.resendForgotPasswordOtp,
+                  child: AppText(
+                    text: "Resend OTP",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.instance.green500,
+                  ),
+                );
+              }
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+}
