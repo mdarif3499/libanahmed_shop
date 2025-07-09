@@ -30,13 +30,14 @@ class OwnerOrderScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
+
                 children: [
                   Obx(() {
                     return Expanded(
                       child: AppButton(
                         onTap: () {
                           controller
-                              .toggleOngoingOrder(); // Set to ongoing order
+                              .toggleOngoingOrder(); 
                         },
                         title: AppString.instance.ongoingOrder,
                         backgroundColor: !controller.isOngoingOrder.value

@@ -1,5 +1,4 @@
 import 'package:ahmed_shop/services/repository/settings_repository/setting_repository.dart';
-import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class UserMenuRatingsController extends GetxController {
   void checkIfReviewAlreadyGiven() {
     if (orderId != null && sellerId != null) {
       List<String> reviewedOrders = getReviewedOrders();
-      String orderSellerKey = "${orderId}_${sellerId}";
+      String orderSellerKey = "${orderId}_$sellerId";
       isReviewAlreadyGiven.value = reviewedOrders.contains(orderSellerKey);
 
       appLog("Checking review for: $orderSellerKey");
@@ -57,7 +56,7 @@ class UserMenuRatingsController extends GetxController {
       String orderIdToSave, String sellerIdToSave) async {
     try {
       List<String> reviewedOrders = getReviewedOrders();
-      String orderSellerKey = "${orderIdToSave}_${sellerIdToSave}";
+      String orderSellerKey = "${orderIdToSave}_$sellerIdToSave";
 
       if (!reviewedOrders.contains(orderSellerKey)) {
         reviewedOrders.add(orderSellerKey);

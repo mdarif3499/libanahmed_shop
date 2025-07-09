@@ -214,7 +214,7 @@ class ProductList {
 }
 
 class ProductId {
-  Null? isOffer;
+  Null isOffer;
   String? sId;
   String? sellerId;
   String? categoryId;

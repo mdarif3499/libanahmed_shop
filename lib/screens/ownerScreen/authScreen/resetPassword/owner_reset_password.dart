@@ -1,7 +1,6 @@
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
-import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/authScreen/resetPassword/controller/owner_reset_password_controller.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';

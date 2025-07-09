@@ -24,7 +24,7 @@ class UserMenuRatings extends StatelessWidget {
     // Get arguments passed from previous screen - FIXED
     final arguments = Get.arguments as List?;
     final String? sellerId =
-        arguments != null && arguments.length > 0 ? arguments[0] : null;
+        arguments != null && arguments.isNotEmpty ? arguments[0] : null;
     final String? orderId =
         arguments != null && arguments.length > 1 ? arguments[1] : null;
 

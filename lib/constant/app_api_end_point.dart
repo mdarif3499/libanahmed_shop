@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 String _getDomain() {
   String liveServer = "https://humayon5003.binarybards.online";
-  String localServer = "";
+  String localServer = "10.10.7.30:5003";
 
   try {
     if (kDebugMode) {

@@ -152,7 +152,7 @@ class _UserOnboardingScreenState extends State<UserOnboardingScreen> {
                   // Pagination Dots - Fixed with constraints
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity, // Use full width of parent
                       child: Row(
                         mainAxisSize: MainAxisSize.min, // Important
@@ -190,6 +190,8 @@ class _UserOnboardingScreenState extends State<UserOnboardingScreen> {
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

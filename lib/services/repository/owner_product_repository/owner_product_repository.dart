@@ -6,7 +6,6 @@ import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/ow
 import 'package:ahmed_shop/services/api/api_services.dart';
 import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
-import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 
 class OwnerProductRepository {

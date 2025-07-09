@@ -50,12 +50,11 @@ class ResetPasswordScreenController extends GetxController {
           newPassword: newPasswordController.text.trim(),
           confirmPassword: confirmPasswordController.text.trim(),
           token: forgotToken);
-      if (response != null) {
-        AppSnackBar.success("Password reset successfully.");
-        // Clear the token from storage
-        Get.toNamed(AppRoutes.createAccount);
-        return;
-      } // Navigate back to the previous screen
+      AppSnackBar.success("Password reset successfully.");
+      // Clear the token from storage
+      Get.toNamed(AppRoutes.createAccount);
+      return;
+    // Navigate back to the previous screen
     } catch (e) {
       AppSnackBar.error("An error occurred. Please try again.");
     } finally {

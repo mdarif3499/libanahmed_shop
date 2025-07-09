@@ -57,7 +57,7 @@ class UserCheckOutScreenController extends GetxController {
 
   // Method to handle payment (simplified for now)
   handlePayment() {
-    appLog("Initiating payment for total cost: \$${totalCost}");
+    appLog("Initiating payment for total cost: \$$totalCost");
     placeOrder();
   }
 

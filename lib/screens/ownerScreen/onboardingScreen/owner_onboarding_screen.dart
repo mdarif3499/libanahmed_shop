@@ -111,7 +111,7 @@ class _OwnerOnboardingScreenState extends State<OwnerOnboardingScreen> {
                   // Pagination Dots - Fixed with constraints
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity, // Use full width of parent
                       child: Row(
                         mainAxisSize: MainAxisSize.min, // Important
