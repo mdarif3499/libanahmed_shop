@@ -2,7 +2,7 @@ import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:flutter/foundation.dart';
 
 String _getDomain() {
-  String liveServer = "https://humayon5003.binarybards.online";
+  String liveServer = "http://10.10.7.30:5003";
   String localServer = "10.10.7.30:5003";
 
   try {
@@ -30,7 +30,7 @@ class ApiUrls {
   final String liveServer = "https://";
 
   //Auth end point
-  final String imageBaseUrl = "https://humayon5003.binarybards.online/";
+  final String imageBaseUrl = "http://10.10.7.30:5003";
   final String register = "/users/create";
   final String registerVerifyOtp = "/users/create-user-verify-otp";
   final String resendOtp = "/otp/resend-otp";

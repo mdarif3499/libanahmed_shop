@@ -56,7 +56,7 @@ class OwnerOrderScreen extends StatelessWidget {
                       child: AppButton(
                         onTap: () {
                           controller
-                              .toggleOngoingOrder(); // Set to complete order
+                              .toggleOngoingOrder(); 
                         },
                         title: AppString.instance.completedOrder,
                         backgroundColor: controller.isOngoingOrder.value

@@ -1,3 +1,4 @@
+import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/screens/splashScreen/controller/splash_screen_controller.dart';
@@ -18,13 +19,12 @@ class UserSplashScreen extends StatelessWidget {
     AppSize.size = size;
 
     return Scaffold(
-      backgroundColor: AppColors.instance.green500,
+      backgroundColor: AppColors.instance.white,
       body: Center(
-        child: AppText(
-          text: AppString.instance.ahmed,
-          fontSize: 84,
-          color: AppColors.instance.white100,
-          fontWeight: FontWeight.w600,
+        child: Image.asset(
+          AppAssertImage.instance.appLogo,
+          height: AppSize.height(value: 374),
+          width: AppSize.width(value: 374),
         ),
       ),
     );
