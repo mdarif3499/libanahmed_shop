@@ -1,4 +1,5 @@
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
+import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/screens/ownerScreen/bottomNav/controller/owner_bottom_nav_controller.dart';
@@ -8,7 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../analyticScreen/owner_analytic_screen.dart';
+import '../myShopScreen/mainMyShop/owner_home_screen.dart';
+import '../orderScreen/orderMain/owner_order_screen.dart';
 import '../ownerMenu/menuDrawer/owner_menu_drawer.dart';
+import '../profileScreen/profileHome/owner_profile_screen.dart';
 // Import the OwnerMenuDrawer widget
 
 class OwnerBottomNav extends StatelessWidget {
@@ -24,9 +29,17 @@ class OwnerBottomNav extends StatelessWidget {
 
     return Scaffold(
       key: scaffoldKey,
-      // Assign the key to the Scaffold
       appBar: _buildAppBar(context),
-      body: Obx(() => controller.pages[controller.selectedIndex.value]),
+      body: PageView(
+        controller: controller.pageController,
+        physics: const NeverScrollableScrollPhysics(), // Disable swiping
+        children: const [
+          OwnerMyShop(),
+          OwnerOrderScreen(),
+          OwnerAnalyticScreen(),
+          OwnerProfileScreen(),
+        ],
+      ),
       bottomNavigationBar: _buildBottomNavBar(controller),
       drawer: const OwnerMenuDrawer(),
     );
@@ -36,11 +49,11 @@ class OwnerBottomNav extends StatelessWidget {
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.instance.white50,
-      title: AppText(
-        text: AppString.instance.ahmed,
-        fontSize: 22,
-        fontWeight: FontWeight.w600,
-        color: AppColors.instance.black400,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(AppAssertImage.instance.logoIcon, height: 40,width: 40,)
+        ],
       ),
       centerTitle: true,
       leading: IconButton(
@@ -60,17 +73,16 @@ class OwnerBottomNav extends StatelessWidget {
   }
 
   // Custom BottomNavigationBar widget
-  Obx _buildBottomNavBar(OwnerBottomNavController controller) {
-    return Obx(() {
-      return BottomNavigationBar(
-        currentIndex: controller.selectedIndex.value,
-        onTap: controller.onItemTapped,
-        backgroundColor: AppColors.instance.white50,
-        selectedItemColor: AppColors.instance.red500,
-        unselectedItemColor: AppColors.instance.bottomNavText,
-        items: _buildNavBarItems(controller),
-      );
-    });
+  Widget _buildBottomNavBar(OwnerBottomNavController controller) {
+    return Obx(() => BottomNavigationBar(
+          currentIndex: controller.selectedIndex.value,
+          onTap: controller.onItemTapped,
+          backgroundColor: AppColors.instance.white50,
+          selectedItemColor: AppColors.instance.red500,
+          unselectedItemColor: AppColors.instance.bottomNavText,
+          type: BottomNavigationBarType.fixed,
+          items: _buildNavBarItems(controller),
+        ));
   }
 
   // Method to create BottomNavigationBarItems

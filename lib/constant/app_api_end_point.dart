@@ -3,12 +3,10 @@ import 'package:flutter/foundation.dart';
 
 String _getDomain() {
   String liveServer = "http://10.10.7.30:5003";
-  String localServer = "10.10.7.30:5003";
-
+  String localServer = "http://10.10.7.30:5003";
   try {
     if (kDebugMode) {
-      localServer;
-      // return localServer;
+      return localServer;
     }
     return liveServer;
   } catch (e) {
@@ -30,7 +28,7 @@ class ApiUrls {
   final String liveServer = "https://";
 
   //Auth end point
-  final String imageBaseUrl = "http://10.10.7.30:5003";
+  final String imageBaseUrl = "http://10.10.7.30:5003/";
   final String register = "/users/create";
   final String registerVerifyOtp = "/users/create-user-verify-otp";
   final String resendOtp = "/otp/resend-otp";
@@ -58,6 +56,8 @@ class ApiUrls {
   final String ownerAllProduct = "/product/seller";
   final String ownerAllProducts = "/product/seller";
   final String ownerProfileSettings = "/setting";
+  final String ownerProfile = "/users/my-profile";
   final String ownerShopCreation = "/shop/create-shop";
   final String ownerProductCreate = "/product/create-product";
+  final String ownerOrder = "/order?paymentStatus=";
 }

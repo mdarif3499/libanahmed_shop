@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
+import '../../../../constant/app_assert_image.dart';
+
 class OwnerMenuDrawer extends StatefulWidget {
   const OwnerMenuDrawer({super.key});
 
@@ -147,11 +149,10 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  AppButton(
-                    title: "Ahmed-LOGO",
-                    titleColor: AppColors.instance.white,
-                    backgroundColor: AppColors.instance.red500,
-                    height: AppSize.height(value: 64),
+                  Image.asset(
+                    AppAssertImage.instance.logoIcon,
+                    height: 60,
+                    width: 60,
                   ),
                   Gap(height: 28),
                   ...List.generate(pages.length, (index) {

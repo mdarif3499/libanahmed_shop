@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
+import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
@@ -146,11 +147,10 @@ class _UserMenuDrawerState extends State<UserMenuDrawer> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  AppButton(
-                    title: "Ahmed-LOGO",
-                    titleColor: AppColors.instance.white,
-                    backgroundColor: AppColors.instance.green500,
-                    height: AppSize.height(value: 64),
+                  Image.asset(
+                    AppAssertImage.instance.logoIcon,
+                    height: 60,
+                    width: 60,
                   ),
                   Gap(height: 28),
                   ...List.generate(pages.length, (index) {

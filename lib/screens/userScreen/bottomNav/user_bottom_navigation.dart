@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
+import '../../../constant/app_assert_image.dart';
+
 class UserNavigationScreen extends StatelessWidget {
   const UserNavigationScreen({super.key});
 
@@ -30,11 +32,11 @@ class UserNavigationScreen extends StatelessWidget {
             key: scaffoldKey,
             appBar: AppBar(
               backgroundColor: AppColors.instance.white50,
-              title: AppText(
-                text: AppString.instance.ahmed,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-                color: AppColors.instance.black400,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(AppAssertImage.instance.logoIcon, height: 40,width: 40,)
+                ],
               ),
               centerTitle: true,
               leading: IconButton(

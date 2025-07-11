@@ -103,7 +103,7 @@ class CreateAccountController extends GetxController {
   // Login User
   Future<void> loginUser() async {
     try {
-      isLoading.value = true; // Show loading indicator
+      isLoading.value = true; 
 
       // Validate email and password
       if (emailController.text.trim().isEmpty ||

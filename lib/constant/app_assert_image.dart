@@ -28,4 +28,5 @@ class AppAssertImage {
   ///////////////////////////// Owner Images ///////////////////////////////
   final String ownerOnboarding = "assets/images/owner/onboarding.png";
   final String appLogo = "assets/images/owner/appLoog.png";
+  final String logoIcon = "assets/images/owner/logoIcon.png";
 }
