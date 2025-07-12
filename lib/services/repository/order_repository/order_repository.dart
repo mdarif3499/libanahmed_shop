@@ -3,6 +3,7 @@ import 'package:ahmed_shop/screens/userScreen/cartScreen/trackOrder/models/track
 import 'package:ahmed_shop/screens/userScreen/cartScreen/viewOrder/model/view_order_model.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
 import 'package:ahmed_shop/services/storage_services/storage_services.dart';
+import 'package:flutter/cupertino.dart';
 
 class OrderRepository {
   static Future<bool?> createOrder({
@@ -70,6 +71,18 @@ class OrderRepository {
       return null;
     }catch(e){
       return null;
+    }
+  }
+  static Future<bool?> deleteOrder(String orderId)async{
+    try{
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiDeleteServices(url: "${ApiUrls.instance.deleteOrder}$orderId",statusCode: 200,query : {"Authorization": token});
+      if (response != null) {
+        return true;
+      }
+      return false;
+    }catch(e){
+      return false;
     }
   }
 }

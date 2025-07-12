@@ -1,10 +1,8 @@
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
-import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/screens/ownerScreen/bottomNav/controller/owner_bottom_nav_controller.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
-import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -24,15 +22,16 @@ class OwnerBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OwnerBottomNavController controller =
-        Get.put(OwnerBottomNavController());
+    final OwnerBottomNavController controller = Get.put(
+      OwnerBottomNavController(),
+    );
 
     return Scaffold(
       key: scaffoldKey,
       appBar: _buildAppBar(context),
       body: PageView(
         controller: controller.pageController,
-        physics: const NeverScrollableScrollPhysics(), // Disable swiping
+        physics: const NeverScrollableScrollPhysics(),
         children: const [
           OwnerMyShop(),
           OwnerOrderScreen(),
@@ -52,7 +51,7 @@ class OwnerBottomNav extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(AppAssertImage.instance.logoIcon, height: 40,width: 40,)
+          Image.asset(AppAssertImage.instance.logoIcon, height: 40, width: 40),
         ],
       ),
       centerTitle: true,
@@ -74,20 +73,23 @@ class OwnerBottomNav extends StatelessWidget {
 
   // Custom BottomNavigationBar widget
   Widget _buildBottomNavBar(OwnerBottomNavController controller) {
-    return Obx(() => BottomNavigationBar(
-          currentIndex: controller.selectedIndex.value,
-          onTap: controller.onItemTapped,
-          backgroundColor: AppColors.instance.white50,
-          selectedItemColor: AppColors.instance.red500,
-          unselectedItemColor: AppColors.instance.bottomNavText,
-          type: BottomNavigationBarType.fixed,
-          items: _buildNavBarItems(controller),
-        ));
+    return Obx(
+      () => BottomNavigationBar(
+        currentIndex: controller.selectedIndex.value,
+        onTap: controller.onItemTapped,
+        backgroundColor: AppColors.instance.white50,
+        selectedItemColor: AppColors.instance.red500,
+        unselectedItemColor: AppColors.instance.bottomNavText,
+        type: BottomNavigationBarType.fixed,
+        items: _buildNavBarItems(controller),
+      ),
+    );
   }
 
   // Method to create BottomNavigationBarItems
   List<BottomNavigationBarItem> _buildNavBarItems(
-      OwnerBottomNavController controller) {
+    OwnerBottomNavController controller,
+  ) {
     final List<String> labels = ['Shop', 'Orders', 'Analytics', 'Profile'];
     final List<String> iconPaths = [
       controller.selectedIndex.value == 0

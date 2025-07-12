@@ -1,136 +1,61 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+class OwnerOrderModel {
+  bool? success;
+  String? message;
+  Meta? meta;
+  List<Datum>? data;
 
-class OwnerOrderModel extends Equatable {
-  const OwnerOrderModel({
+  OwnerOrderModel({
     this.success,
     this.message,
     this.meta,
     this.data,
   });
 
-  factory OwnerOrderModel.fromMap(Map<String, dynamic> map) {
-    return OwnerOrderModel(
-      success: map['success'] as bool?,
-      message: map['message'] as String?,
-      meta: map['meta'] != null
-          ? Meta.fromMap(map['meta'] as Map<String, dynamic>)
-          : null,
-      data: map['data'] != null
-          ? (map['data'] as List<dynamic>)
-          .map((e) => DataItem.fromMap(e as Map<String, dynamic>))
-          .toList()
-          : null,
-    );
-  }
+  factory OwnerOrderModel.fromRawJson(String str) => OwnerOrderModel.fromJson(json.decode(str));
 
-  factory OwnerOrderModel.fromJson(String source) => OwnerOrderModel.fromMap(
-    json.decode(source) as Map<String, dynamic>,
+  String toRawJson() => json.encode(toJson());
+
+  factory OwnerOrderModel.fromJson(Map<String, dynamic> json) => OwnerOrderModel(
+    success: json["success"],
+    message: json["message"],
+    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
+    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
   );
 
-  final bool? success;
-  final String? message;
-  final Meta? meta;
-  final List<DataItem>? data;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'success': success,
-      'message': message,
-      'meta': meta?.toMap(),
-      'data': data?.map((x) => x.toMap()).toList(),
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  OwnerOrderModel copyWith({
-    bool? success,
-    String? message,
-    Meta? meta,
-    List<DataItem>? data,
-  }) {
-    return OwnerOrderModel(
-      success: success ?? this.success,
-      message: message ?? this.message,
-      meta: meta ?? this.meta,
-      data: data ?? this.data,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    success,
-    message,
-    meta,
-    data,
-  ];
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "meta": meta?.toJson(),
+    "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+  };
 }
 
-class Meta extends Equatable {
-  const Meta({
-    this.page,
-    this.limit,
-    this.total,
-    this.totalPage,
-  });
+class Datum {
+  String? id;
+  CustomerId? customerId;
+  SellerId? sellerId;
+  ShopId? shopId;
+  List<ProductList>? productList;
+  int? totalAmount;
+  DateTime? orderDate;
+  Status? status;
+  String? paymentStatus;
+  String? phoneNumber;
+  String? zipCode;
+  String? streetName;
+  String? stateCode;
+  String? locality;
+  String? houseNumber;
+  String? country;
+  String? address;
+  List<History>? history;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
-  factory Meta.fromMap(Map<String, dynamic> map) {
-    return Meta(
-      page: map['page'] as int?,
-      limit: map['limit'] as int?,
-      total: map['total'] as int?,
-      totalPage: map['totalPage'] as int?,
-    );
-  }
-
-  factory Meta.fromJson(String source) => Meta.fromMap(
-    json.decode(source) as Map<String, dynamic>,
-  );
-
-  final int? page;
-  final int? limit;
-  final int? total;
-  final int? totalPage;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'page': page,
-      'limit': limit,
-      'total': total,
-      'totalPage': totalPage,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  Meta copyWith({
-    int? page,
-    int? limit,
-    int? total,
-    int? totalPage,
-  }) {
-    return Meta(
-      page: page ?? this.page,
-      limit: limit ?? this.limit,
-      total: total ?? this.total,
-      totalPage: totalPage ?? this.totalPage,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    page,
-    limit,
-    total,
-    totalPage,
-  ];
-}
-
-class DataItem extends Equatable {
-  const DataItem({
-    this.Id,
+  Datum({
+    this.id,
     this.customerId,
     this.sellerId,
     this.shopId,
@@ -152,164 +77,122 @@ class DataItem extends Equatable {
     this.updatedAt,
   });
 
-  factory DataItem.fromMap(Map<String, dynamic> map) {
-    return DataItem(
-      Id: map['_id'] as String?,
-      customerId: map['customerId'] as String?,
-      sellerId: map['sellerId'] as String?,
-      shopId: map['shopId'] as String?,
-      productList: map['productList'] != null
-          ? (map['productList'] as List<dynamic>)
-          .map((e) => ProductListItem.fromMap(e as Map<String, dynamic>))
-          .toList()
-          : null,
-      totalAmount: map['totalAmount'] as int?,
-      orderDate: map['orderDate'] as String?,
-      status: map['status'] as String?,
-      paymentStatus: map['paymentStatus'] as String?,
-      phoneNumber: map['phone_number'] as String?,
-      zipCode: map['zip_code'] as String?,
-      streetName: map['street_name'] as String?,
-      stateCode: map['state_code'] as String?,
-      locality: map['locality'] as String?,
-      houseNumber: map['house_number'] as String?,
-      country: map['country'] as String?,
-      address: map['address'] as String?,
-      history: map['history'] != null
-          ? (map['history'] as List<dynamic>)
-          .map((e) => HistoryItem.fromMap(e as Map<String, dynamic>))
-          .toList()
-          : null,
-      createdAt: map['createdAt'] as String?,
-      updatedAt: map['updatedAt'] as String?,
-    );
-  }
+  factory Datum.fromRawJson(String str) => Datum.fromJson(json.decode(str));
 
-  factory DataItem.fromJson(String source) => DataItem.fromMap(
-    json.decode(source) as Map<String, dynamic>,
+  String toRawJson() => json.encode(toJson());
+
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    id: json["_id"],
+    customerId: customerIdValues.map[json["customerId"]]!,
+    sellerId: sellerIdValues.map[json["sellerId"]]!,
+    shopId: shopIdValues.map[json["shopId"]]!,
+    productList: json["productList"] == null ? [] : List<ProductList>.from(json["productList"]!.map((x) => ProductList.fromJson(x))),
+    totalAmount: json["totalAmount"],
+    orderDate: json["orderDate"] == null ? null : DateTime.parse(json["orderDate"]),
+    status: statusValues.map[json["status"]]!,
+    paymentStatus: json["paymentStatus"],
+    phoneNumber: json["phone_number"],
+    zipCode: json["zip_code"],
+    streetName: json["street_name"],
+    stateCode: json["state_code"],
+    locality: json["locality"],
+    houseNumber: json["house_number"],
+    country: json["country"],
+    address: json["address"],
+    history: json["history"] == null ? [] : List<History>.from(json["history"]!.map((x) => History.fromJson(x))),
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
   );
 
-  final String? Id;
-  final String? customerId;
-  final String? sellerId;
-  final String? shopId;
-  final List<ProductListItem>? productList;
-  final int? totalAmount;
-  final String? orderDate;
-  final String? status;
-  final String? paymentStatus;
-  final String? phoneNumber;
-  final String? zipCode;
-  final String? streetName;
-  final String? stateCode;
-  final String? locality;
-  final String? houseNumber;
-  final String? country;
-  final String? address;
-  final List<HistoryItem>? history;
-  final String? createdAt;
-  final String? updatedAt;
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': Id,
-      'customerId': customerId,
-      'sellerId': sellerId,
-      'shopId': shopId,
-      'productList': productList?.map((x) => x.toMap()).toList(),
-      'totalAmount': totalAmount,
-      'orderDate': orderDate,
-      'status': status,
-      'paymentStatus': paymentStatus,
-      'phone_number': phoneNumber,
-      'zip_code': zipCode,
-      'street_name': streetName,
-      'state_code': stateCode,
-      'locality': locality,
-      'house_number': houseNumber,
-      'country': country,
-      'address': address,
-      'history': history?.map((x) => x.toMap()).toList(),
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  DataItem copyWith({
-    String? Id,
-    String? customerId,
-    String? sellerId,
-    String? shopId,
-    List<ProductListItem>? productList,
-    int? totalAmount,
-    String? orderDate,
-    String? status,
-    String? paymentStatus,
-    String? phoneNumber,
-    String? zipCode,
-    String? streetName,
-    String? stateCode,
-    String? locality,
-    String? houseNumber,
-    String? country,
-    String? address,
-    List<HistoryItem>? history,
-    String? createdAt,
-    String? updatedAt,
-  }) {
-    return DataItem(
-      Id: Id ?? this.Id,
-      customerId: customerId ?? this.customerId,
-      sellerId: sellerId ?? this.sellerId,
-      shopId: shopId ?? this.shopId,
-      productList: productList ?? this.productList,
-      totalAmount: totalAmount ?? this.totalAmount,
-      orderDate: orderDate ?? this.orderDate,
-      status: status ?? this.status,
-      paymentStatus: paymentStatus ?? this.paymentStatus,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      zipCode: zipCode ?? this.zipCode,
-      streetName: streetName ?? this.streetName,
-      stateCode: stateCode ?? this.stateCode,
-      locality: locality ?? this.locality,
-      houseNumber: houseNumber ?? this.houseNumber,
-      country: country ?? this.country,
-      address: address ?? this.address,
-      history: history ?? this.history,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    Id,
-    customerId,
-    sellerId,
-    shopId,
-    productList,
-    totalAmount,
-    orderDate,
-    status,
-    paymentStatus,
-    phoneNumber,
-    zipCode,
-    streetName,
-    stateCode,
-    locality,
-    houseNumber,
-    country,
-    address,
-    history,
-    createdAt,
-    updatedAt,
-  ];
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "customerId": customerIdValues.reverse[customerId],
+    "sellerId": sellerIdValues.reverse[sellerId],
+    "shopId": shopIdValues.reverse[shopId],
+    "productList": productList == null ? [] : List<dynamic>.from(productList!.map((x) => x.toJson())),
+    "totalAmount": totalAmount,
+    "orderDate": orderDate?.toIso8601String(),
+    "status": statusValues.reverse[status],
+    "paymentStatus": paymentStatus,
+    "phone_number": phoneNumber,
+    "zip_code": zipCode,
+    "street_name": streetName,
+    "state_code": stateCode,
+    "locality": locality,
+    "house_number": houseNumber,
+    "country": country,
+    "address": address,
+    "history": history == null ? [] : List<dynamic>.from(history!.map((x) => x.toJson())),
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+  };
 }
 
-class ProductListItem extends Equatable {
-  const ProductListItem({
+enum CustomerId {
+  THE_681089_E9926_BE6_FB00_EE59_FB,
+  THE_68513_C5891_AA957_D3_EFF938_C
+}
+
+final customerIdValues = EnumValues({
+  "681089e9926be6fb00ee59fb": CustomerId.THE_681089_E9926_BE6_FB00_EE59_FB,
+  "68513c5891aa957d3eff938c": CustomerId.THE_68513_C5891_AA957_D3_EFF938_C
+});
+
+class History {
+  Status? status;
+  DateTime? date;
+  String? id;
+
+  History({
+    this.status,
+    this.date,
+    this.id,
+  });
+
+  factory History.fromRawJson(String str) => History.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory History.fromJson(Map<String, dynamic> json) => History(
+    status: statusValues.map[json["status"]]!,
+    date: json["date"] == null ? null : DateTime.parse(json["date"]),
+    id: json["_id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": statusValues.reverse[status],
+    "date": date?.toIso8601String(),
+    "_id": id,
+  };
+}
+
+enum Status {
+  COMPLETED,
+  DELIVERY,
+  FINISHED,
+  ONGOING,
+  RECIVED
+}
+
+final statusValues = EnumValues({
+  "completed": Status.COMPLETED,
+  "delivery": Status.DELIVERY,
+  "finished": Status.FINISHED,
+  "ongoing": Status.ONGOING,
+  "recived": Status.RECIVED
+});
+
+class ProductList {
+  ProductId? productId;
+  SellerId? sellerId;
+  CustomerId? customerId;
+  int? price;
+  int? quantity;
+  int? offer;
+  int? weight;
+  String? id;
+
+  ProductList({
     this.productId,
     this.sellerId,
     this.customerId,
@@ -317,143 +200,57 @@ class ProductListItem extends Equatable {
     this.quantity,
     this.offer,
     this.weight,
-    this.Id,
+    this.id,
   });
 
-  factory ProductListItem.fromMap(Map<String, dynamic> map) {
-    return ProductListItem(
-      productId: map['productId'] != null
-          ? ProductId.fromMap(map['productId'] as Map<String, dynamic>)
-          : null,
-      sellerId: map['sellerId'] as String?,
-      customerId: map['customerId'] as String?,
-      price: map['price'] as int?,
-      quantity: map['quantity'] as int?,
-      offer: map['offer'] as int?,
-      weight: map['weight'] as int?,
-      Id: map['_id'] as String?,
-    );
-  }
+  factory ProductList.fromRawJson(String str) => ProductList.fromJson(json.decode(str));
 
-  factory ProductListItem.fromJson(String source) => ProductListItem.fromMap(
-    json.decode(source) as Map<String, dynamic>,
+  String toRawJson() => json.encode(toJson());
+
+  factory ProductList.fromJson(Map<String, dynamic> json) => ProductList(
+    productId: json["productId"] == null ? null : ProductId.fromJson(json["productId"]),
+    sellerId: sellerIdValues.map[json["sellerId"]]!,
+    customerId: customerIdValues.map[json["customerId"]]!,
+    price: json["price"],
+    quantity: json["quantity"],
+    offer: json["offer"],
+    weight: json["weight"],
+    id: json["_id"],
   );
 
-  final ProductId? productId;
-  final String? sellerId;
-  final String? customerId;
-  final int? price;
-  final int? quantity;
-  final int? offer;
-  final int? weight;
-  final String? Id;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'productId': productId?.toMap(),
-      'sellerId': sellerId,
-      'customerId': customerId,
-      'price': price,
-      'quantity': quantity,
-      'offer': offer,
-      'weight': weight,
-      '_id': Id,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  ProductListItem copyWith({
-    ProductId? productId,
-    String? sellerId,
-    String? customerId,
-    int? price,
-    int? quantity,
-    int? offer,
-    int? weight,
-    String? Id,
-  }) {
-    return ProductListItem(
-      productId: productId ?? this.productId,
-      sellerId: sellerId ?? this.sellerId,
-      customerId: customerId ?? this.customerId,
-      price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      offer: offer ?? this.offer,
-      weight: weight ?? this.weight,
-      Id: Id ?? this.Id,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    productId,
-    sellerId,
-    customerId,
-    price,
-    quantity,
-    offer,
-    weight,
-    Id,
-  ];
+  Map<String, dynamic> toJson() => {
+    "productId": productId?.toJson(),
+    "sellerId": sellerIdValues.reverse[sellerId],
+    "customerId": customerIdValues.reverse[customerId],
+    "price": price,
+    "quantity": quantity,
+    "offer": offer,
+    "weight": weight,
+    "_id": id,
+  };
 }
 
-class HistoryItem extends Equatable {
-  const HistoryItem({
-    this.status,
-    this.date,
-    this.Id,
-  });
+class ProductId {
+  Id? id;
+  SellerId? sellerId;
+  ShopId? shopId;
+  CategoryId? categoryId;
+  CategoryName? categoryName;
+  Name? name;
+  String? details;
+  int? price;
+  int? stock;
+  int? availableStock;
+  List<String>? images;
+  String? weight;
+  bool? isDeleted;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? v;
+  dynamic isOffer;
 
-  factory HistoryItem.fromMap(Map<String, dynamic> map) {
-    return HistoryItem(
-      status: map['status'] as String?,
-      date: map['date'] as String?,
-      Id: map['_id'] as String?,
-    );
-  }
-
-  factory HistoryItem.fromJson(String source) => HistoryItem.fromMap(
-    json.decode(source) as Map<String, dynamic>,
-  );
-
-  final String? status;
-  final String? date;
-  final String? Id;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'status': status,
-      'date': date,
-      '_id': Id,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  HistoryItem copyWith({
-    String? status,
-    String? date,
-    String? Id,
-  }) {
-    return HistoryItem(
-      status: status ?? this.status,
-      date: date ?? this.date,
-      Id: Id ?? this.Id,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    status,
-    date,
-    Id,
-  ];
-}
-
-class ProductId extends Equatable {
-  const ProductId({
-    this.Id,
+  ProductId({
+    this.id,
     this.sellerId,
     this.shopId,
     this.categoryId,
@@ -468,130 +265,155 @@ class ProductId extends Equatable {
     this.isDeleted,
     this.createdAt,
     this.updatedAt,
-    this.V,
+    this.v,
+    this.isOffer,
   });
 
-  factory ProductId.fromMap(Map<String, dynamic> map) {
-    return ProductId(
-      Id: map['_id'] as String?,
-      sellerId: map['sellerId'] as String?,
-      shopId: map['shopId'] as String?,
-      categoryId: map['categoryId'] as String?,
-      categoryName: map['categoryName'] as String?,
-      name: map['name'] as String?,
-      details: map['details'] as String?,
-      price: map['price'] as int?,
-      stock: map['stock'] as int?,
-      availableStock: map['availableStock'] as int?,
-      images: map['images'] != null ? List<String>.from(map['images'] as List) : null,
-      weight: map['weight'] as String?,
-      isDeleted: map['isDeleted'] as bool?,
-      createdAt: map['createdAt'] as String?,
-      updatedAt: map['updatedAt'] as String?,
-      V: map['__v'] as int?,
-    );
-  }
+  factory ProductId.fromRawJson(String str) => ProductId.fromJson(json.decode(str));
 
-  factory ProductId.fromJson(String source) => ProductId.fromMap(
-    json.decode(source) as Map<String, dynamic>,
+  String toRawJson() => json.encode(toJson());
+
+  factory ProductId.fromJson(Map<String, dynamic> json) => ProductId(
+    id: idValues.map[json["_id"]]!,
+    sellerId: sellerIdValues.map[json["sellerId"]]!,
+    shopId: shopIdValues.map[json["shopId"]]!,
+    categoryId: categoryIdValues.map[json["categoryId"]]!,
+    categoryName: categoryNameValues.map[json["categoryName"]]!,
+    name: nameValues.map[json["name"]]!,
+    details: json["details"],
+    price: json["price"],
+    stock: json["stock"],
+    availableStock: json["availableStock"],
+    images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
+    weight: json["weight"],
+    isDeleted: json["isDeleted"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"],
+    isOffer: json["isOffer"],
   );
 
-  final String? Id;
-  final String? sellerId;
-  final String? shopId;
-  final String? categoryId;
-  final String? categoryName;
-  final String? name;
-  final String? details;
-  final int? price;
-  final int? stock;
-  final int? availableStock;
-  final List<String>? images;
-  final String? weight;
-  final bool? isDeleted;
-  final String? createdAt;
-  final String? updatedAt;
-  final int? V;
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': Id,
-      'sellerId': sellerId,
-      'shopId': shopId,
-      'categoryId': categoryId,
-      'categoryName': categoryName,
-      'name': name,
-      'details': details,
-      'price': price,
-      'stock': stock,
-      'availableStock': availableStock,
-      'images': images,
-      'weight': weight,
-      'isDeleted': isDeleted,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-      '__v': V,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
-
-  ProductId copyWith({
-    String? Id,
-    String? sellerId,
-    String? shopId,
-    String? categoryId,
-    String? categoryName,
-    String? name,
-    String? details,
-    int? price,
-    int? stock,
-    int? availableStock,
-    List<String>? images,
-    String? weight,
-    bool? isDeleted,
-    String? createdAt,
-    String? updatedAt,
-    int? V,
-  }) {
-    return ProductId(
-      Id: Id ?? this.Id,
-      sellerId: sellerId ?? this.sellerId,
-      shopId: shopId ?? this.shopId,
-      categoryId: categoryId ?? this.categoryId,
-      categoryName: categoryName ?? this.categoryName,
-      name: name ?? this.name,
-      details: details ?? this.details,
-      price: price ?? this.price,
-      stock: stock ?? this.stock,
-      availableStock: availableStock ?? this.availableStock,
-      images: images ?? this.images,
-      weight: weight ?? this.weight,
-      isDeleted: isDeleted ?? this.isDeleted,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      V: V ?? this.V,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    Id,
-    sellerId,
-    shopId,
-    categoryId,
-    categoryName,
-    name,
-    details,
-    price,
-    stock,
-    availableStock,
-    images,
-    weight,
-    isDeleted,
-    createdAt,
-    updatedAt,
-    V,
-  ];
+  Map<String, dynamic> toJson() => {
+    "_id": idValues.reverse[id],
+    "sellerId": sellerIdValues.reverse[sellerId],
+    "shopId": shopIdValues.reverse[shopId],
+    "categoryId": categoryIdValues.reverse[categoryId],
+    "categoryName": categoryNameValues.reverse[categoryName],
+    "name": nameValues.reverse[name],
+    "details": details,
+    "price": price,
+    "stock": stock,
+    "availableStock": availableStock,
+    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
+    "weight": weight,
+    "isDeleted": isDeleted,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
+    "isOffer": isOffer,
+  };
 }
 
+enum CategoryId {
+  THE_681094507_FEE747_F6_B89717_E,
+  THE_681094907_FEE747_F6_B897186
+}
+
+final categoryIdValues = EnumValues({
+  "681094507fee747f6b89717e": CategoryId.THE_681094507_FEE747_F6_B89717_E,
+  "681094907fee747f6b897186": CategoryId.THE_681094907_FEE747_F6_B897186
+});
+
+enum CategoryName {
+  BEVERAGE,
+  FRUITS
+}
+
+final categoryNameValues = EnumValues({
+  "Beverage": CategoryName.BEVERAGE,
+  "Fruits": CategoryName.FRUITS
+});
+
+enum Id {
+  THE_6816_D91_EA3_EEE21_F3267526_C,
+  THE_6816_D97_FA3_EEE21_F32675271,
+  THE_6822_C637829_A99_B96_E998_E58
+}
+
+final idValues = EnumValues({
+  "6816d91ea3eee21f3267526c": Id.THE_6816_D91_EA3_EEE21_F3267526_C,
+  "6816d97fa3eee21f32675271": Id.THE_6816_D97_FA3_EEE21_F32675271,
+  "6822c637829a99b96e998e58": Id.THE_6822_C637829_A99_B96_E998_E58
+});
+
+enum Name {
+  FRESH_STRAWBERRY,
+  NATUREL_RED_APPLE,
+  NATUREL_RED_APPLE222
+}
+
+final nameValues = EnumValues({
+  "Fresh Strawberry": Name.FRESH_STRAWBERRY,
+  "Naturel Red Apple": Name.NATUREL_RED_APPLE,
+  "Naturel Red Apple222": Name.NATUREL_RED_APPLE222
+});
+
+enum SellerId {
+  THE_68108_A6_D926_BE6_FB00_EE5_A10
+}
+
+final sellerIdValues = EnumValues({
+  "68108a6d926be6fb00ee5a10": SellerId.THE_68108_A6_D926_BE6_FB00_EE5_A10
+});
+
+enum ShopId {
+  THE_6822_B89_E84_B09_EB28_C10_DB0_A
+}
+
+final shopIdValues = EnumValues({
+  "6822b89e84b09eb28c10db0a": ShopId.THE_6822_B89_E84_B09_EB28_C10_DB0_A
+});
+
+class Meta {
+  int? page;
+  int? limit;
+  int? total;
+  int? totalPage;
+
+  Meta({
+    this.page,
+    this.limit,
+    this.total,
+    this.totalPage,
+  });
+
+  factory Meta.fromRawJson(String str) => Meta.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
+    page: json["page"],
+    limit: json["limit"],
+    total: json["total"],
+    totalPage: json["totalPage"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "page": page,
+    "limit": limit,
+    "total": total,
+    "totalPage": totalPage,
+  };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
+}

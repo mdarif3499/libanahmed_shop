@@ -1,6 +1,9 @@
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'controller/analytics_screen_controller.dart';
 
 class OwnerAnalyticScreen extends StatefulWidget {
   const OwnerAnalyticScreen({super.key});
@@ -10,6 +13,9 @@ class OwnerAnalyticScreen extends StatefulWidget {
 }
 
 class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
+  final OwnerAnalyticsScreenController controller = Get.put(
+    OwnerAnalyticsScreenController(),
+  );
   String _selectedFilter = "Last Week"; // Default filter value
   final List<String> _filterOptions = [
     "This Week",
@@ -20,42 +26,69 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Fetch data when screen initializes
+    controller.fetchOverView();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.instance.ownerPhoneBackground,
       // Light background color
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // First Container: Total Product, Total Earning, Status
-              _buildCombinedStatCard(
-                [
-                  _buildStatItem("Total Product", "133"),
-                  _buildStatItem("Total Earning", "\$2,423"),
-                  _buildStatItem("Status", "Active"),
-                ],
-                Colors.red,
-              ),
-              const SizedBox(height: 16),
-              // Second Container: Total Order, Pending Order, Filter
-              _buildCombinedStatCard(
-                [
-                  _buildStatItem("Total Order", "120"),
-                  _buildStatItem("Pending Order", "04"),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // First Container: Total Product, Total Earning, Status
+                _buildCombinedStatCard([
+                  _buildStatItem(
+                    "Total Product",
+                    controller.overViewList.value?.data?.productCount
+                            ?.toString() ??
+                        "0",
+                  ),
+                  _buildStatItem(
+                    "Total Earning",
+                    controller.overViewList.value?.data?.totalEarning
+                            ?.toString() ??
+                        "0.0",
+                  ),
+                  // _buildStatItem("Status", "Active"),
+                ], Colors.red),
+                const SizedBox(height: 16),
+                // Second Container: Total Order, Pending Order, Filter
+                _buildCombinedStatCard([
+                  _buildStatItem(
+                    "Total Order",
+                    controller.overViewList.value?.data?.totalOrder
+                            ?.toString() ??
+                        "0",
+                  ),
+                  _buildStatItem(
+                    "Pending Order",
+                    controller.overViewList.value?.data?.totalPendingOrder
+                            ?.toString() ??
+                        "0",
+                  ),
                   _buildStatItem("All", ""),
-                ],
-                Colors.white,
-              ),
-              const SizedBox(height: 16),
-              // Line Chart: Total Earning
-              _buildLineChart(),
-            ],
+                ], Colors.white),
+                const SizedBox(height: 16),
+                // Line Chart: Total Earning
+                _buildLineChart(),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -76,11 +109,9 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: children.map((child) {
-          return Expanded(
-            child: Center(child: child),
-          );
+          return Expanded(child: Center(child: child));
         }).toList(),
       ),
     );
@@ -93,7 +124,7 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -138,14 +169,13 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
             children: [
               const Text(
                 "TOTAL EARNING",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(8),
@@ -154,18 +184,16 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
                   child: DropdownButton<String>(
                     value: _selectedFilter,
                     icon: const Icon(Icons.arrow_drop_down, size: 20),
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.black, fontSize: 14),
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedFilter = newValue!;
                         // In a real app, you would update the chart data here based on the filter
                       });
                     },
-                    items: _filterOptions
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: _filterOptions.map<DropdownMenuItem<String>>((
+                      String value,
+                    ) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
@@ -187,30 +215,27 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
                   horizontalInterval: 1,
                   verticalInterval: 1,
                   getDrawingHorizontalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.shade200,
-                      strokeWidth: 1,
-                    );
+                    return FlLine(color: Colors.grey.shade200, strokeWidth: 1);
                   },
                   getDrawingVerticalLine: (value) {
-                    return FlLine(
-                      color: Colors.grey.shade200,
-                      strokeWidth: 1,
-                    );
+                    return FlLine(color: Colors.grey.shade200, strokeWidth: 1);
                   },
                 ),
                 titlesData: FlTitlesData(
                   leftTitles: AxisTitles(
-                    sideTitles:
-                        SideTitles(showTitles: false), // Hide left titles
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ), // Hide left titles
                   ),
                   rightTitles: AxisTitles(
-                    sideTitles:
-                        SideTitles(showTitles: false), // Hide right titles
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ), // Hide right titles
                   ),
                   topTitles: AxisTitles(
-                    sideTitles:
-                        SideTitles(showTitles: false), // Hide top titles
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ), // Hide top titles
                   ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(

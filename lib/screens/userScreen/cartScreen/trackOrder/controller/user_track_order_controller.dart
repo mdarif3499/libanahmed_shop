@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class UserTrackOrderController extends GetxController {
   RxBool isCompleteOrder = false.obs;
   RxBool isLoading = false.obs;
+  RxBool isOrderDeleted = false.obs;
   var orderList = <TrackOrderModel.TrackOrderModelList>[].obs;
 
   @override
@@ -40,6 +41,19 @@ class UserTrackOrderController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       orderList.clear(); // Clear the list on error
+    }
+  }
+
+  void deleteOrder(String orderId)async {
+    isOrderDeleted(true);
+    try{
+      final response = await OrderRepository.deleteOrder(orderId);
+      if(response == true){
+        getAllOrder("pending");
+        isOrderDeleted(false);
+      }
+    }catch(e){
+      isOrderDeleted(false);
     }
   }
 }

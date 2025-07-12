@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
@@ -17,6 +19,76 @@ class UserTrackOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserTrackOrderController());
+
+    void showDeleteOrderDialog(String orderId) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 300,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Gap(height: AppSize.height(value: 20)),
+                    Text(
+                      'Are you sure you want to delete this order?',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        AppButton(
+                          height: AppSize.height(value: 48),
+                          width: AppSize.width(value: 60),
+                          title: "No",
+                          titleColor: AppColors.instance.white100,
+                          backgroundColor: AppColors.instance.green500,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        AppButton(
+                          height: AppSize.height(value: 48),
+                          width: AppSize.width(value: 60),
+                          title: "Yes",
+                          titleColor: AppColors.instance.white100,
+                          backgroundColor: AppColors.instance.red500,
+                          onTap: () {
+                            controller.deleteOrder(orderId);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                    Gap(height: AppSize.height(value: 20)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: AppText(
@@ -30,9 +102,7 @@ class UserTrackOrder extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white,
       ),
@@ -41,7 +111,6 @@ class UserTrackOrder extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
-            // Order state buttons
             Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
@@ -84,13 +153,11 @@ class UserTrackOrder extends StatelessWidget {
                         borderradius: 8,
                       ),
                     );
-                  })
+                  }),
                 ],
               ),
             ),
             Gap(height: 10),
-
-            // Order details based on state (ongoing or complete)
             Obx(() {
               if (controller.isLoading.value) {
                 return Center(
@@ -99,7 +166,6 @@ class UserTrackOrder extends StatelessWidget {
                   ),
                 );
               }
-
               if (controller.orderList.isEmpty) {
                 return Center(
                   child: AppText(
@@ -110,19 +176,22 @@ class UserTrackOrder extends StatelessWidget {
                   ),
                 );
               }
-
               return Column(
                 children: List.generate(controller.orderList.length, (index) {
                   var order = controller.orderList[index];
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(AppRoutes.userOrderProgress,
-                          arguments: order.sId);
+                      Get.toNamed(
+                        AppRoutes.userOrderProgress,
+                        arguments: order.sId,
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 15),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.instance.green50,
                         borderRadius: BorderRadius.circular(8),
@@ -175,7 +244,9 @@ class UserTrackOrder extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              showDeleteOrderDialog(order.sId ?? '');
+                            },
                             child: SvgPicture.asset(
                               AppAssertIcons.trackOrderCross,
                               height: AppSize.height(value: 35),
@@ -206,9 +277,9 @@ class UserTrackOrder extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   fontFamily: 1,
                   color: AppColors.instance.green500,
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

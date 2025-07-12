@@ -49,6 +49,7 @@ class ApiUrls {
   final String trackOrder = "/order?paymentStatus=";
   final String viewOrder = "/order/";
   final String createPayment = "/payment/add-payment";
+  final String deleteOrder = "/order/";
   final String rating = "/review";
   final String userProfileSettings = "/setting";
 
@@ -60,4 +61,6 @@ class ApiUrls {
   final String ownerShopCreation = "/shop/create-shop";
   final String ownerProductCreate = "/product/create-product";
   final String ownerOrder = "/order?paymentStatus=";
+  final String ownerOverView = "/product/overview";
+  final String ownerIncomeRatio = "/payment/all-income-rasio-by-days?days=7day";
 }

@@ -16,13 +16,16 @@ class OwnerOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OwnerOrderScreenController controller =
-    Get.put(OwnerOrderScreenController());
+    final OwnerOrderScreenController controller = Get.put(
+      OwnerOrderScreenController(),
+    );
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
+            // Toggle buttons
             Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
@@ -35,7 +38,8 @@ class OwnerOrderScreen extends StatelessWidget {
                     return Expanded(
                       child: AppButton(
                         onTap: () {
-                          controller.toggleOngoingOrder(true); // Pass true for ongoing orders
+                          controller.toggleOngoingOrder(true);
+                          print('UI: Toggled to Ongoing Orders'); // Debug print
                         },
                         title: AppString.instance.ongoingOrder,
                         backgroundColor: controller.isOngoingOrdertoggle.value
@@ -53,7 +57,10 @@ class OwnerOrderScreen extends StatelessWidget {
                     return Expanded(
                       child: AppButton(
                         onTap: () {
-                          controller.toggleOngoingOrder(false); // Pass false for completed orders
+                          controller.toggleOngoingOrder(false);
+                          print(
+                            'UI: Toggled to Completed Orders',
+                          ); // Debug print
                         },
                         title: AppString.instance.completedOrder,
                         backgroundColor: !controller.isOngoingOrdertoggle.value
@@ -65,12 +72,17 @@ class OwnerOrderScreen extends StatelessWidget {
                         borderradius: 8,
                       ),
                     );
-                  })
+                  }),
                 ],
               ),
             ),
             Gap(height: 10),
+
+            // Main content
             Obx(() {
+              print(
+                'UI: Rebuilding with isOngoing=${controller.isOngoingOrdertoggle.value}, orders count=${controller.currentOrdersData.length}',
+              ); // Debug print
               if (controller.isLoading.value) {
                 return Center(
                   child: CircularProgressIndicator(
@@ -79,95 +91,194 @@ class OwnerOrderScreen extends StatelessWidget {
                 );
               }
 
-              if (controller.ownerOrderList.value?.data == null ||
-                  controller.ownerOrderList.value!.data!.isEmpty) {
+              // Get current orders based on toggle state
+              final currentOrders = controller.currentOrdersData;
+
+              if (currentOrders.isEmpty) {
                 return Center(
-                  child: AppText(
-                    text: "No orders found",
-                    fontSize: 16,
-                    color: AppColors.instance.textColor,
+                  child: Column(
+                    children: [
+                      Gap(height: 50),
+                      AppText(
+                        text: controller.isOngoingOrdertoggle.value
+                            ? "No ongoing orders found"
+                            : "No completed orders found",
+                        fontSize: 16,
+                        color: AppColors.instance.textColor,
+                      ),
+                      Gap(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          controller.refreshAllOrders();
+                        },
+                        child: Text('Refresh'),
+                      ),
+                    ],
                   ),
                 );
               }
 
               return Column(
-                children: List.generate(
-                  controller.ownerOrderList.value!.data!.length,
-                      (index) {
-                    final order = controller.ownerOrderList.value!.data![index];
-                    return GestureDetector(
-                      onTap: () {
-                        Get.toNamed(AppRoutes.ownerOrderProgress);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 15),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: AppColors.instance.red50,
-                          borderRadius: BorderRadius.circular(8),
+                children: [
+                  // Header showing count
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText(
+                          text: controller.isOngoingOrdertoggle.value
+                              ? "Ongoing Orders (${currentOrders.length})"
+                              : "Completed Orders (${currentOrders.length})",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.instance.textColor,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SvgPicture.asset(
-                              AppAssertIcons.trackOrderIcon,
-                              height: AppSize.height(value: 25),
-                              width: AppSize.width(value: 25),
-                            ),
-                            Gap(width: 13),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppText(
-                                    text: "Order #${order.Id?.substring(0, 8) ?? 'N/A'}",
-                                    fontFamily: 2,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                    color: AppColors.instance.textColor,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Gap(height: 2),
-                                  AppText(
-                                    text: order.address ?? order.locality ?? "Address not available",
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 2,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    color: AppColors.instance.black300,
-                                  ),
-                                  Gap(height: 2),
-                                  AppText(
-                                    text: "${order.productList?.length ?? 0} items - \$${order.totalAmount ?? 0}",
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 2,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    color: AppColors.instance.black300,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                // Handle order action (e.g., cancel, view details)
-                              },
-                              child: SvgPicture.asset(
-                                AppAssertIcons.trackOrderCross,
-                                height: AppSize.height(value: 35),
-                                width: AppSize.width(value: 35),
-                              ),
-                            ),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            controller.refreshAllOrders();
+                          },
+                          child: Icon(
+                            Icons.refresh,
+                            color: AppColors.instance.red500,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      ],
+                    ),
+                  ),
+
+                  // Orders list using Column
+                  Column(
+                    children: currentOrders.map((order) {
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed(AppRoutes.ownerOrderProgress);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 15),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.instance.red50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: controller.isOngoingOrdertoggle.value
+                                  ? AppColors.instance.red500.withOpacity(0.3)
+                                  : Colors.green.withOpacity(0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                AppAssertIcons.trackOrderIcon,
+                                height: AppSize.height(value: 25),
+                                width: AppSize.width(value: 25),
+                              ),
+                              Gap(width: 13),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppText(
+                                      text:
+                                          "Order #${order.id?.substring(order.id!.length - 6) ?? 'N/A'}",
+                                      fontFamily: 2,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                      color: AppColors.instance.textColor,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Gap(height: 2),
+                                    AppText(
+                                      text:
+                                          order.address ??
+                                          order.locality ??
+                                          "Address not available",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 2,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      color: AppColors.instance.black300,
+                                    ),
+                                    Gap(height: 2),
+                                    AppText(
+                                      text:
+                                          "${order.productList?.length ?? 0} items - \$${order.totalAmount ?? 0}",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 2,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      color: AppColors.instance.black300,
+                                    ),
+                                    Gap(height: 2),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                controller
+                                                    .isOngoingOrdertoggle
+                                                    .value
+                                                ? AppColors.instance.red500
+                                                      .withOpacity(0.1)
+                                                : Colors.green.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                          child: AppText(
+                                            text:
+                                                order.status?.name ?? 'Unknown',
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                            color:
+                                                controller
+                                                    .isOngoingOrdertoggle
+                                                    .value
+                                                ? AppColors.instance.red500
+                                                : Colors.green,
+                                          ),
+                                        ),
+                                        Gap(width: 5),
+                                        AppText(
+                                          text:
+                                              "Payment: ${order.paymentStatus ?? 'Unknown'}",
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.instance.black300,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Handle order action
+                                },
+                                child: SvgPicture.asset(
+                                  AppAssertIcons.trackOrderCross,
+                                  height: AppSize.height(value: 35),
+                                  width: AppSize.width(value: 35),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
               );
             }),
           ],

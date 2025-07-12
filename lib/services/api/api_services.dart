@@ -197,15 +197,28 @@ class ApiServices {
     }
   }
 
-  Future<dynamic> apiDeleteServices(
-      {required String url,
-      Object? body,
-      int statusCode = 200,
-      Map<String, dynamic>? query,
-      Options? options}) async {
+  Future<dynamic> apiDeleteServices({
+    required String url,
+    Object? body,
+    int statusCode = 200,
+    Map<String, dynamic>? query,
+    Options? options,
+    String? token,
+  }) async {
     try {
-      final response = await api.sendRequest
-          .delete(url, data: body, queryParameters: query, options: options);
+      // Create headers with Authorization token if provided
+      Options requestOptions = options ?? Options();
+      requestOptions.headers = {
+        ...?requestOptions.headers,
+        if (token != null) 'Authorization': 'Bearer $token',
+      };
+
+      final response = await api.sendRequest.delete(
+        url,
+        data: body,
+        queryParameters: query,
+        options: requestOptions,
+      );
 
       if (response.statusCode == statusCode) {
         return response.data;
@@ -222,13 +235,13 @@ class ApiServices {
       errorLog('api time out exception', e);
       return null;
     } on DioException catch (e) {
-      if (e.response.runtimeType != Null) {
+      if (e.response?.data != null) {
         if (e.response?.statusCode == 401) {
           await storageServices.storageClear();
           Get.offAllNamed(AppRoutes.onboardScreen);
         }
 
-        if (e.response?.data["message"].runtimeType != Null) {
+        if (e.response?.data["message"] != null) {
           AppSnackBar.error("${e.response?.data["message"]}");
         }
 
