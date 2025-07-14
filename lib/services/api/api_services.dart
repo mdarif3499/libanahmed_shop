@@ -153,49 +153,52 @@ class ApiServices {
     return null;
   }
 }
-  Future<dynamic> apiPatchServices(
-      {required String url,
-      Object? body,
-      int statusCode = 200,
-      Map<String, dynamic>? query,
-      Options? options}) async {
-    try {
-      final response = await api.sendRequest
-          .patch(url, data: body, queryParameters: query, options: options);
+ Future<dynamic> apiPatchServices(
+    {required String url,
+    Object? body,
+    int statusCode = 200,
+    Map<String, dynamic>? query,
+    Options? options}) async {
+  try {
+    final response = await api.sendRequest
+        .patch(url, data: body, queryParameters: query, options: options);
 
-      if (response.statusCode == statusCode) {
-        return response.data;
-      } else {
-        AppSnackBar.error(
-            "Unexpected response: ${response.statusCode} ${response.statusMessage}");
-        return null;
-      }
-    } on SocketException catch (e) {
-      errorLog('api socket exception', e);
-      AppSnackBar.error("Check Your Internet Connection");
-      return null;
-    } on TimeoutException catch (e) {
-      errorLog('api time out exception', e);
-      return null;
-    } on DioException catch (e) {
-      if (e.response.runtimeType != Null) {
-        if (e.response?.statusCode == 401) {
-          await storageServices.storageClear();
-          Get.offAllNamed(AppRoutes.onboardScreen);
-        }
-
-        if (e.response?.data["message"].runtimeType != Null) {
-          AppSnackBar.error("${e.response?.data["message"]}");
-        }
-        return null;
-      }
-      errorLog('api dio exception', e);
-      return null;
-    } catch (e) {
-      errorLog('api exception', e);
+    if (response.statusCode == statusCode) {
+      return response.data;
+    } else {
+      AppSnackBar.error(
+          "Unexpected response: ${response.statusCode} ${response.statusMessage}");
       return null;
     }
+  } on SocketException catch (e) {
+    errorLog('api socket exception', e);
+    AppSnackBar.error("Check Your Internet Connection");
+    return null;
+  } on TimeoutException catch (e) {
+    errorLog('api time out exception', e);
+    return null;
+  } on DioException catch (e) {
+    // Fixed null checking
+    if (e.response != null) {
+      if (e.response?.statusCode == 401) {
+        await storageServices.storageClear();
+        Get.offAllNamed(AppRoutes.onboardScreen);
+      }
+
+      // Fixed null checking for message
+      if (e.response?.data != null && e.response?.data["message"] != null) {
+        AppSnackBar.error("${e.response?.data["message"]}");
+      }
+      return null;
+    }
+    errorLog('api dio exception', e);
+    return null;
+  } catch (e) {
+    errorLog('api exception', e);
+    return null;
   }
+}
+
 
   Future<dynamic> apiDeleteServices({
     required String url,

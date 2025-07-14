@@ -96,7 +96,7 @@ class AppString {
 
   ////////////////// Cart Text
   final String ballPagerRed = "Ball Pager Red";
-  final String oneKg = "Quantity : 1Kg";
+  final String oneKg = "gm";
   final String fourDollar = "\$4.99";
 
   ////////////////// Profile Text

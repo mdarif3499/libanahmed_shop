@@ -5,6 +5,7 @@ import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/controller/owner_shop_controller.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/app_aspect_ratio/app_aspect_ratio.dart';
+import 'package:ahmed_shop/widgets/app_image/app_image.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,19 @@ class OwnerMyShop extends StatefulWidget {
 class _OwnerMyShopState extends State<OwnerMyShop> {
   int _selectedIndex =
       0; // Track the selected button index, default to 0 (first button)
+
+  //! Helper method to safely convert price to double
+  double _convertToDouble(dynamic price) {
+    if (price == null) return 0.0;
+    if (price is num) return price.toDouble();
+    if (price is String) return double.tryParse(price) ?? 0.0;
+    return 0.0;
+  }
+
+  //! Helper method to format price for display
+  String _formatPrice(dynamic price) {
+    return _convertToDouble(price).toStringAsFixed(2);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +75,11 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
               // Create button titles with "All" as first item
               List<String> buttonTitles = [AppString.instance.all];
               if (controller.categoryList.isNotEmpty) {
-                buttonTitles.addAll(controller.categoryList
-                    .map((category) => category.name ?? '')
-                    .toList());
+                buttonTitles.addAll(
+                  controller.categoryList
+                      .map((category) => category.name ?? '')
+                      .toList(),
+                );
               }
 
               return SingleChildScrollView(
@@ -74,7 +90,9 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: AppButton(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 10),
+                          vertical: 8,
+                          horizontal: 10,
+                        ),
                         onTap: () {
                           setState(() {
                             _selectedIndex = index;
@@ -104,7 +122,6 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
 
             Gap(height: 20),
 
-            // Products Grid
             // Products Grid
             Obx(() {
               // Show loading indicator
@@ -151,88 +168,88 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
                 );
               }
 
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.ownerEditProduct);
-                },
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    childAspectRatio: getResponsiveAspectRatio(context),
-                  ),
-                  itemCount: productsToShow.length,
-                  itemBuilder: (context, index) {
-                    final product = productsToShow[index];
-                    return Card(
-                      color: AppColors.instance.white,
-                      elevation: 2.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: product.images != null &&
-                                      product.images!.isNotEmpty
-                                  ? Image.network(
-                                      product.images![0],
-                                      height: 94,
-                                      width: 94,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Image.asset(
-                                          AppAssertImage.instance
-                                              .strawberry, // Fallback image
-                                          height: 94,
-                                          width: 94,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
-                                      AppAssertImage
-                                          .instance.strawberry, // Default image
-                                      height: 94,
-                                      width: 94,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                            Gap(height: 10),
-                            AppText(
-                              text: product.name ?? 'Unnamed Product',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: AppColors.instance.textColor,
-                            ),
-                            Gap(height: 5),
-                            AppText(
-                              text:
-                                  '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: AppColors.instance.textColor,
-                            ),
-                            Gap(height: 10),
-                            AppButton(
-                              backgroundColor: AppColors.instance.red500,
-                              title: AppString.instance.viewDetails,
-                              titleColor: AppColors.instance.white,
-                              onTap: () {},
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: getResponsiveAspectRatio(context),
                 ),
+                itemCount: productsToShow.length,
+                itemBuilder: (context, index) {
+                  final product = productsToShow[index];
+                  return Card(
+                    color: AppColors.instance.white,
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child:
+                                product.images != null &&
+                                    product.images!.isNotEmpty
+                                ? AppImage(
+                                    url: product.images![0],
+                                    height: 94,
+                                    width: 94,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    AppAssertImage
+                                        .instance
+                                        .strawberry, // Default image
+                                    height: 94,
+                                    width: 94,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          Gap(height: 10),
+                          AppText(
+                            text: product.name ?? 'Unnamed Product',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: AppColors.instance.textColor,
+                          ),
+                          Gap(height: 5),
+                          AppText(
+                            text:
+                                '\$${(product.price ?? 0).toStringAsFixed(2)}',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: AppColors.instance.textColor,
+                          ),
+                          Gap(height: 10),
+                          AppButton(
+                            backgroundColor: AppColors.instance.red500,
+                            title: AppString.instance.viewDetails,
+                            titleColor: AppColors.instance.white,
+                            onTap: () {
+                              // Fixed: Pass the correct product data to the edit screen
+                              Get.toNamed(
+                                AppRoutes.ownerEditProduct,
+                                arguments: {
+                                  // 'name': product.name ?? '',
+                                  // 'price': _convertToDouble(product.price),
+                                  // 'description': product.details ?? '',
+                                  // 'images': product.images ?? [],
+                                  'id': product.id ?? '',
+                                  // 'weight': product.weight ?? '',
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             }),
 

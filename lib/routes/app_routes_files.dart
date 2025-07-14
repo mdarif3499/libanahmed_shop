@@ -7,7 +7,8 @@ import 'package:ahmed_shop/screens/ownerScreen/authScreen/shop_owner_otp_verific
 import 'package:ahmed_shop/screens/ownerScreen/authScreen/storeVefication/owner_store_verification.dart';
 import 'package:ahmed_shop/screens/ownerScreen/bottomNav/owner_bottom_nav.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/addNewProduct/owner_add_new_product.dart';
-import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/owner_edit_product.dart';
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/edit_product_screen/owner_edit_product_scree.dart';
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/owner_single_product.dart';
 import 'package:ahmed_shop/screens/ownerScreen/onboardingScreen/owner_onboarding_screen.dart';
 import 'package:ahmed_shop/screens/ownerScreen/orderScreen/orderProgress/owner_order_progress.dart';
 import 'package:ahmed_shop/screens/ownerScreen/ownerMenu/menuBestSelling/owner_menu_best_selling_items.dart';
@@ -104,14 +105,12 @@ List<GetPage> appRoutesFile = <GetPage>[
     page: () => UserForgotPasswordScreen(),
     transition: Transition.rightToLeft,
   ),
+  GetPage(name: AppRoutes.userHomeScreen, page: () => UserHomeScreen()),
   GetPage(
-    name: AppRoutes.userHomeScreen,
-    page: () => UserHomeScreen(),
+    name: AppRoutes.userProductDetails,
+    page: () => UserProductDetailsScreen(),
+    transition: Transition.rightToLeft,
   ),
-  GetPage(
-      name: AppRoutes.userProductDetails,
-      page: () => UserProductDetailsScreen(),
-      transition: Transition.rightToLeft),
   GetPage(
     name: AppRoutes.otpScreen,
     page: () => UserOtpVerrfication(),
@@ -139,26 +138,11 @@ List<GetPage> appRoutesFile = <GetPage>[
     page: () => UserSearchScreen(),
     transition: Transition.rightToLeft,
   ),
-  GetPage(
-    name: AppRoutes.editProfile,
-    page: () => UserEditProfile(),
-  ),
-  GetPage(
-    name: AppRoutes.userProfile,
-    page: () => UserProfileScreen(),
-  ),
-  GetPage(
-    name: AppRoutes.aboutUs,
-    page: () => UserAboutUsScreen(),
-  ),
-  GetPage(
-    name: AppRoutes.faqs,
-    page: () => UserFaqsScreen(),
-  ),
-  GetPage(
-    name: AppRoutes.privacyPolicy,
-    page: () => UserPrivacyPolicyScreen(),
-  ),
+  GetPage(name: AppRoutes.editProfile, page: () => UserEditProfile()),
+  GetPage(name: AppRoutes.userProfile, page: () => UserProfileScreen()),
+  GetPage(name: AppRoutes.aboutUs, page: () => UserAboutUsScreen()),
+  GetPage(name: AppRoutes.faqs, page: () => UserFaqsScreen()),
+  GetPage(name: AppRoutes.privacyPolicy, page: () => UserPrivacyPolicyScreen()),
   GetPage(
     name: AppRoutes.termsAndConditions,
     page: () => UserTermsAndConditionScreen(),
@@ -167,46 +151,19 @@ List<GetPage> appRoutesFile = <GetPage>[
     name: AppRoutes.contactSupport,
     page: () => UserContactSupportScreen(),
   ),
-  GetPage(
-    name: AppRoutes.userCheckOut,
-    page: () => UserCheckoutScreen(),
-  ),
+  GetPage(name: AppRoutes.userCheckOut, page: () => UserCheckoutScreen()),
   GetPage(
     name: AppRoutes.userCreateOrderEditInformation,
     page: () => CreateOrderEditInformation(),
   ),
-  GetPage(
-    name: AppRoutes.userTrackOrder,
-    page: () => UserTrackOrder(),
-  ),
-  GetPage(
-    name: AppRoutes.userOrderProgress,
-    page: () => UserOrderProgress(),
-  ),
-  GetPage(
-    name: AppRoutes.viewOrder,
-    page: () => UserViewOrder(),
-  ),
-  GetPage(
-    name: AppRoutes.menuFavorites,
-    page: () => UserManuFavourite(),
-  ),
-  GetPage(
-    name: AppRoutes.menuOffers,
-    page: () => UserMenuOffer(),
-  ),
-  GetPage(
-    name: AppRoutes.menuCusSer,
-    page: () => UserCustomerService(),
-  ),
-  GetPage(
-    name: AppRoutes.menuPayment,
-    page: () => UserMenuPayment(),
-  ),
-  GetPage(
-    name: AppRoutes.menuRating,
-    page: () => UserMenuRatings(),
-  ),
+  GetPage(name: AppRoutes.userTrackOrder, page: () => UserTrackOrder()),
+  GetPage(name: AppRoutes.userOrderProgress, page: () => UserOrderProgress()),
+  GetPage(name: AppRoutes.viewOrder, page: () => UserViewOrder()),
+  GetPage(name: AppRoutes.menuFavorites, page: () => UserManuFavourite()),
+  GetPage(name: AppRoutes.menuOffers, page: () => UserMenuOffer()),
+  GetPage(name: AppRoutes.menuCusSer, page: () => UserCustomerService()),
+  GetPage(name: AppRoutes.menuPayment, page: () => UserMenuPayment()),
+  GetPage(name: AppRoutes.menuRating, page: () => UserMenuRatings()),
   GetPage(
     name: AppRoutes.categories,
     page: () => CategoriesScreen(),
@@ -259,22 +216,10 @@ List<GetPage> appRoutesFile = <GetPage>[
     page: () => OwnerStoreVerification(),
     // middlewares: [InternetCheckMiddleWare()],
   ),
-  GetPage(
-    name: AppRoutes.ownerBottomNav,
-    page: () => OwnerBottomNav(),
-  ),
-  GetPage(
-    name: AppRoutes.ownerAboutUs,
-    page: () => OwnerAboutUs(),
-  ),
-  GetPage(
-    name: AppRoutes.ownerFaq,
-    page: () => OwnerFaqs(),
-  ),
-  GetPage(
-    name: AppRoutes.ownerPrivacyPolicy,
-    page: () => OwnerPrivacyPolicy(),
-  ),
+  GetPage(name: AppRoutes.ownerBottomNav, page: () => OwnerBottomNav()),
+  GetPage(name: AppRoutes.ownerAboutUs, page: () => OwnerAboutUs()),
+  GetPage(name: AppRoutes.ownerFaq, page: () => OwnerFaqs()),
+  GetPage(name: AppRoutes.ownerPrivacyPolicy, page: () => OwnerPrivacyPolicy()),
   GetPage(
     name: AppRoutes.ownerTermsAndConditions,
     page: () => OwnerTermsAndCondition(),
@@ -289,7 +234,7 @@ List<GetPage> appRoutesFile = <GetPage>[
   ),
   GetPage(
     name: AppRoutes.ownerEditProduct,
-    page: () => OwnerEditProduct(),
+    page: () => OwnerSingleProductScreen(),
     transition: Transition.rightToLeft,
   ),
   GetPage(
@@ -335,6 +280,11 @@ List<GetPage> appRoutesFile = <GetPage>[
   GetPage(
     name: AppRoutes.shopOwnerOtpVerificationScreen,
     page: () => ShopOwnerOtpVerificationScreen(),
+    transition: Transition.rightToLeft,
+  ),
+  GetPage(
+    name: AppRoutes.ownerEditProductScreen,
+    page: () => OwnerEditProductScreen(),
     transition: Transition.rightToLeft,
   ),
 

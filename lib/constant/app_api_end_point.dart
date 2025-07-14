@@ -61,6 +61,8 @@ class ApiUrls {
   final String ownerShopCreation = "/shop/create-shop";
   final String ownerProductCreate = "/product/create-product";
   final String ownerOrder = "/order?paymentStatus=";
+  final String ownerBestSellingItem = "/product/best-selling";
   final String ownerOverView = "/product/overview";
   final String ownerIncomeRatio = "/payment/all-income-rasio-by-days?days=7day";
+  final String ownerEditProduct = "/product/";
 }

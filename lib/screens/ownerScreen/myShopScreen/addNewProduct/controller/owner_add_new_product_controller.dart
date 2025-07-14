@@ -345,7 +345,7 @@ class OwnerAddNewProductController extends GetxController {
         itemstockController.value.text.trim(),
         itemImageFiles,
         itemWeightController.value.text.trim(),
-        selectedCategory.value!.id!, // Send category ID
+        selectedCategory.value!.id!, 
       );
 
       if (result == true) {

@@ -1,8 +1,4 @@
-import 'package:ahmed_shop/screens/ownerScreen/analyticScreen/owner_analytic_screen.dart';
-import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/owner_home_screen.dart';
-import 'package:ahmed_shop/screens/ownerScreen/orderScreen/orderMain/owner_order_screen.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/profileHome/controller/profile_binding.dart';
-import 'package:ahmed_shop/screens/ownerScreen/profileScreen/profileHome/owner_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

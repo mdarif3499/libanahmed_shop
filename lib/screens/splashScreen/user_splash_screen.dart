@@ -1,8 +1,6 @@
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
-import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/screens/splashScreen/controller/splash_screen_controller.dart';
-import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,0 +1,191 @@
+import 'package:ahmed_shop/constant/app_assert_icons.dart';
+import 'package:ahmed_shop/constant/app_assert_image.dart';
+import 'package:ahmed_shop/constant/app_colors.dart';
+import 'package:ahmed_shop/constant/app_string.dart';
+import 'package:ahmed_shop/routes/app_routes.dart';
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/controller/owner_edit_product_controller.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
+import 'package:ahmed_shop/utils/gap.dart';
+import 'package:ahmed_shop/widgets/app_image/app_image.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button.dart';
+import 'package:ahmed_shop/widgets/texts/app_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+
+class OwnerSingleProductScreen extends StatelessWidget {
+  const OwnerSingleProductScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(OwnerEditProductController());
+
+    return Scaffold(
+      appBar: AppBar(
+        title: AppText(
+          text: AppString.instance.productDetails,
+          color: AppColors.instance.grey800,
+          fontSize: 17,
+          fontWeight: FontWeight.w500,
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
+        ),
+        backgroundColor: AppColors.instance.white,
+      ),
+      backgroundColor: AppColors.instance.ownerPhoneBackground,
+      body: Obx(() {
+        final productData = controller.singleProductDetails.value?.data;
+        final isLoading = controller.isLoading.value;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product Image Container
+              Container(
+                height: AppSize.height(value: 200),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.instance.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: productData?.images?.isNotEmpty ?? false
+                      ? AppImage(
+                          url: productData!.images!.first,
+                          height: AppSize.height(value: 180),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          borderRadius: 10,
+                        )
+                      : Image.asset(
+                          AppAssertImage.instance.apple,
+                          height: 160,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const Gap(height: 20),
+
+              // Product Name and Price Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppText(
+                    text: productData?.name?.isNotEmpty ?? false
+                        ? productData!.name!
+                        : AppString.instance.naturelRedApple,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 23,
+                    color: AppColors.instance.textColor,
+                    fontFamily: 2,
+                  ),
+                  AppText(
+                    text: productData?.price != null
+                        ? '\$${productData!.price!.toStringAsFixed(2)}'
+                        : '\$0.00',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 23,
+                    color: AppColors.instance.textColor,
+                    fontFamily: 2,
+                  ),
+                ],
+              ),
+              const Gap(height: 10),
+
+              // Weight/Unit Display
+              AppText(
+                text: productData?.weight?.isNotEmpty ?? false
+                    ? '${productData!.weight} ${AppString.instance.oneKg}'
+                    : '500g',
+                fontSize: 16,
+                fontFamily: 1,
+                fontWeight: FontWeight.w500,
+                color: AppColors.instance.greyTextColor,
+              ),
+              const Gap(height: 10),
+
+              // Product Description
+              AppText(
+                text: productData?.details?.isNotEmpty ?? false
+                    ? productData!.details!
+                    : AppString.instance.every500Gram,
+                fontSize: 14,
+                fontFamily: 1,
+                fontWeight: FontWeight.w500,
+                color: AppColors.instance.textColor,
+                textAlign: TextAlign.justify,
+                maxLines: 5,
+              ),
+              const Gap(height: 30),
+
+              // Additional Product Images
+              if ((productData?.images?.length ?? 0) > 1)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      text: 'More Images',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.instance.textColor,
+                    ),
+                    const Gap(height: 10),
+                    SizedBox(
+                      height: 80,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: productData?.images?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: AppImage(
+                                url: productData!.images![index],
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.cover,
+                                borderRadius: 8,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const Gap(height: 30),
+                  ],
+                ),
+
+              // Product ID Display
+              if (controller.productID.value.isNotEmpty) ...[
+                AppText(
+                  text: 'Product ID: ${controller.productID.value}',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.instance.greyTextColor,
+                ),
+                const Gap(height: 20),
+              ],
+
+              // Edit Product Button
+              AppButton(
+                titleColor: AppColors.instance.white,
+                backgroundColor: AppColors.instance.red500,
+                title: isLoading
+                    ? 'Updating...'
+                    : AppString.instance.editProduct,
+                onTap: () => Get.toNamed(AppRoutes.ownerEditProductScreen),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}

@@ -9,12 +9,12 @@ class OwnerOrderScreenController extends GetxController {
   RxBool isLoading = false.obs;
 
   // Use RxList for better reactivity
-  RxList<OwnerOrderModel.Datum> pendingOrderList =
-      <OwnerOrderModel.Datum>[].obs;
-  RxList<OwnerOrderModel.Datum> paidOrderList = <OwnerOrderModel.Datum>[].obs;
+  RxList<OwnerOrderModel.Data> pendingOrderList =
+      <OwnerOrderModel.Data>[].obs;
+  RxList<OwnerOrderModel.Data> paidOrderList = <OwnerOrderModel.Data>[].obs;
 
   // Computed property to get current orders data
-  List<OwnerOrderModel.Datum> get currentOrdersData {
+  List<OwnerOrderModel.Data> get currentOrdersData {
     return isOngoingOrdertoggle.value ? pendingOrderList : paidOrderList;
   }
 
@@ -47,7 +47,7 @@ class OwnerOrderScreenController extends GetxController {
   Future<void> getAllOrders() async {
     // Load both pending and paid orders
     await getOwnerOrder('pending');
-    // await getOwnerOrder('paid');
+    await getOwnerOrder('paid'); // This line was commented out - uncomment it
   }
 
   Future<void> getOwnerOrder(String action) async {
@@ -59,33 +59,48 @@ class OwnerOrderScreenController extends GetxController {
         action,
       );
 
-      if (response != null && response.data != null) {
-        appLog('Successfully fetched ${response.data!.length} $action orders');
 
-        // Store in appropriate list based on action
-        if (action == 'pending') {
-          pendingOrderList.assignAll(response.data!);
-          appLog('Stored ${response.data!.length} orders in pendingOrderList');
-        } else if (action == 'paid') {
-          paidOrderList.assignAll(response.data!);
-          appLog('Stored ${response.data!.length} orders in paidOrderList');
-        }
+      if (response != null) {
+        appLog('Response success: ${response.success}');
+        appLog('Response message: ${response.message}');
+        appLog('Response data length: ${response.data?.length ?? 0}');
 
-        // Log sample data for debugging
-        if (response.data!.isNotEmpty) {
+        // Check if response has data
+        if (response.data != null && response.data!.isNotEmpty) {
+          appLog('Successfully fetched ${response.data!.length} $action orders');
+
+          // Store in appropriate list based on action
+          if (action == 'pending') {
+            pendingOrderList.assignAll(response.data!);
+            appLog('Stored ${response.data!.length} orders in pendingOrderList');
+          } else if (action == 'paid') {
+            paidOrderList.assignAll(response.data!);
+            appLog('Stored ${response.data!.length} orders in paidOrderList');
+          }
+
+          // Log sample data for debugging
           final sampleOrder = response.data!.first;
-          appLog('Sample order ID: ${sampleOrder.id}');
+          appLog('Sample order ID: ${sampleOrder.sId}');
           appLog('Sample order status: ${sampleOrder.status}');
           appLog('Sample order total: ${sampleOrder.totalAmount}');
+        } else {
+          appLog('No data received for $action orders - data array is empty or null');
+          
+          // Clear appropriate list when no data is received
+          if (action == 'pending') {
+            pendingOrderList.clear();
+          } else if (action == 'paid') {
+            paidOrderList.clear();
+          }
         }
       } else {
-        appLog('No data received for $action orders');
-
-        // Clear appropriate list
+        appLog('API returned null response for $action orders');
+        
+        // Clear appropriate list when response is null
         if (action == 'pending') {
-          //pendingOrderList.clear();
+          pendingOrderList.clear();
         } else if (action == 'paid') {
-          //paidOrderList.clear();
+          paidOrderList.clear();
         }
       }
     } catch (e) {

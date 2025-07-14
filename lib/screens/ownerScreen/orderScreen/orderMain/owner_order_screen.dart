@@ -3,6 +3,7 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/orderScreen/orderMain/controller/owner_order_screen_controller.dart';
+import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
@@ -39,7 +40,9 @@ class OwnerOrderScreen extends StatelessWidget {
                       child: AppButton(
                         onTap: () {
                           controller.toggleOngoingOrder(true);
-                          print('UI: Toggled to Ongoing Orders'); // Debug print
+                          appLog(
+                            'UI: Toggled to Ongoing Orders',
+                          ); // Debug print
                         },
                         title: AppString.instance.ongoingOrder,
                         backgroundColor: controller.isOngoingOrdertoggle.value
@@ -58,7 +61,7 @@ class OwnerOrderScreen extends StatelessWidget {
                       child: AppButton(
                         onTap: () {
                           controller.toggleOngoingOrder(false);
-                          print(
+                          appLog(
                             'UI: Toggled to Completed Orders',
                           ); // Debug print
                         },
@@ -80,7 +83,7 @@ class OwnerOrderScreen extends StatelessWidget {
 
             // Main content
             Obx(() {
-              print(
+              appLog(
                 'UI: Rebuilding with isOngoing=${controller.isOngoingOrdertoggle.value}, orders count=${controller.currentOrdersData.length}',
               ); // Debug print
               if (controller.isLoading.value) {
@@ -165,8 +168,8 @@ class OwnerOrderScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: controller.isOngoingOrdertoggle.value
-                                  ? AppColors.instance.red500.withOpacity(0.3)
-                                  : Colors.green.withOpacity(0.3),
+                                  ? AppColors.instance.red500.withAlpha(85)
+                                  : Colors.green.withAlpha(85),
                               width: 1,
                             ),
                           ),
@@ -184,7 +187,7 @@ class OwnerOrderScreen extends StatelessWidget {
                                   children: [
                                     AppText(
                                       text:
-                                          "Order #${order.id?.substring(order.id!.length - 6) ?? 'N/A'}",
+                                          "Order #${order.sId?.substring(order.sId!.length - 6) ?? 'N/A'}",
                                       fontFamily: 2,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15,
@@ -230,15 +233,14 @@ class OwnerOrderScreen extends StatelessWidget {
                                                     .isOngoingOrdertoggle
                                                     .value
                                                 ? AppColors.instance.red500
-                                                      .withOpacity(0.1)
-                                                : Colors.green.withOpacity(0.1),
+                                                      .withAlpha(35)
+                                                : Colors.green.withAlpha(35),
                                             borderRadius: BorderRadius.circular(
                                               4,
                                             ),
                                           ),
                                           child: AppText(
-                                            text:
-                                                order.status?.name ?? 'Unknown',
+                                            text: order.status ?? 'Unknown',
                                             fontSize: 10,
                                             fontWeight: FontWeight.w500,
                                             color:

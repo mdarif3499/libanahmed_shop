@@ -32,7 +32,8 @@ class AppRoutes {
   static const userCheckOut = "/userCheckOut";
   static const userTrackOrder = "/userTrackOrder";
   static const userOrderProgress = "/userOrderProgress";
-  static const userCreateOrderEditInformation = "/userCreateOrderEditInformation";
+  static const userCreateOrderEditInformation =
+      "/userCreateOrderEditInformation";
   static const viewOrder = "/viewOrder";
 
   static const categories = "/categories";
@@ -75,4 +76,6 @@ class AppRoutes {
 
   static const shopOwnerOtpVerificationScreen =
       "/shopOwnerOtpVerificationScreen";
+
+  static const ownerEditProductScreen = "/ownerEditProductScreen";
 }

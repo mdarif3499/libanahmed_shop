@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:ahmed_shop/constant/app_api_end_point.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_categroy_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_product_mode.dart';
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/models/owner_view_product_model.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
 import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
+import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:dio/dio.dart' as dio;
 
 class OwnerProductRepository {
@@ -108,4 +110,72 @@ class OwnerProductRepository {
       return null;
     }
   }
-}
+  //! Owner View Product Model
+  static Future <OwnerSingleProductModel?> fetchSingleProductDetails (String productId) async {
+    try {
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiGetServices(
+        "${ApiUrls.instance.ownerEditProduct}/$productId",
+        statusCode: 200,
+        headers: {"Authorization": token},
+      );
+      if (response != null) {
+        return OwnerSingleProductModel.fromJson(response);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+  //! Edit Product
+  static Future<bool?> editProduct(
+  String name,
+  String description,
+  String price,
+  String availableStock,
+  String weight,
+  List<File> images,
+) async {
+  try {
+    String token = StorageServices.instance.getToken();
+
+    // Create FormData for multipart file upload
+    dio.FormData formData = dio.FormData.fromMap({
+      "name": name,
+      "details": description,
+      "price": price,
+      "availableStock": availableStock,
+      "weight": weight,
+      "images": await Future.wait(
+        images.map((file) => dio.MultipartFile.fromFile(
+          file.path,
+          filename: file.path.split('/').last,
+        )).toList(),
+      ),
+    });
+
+    // Fixed: Create proper Options object
+    final options = dio.Options(
+      headers: {
+        "Authorization": token,
+        "Content-Type": "multipart/form-data",
+      },
+    );
+
+    var response = await ApiServices.instance.apiPatchServices(
+      url: ApiUrls.instance.ownerEditProduct,
+      body: formData,
+      options: options, 
+    );
+    
+    if (response != null) {
+      return true;
+    } else {
+      return false; // Return false instead of null for clarity
+    }
+  } catch (e) {
+    errorLog('editProduct exception', e);
+    return false;
+  }
+}}
