@@ -1,4 +1,5 @@
 import 'package:ahmed_shop/constant/app_colors.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart'; // Import for SVG icons
@@ -67,52 +68,50 @@ class IconAppButton extends StatelessWidget {
         // Default height for the button
         alignment: alignment ?? Alignment.center,
         margin: margin,
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: decoration ??
+        padding: padding ?? EdgeInsets.symmetric(horizontal: 20, vertical: 06),
+        decoration:
+            decoration ??
             BoxDecoration(
               color: backgroundColor ?? AppColors.instance.green500,
               // Button color
-              border:
-                  borderColor != null ? Border.all(color: borderColor!) : null,
+              border: borderColor != null
+                  ? Border.all(color: borderColor!)
+                  : null,
               borderRadius: BorderRadius.circular(
-                  borderRadius ?? 16.0), // Rounded corners
+                borderRadius ?? 16.0,
+              ), // Rounded corners
             ),
         child: isLoading
             ? SizedBox(
                 width: loadingSize ?? 24.0,
                 height: loadingSize ?? 24.0,
                 child: CircularProgressIndicator(
-                    color: loaderColor ?? AppColors.instance.white50))
+                  color: loaderColor ?? AppColors.instance.white50,
+                ),
+              )
             : Row(
-                mainAxisAlignment: rowWidth == null
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.spaceBetween, // Center the elements
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // Center the elements
                 children: [
                   if (icon != null && iconAlignment == CustomIconAlignment.left)
-                    Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: SvgPicture.asset(
-                        icon!,
-                        width: iconSize,
-                        height: iconSize,
-                      ),
+                    SvgPicture.asset(
+                      icon!,
+                      width: AppSize.width(value: iconSize),
+                      height: AppSize.height(value: iconSize),
                     ),
                   // Text and the space between the text and the icon
                   AppText(
                     text: title ?? "",
                     color: titleColor ?? AppColors.instance.white50,
                     fontWeight: FontWeight.w500,
-                    fontSize: fontSize ?? 14.0,
+                    fontSize: fontSize ?? 12.0,
                   ),
                   if (icon != null &&
                       iconAlignment == CustomIconAlignment.right)
-                    Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: SvgPicture.asset(
-                        icon!,
-                        width: iconSize,
-                        height: iconSize,
-                      ),
+                    SvgPicture.asset(
+                      icon!,
+                      width: AppSize.width(value: iconSize),
+                      height: AppSize.height(value: iconSize),
                     ),
                   // Add a SizedBox with a given width between the text and icon
                 ],

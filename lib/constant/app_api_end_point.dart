@@ -65,4 +65,6 @@ class ApiUrls {
   final String ownerOverView = "/product/overview";
   final String ownerIncomeRatio = "/payment/all-income-rasio-by-days?days=7day";
   final String ownerEditProduct = "/product/";
+  final String offerCreate = "/offer/add-offer";
+  final String ownerCreateOffer = "/product/all-product-for-offer";
 }

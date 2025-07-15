@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
@@ -19,6 +21,75 @@ class OwnerSingleProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(OwnerEditProductController());
+    void showDeleteDialog(BuildContext context, String? productId) {
+      if (productId == null || productId.isEmpty) {
+        Get.snackbar('Error', 'Invalid product ID');
+        return;
+      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 300,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AppColors.instance.white100,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Gap(height: AppSize.height(value: 20)),
+                    AppText(
+                      text: 'Are you sure to delete this product?',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.instance.textColor,
+                      maxLines: 2,
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        AppButton(
+                          height: AppSize.height(value: 48),
+                          width: AppSize.width(value: 60),
+                          title: "No",
+                          titleColor: AppColors.instance.white100,
+                          backgroundColor: AppColors.instance.green500,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        AppButton(
+                          height: AppSize.height(value: 48),
+                          width: AppSize.width(value: 60),
+                          title: "Yes",
+                          titleColor: AppColors.instance.white100,
+                          backgroundColor: AppColors.instance.red500,
+                          onTap: () {
+                            controller.deleteProduct(productId);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                    Gap(height: AppSize.height(value: 20)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -40,6 +111,20 @@ class OwnerSingleProductScreen extends StatelessWidget {
         final productData = controller.singleProductDetails.value?.data;
         final isLoading = controller.isLoading.value;
 
+        if (isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (productData == null) {
+          return const Center(
+            child: AppText(
+              text: 'Failed to load product details',
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          );
+        }
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -54,9 +139,9 @@ class OwnerSingleProductScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
-                  child: productData?.images?.isNotEmpty ?? false
+                  child: productData.images?.isNotEmpty ?? false
                       ? AppImage(
-                          url: productData!.images!.first,
+                          url: productData.images!.first,
                           height: AppSize.height(value: 180),
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -77,20 +162,20 @@ class OwnerSingleProductScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AppText(
-                    text: productData?.name?.isNotEmpty ?? false
-                        ? productData!.name!
+                    text: productData.name?.isNotEmpty ?? false
+                        ? productData.name!
                         : AppString.instance.naturelRedApple,
                     fontWeight: FontWeight.w500,
-                    fontSize: 23,
+                    fontSize: 18,
                     color: AppColors.instance.textColor,
                     fontFamily: 2,
                   ),
                   AppText(
-                    text: productData?.price != null
-                        ? '\$${productData!.price!.toStringAsFixed(2)}'
+                    text: productData.price != null
+                        ? '\$${productData.price!.toStringAsFixed(2)}'
                         : '\$0.00',
                     fontWeight: FontWeight.w500,
-                    fontSize: 23,
+                    fontSize: 18,
                     color: AppColors.instance.textColor,
                     fontFamily: 2,
                   ),
@@ -100,8 +185,8 @@ class OwnerSingleProductScreen extends StatelessWidget {
 
               // Weight/Unit Display
               AppText(
-                text: productData?.weight?.isNotEmpty ?? false
-                    ? '${productData!.weight} ${AppString.instance.oneKg}'
+                text: productData.weight?.isNotEmpty ?? false
+                    ? '${productData.weight} ${AppString.instance.oneKg}'
                     : '500g',
                 fontSize: 16,
                 fontFamily: 1,
@@ -112,8 +197,8 @@ class OwnerSingleProductScreen extends StatelessWidget {
 
               // Product Description
               AppText(
-                text: productData?.details?.isNotEmpty ?? false
-                    ? productData!.details!
+                text: productData.details?.isNotEmpty ?? false
+                    ? productData.details!
                     : AppString.instance.every500Gram,
                 fontSize: 14,
                 fontFamily: 1,
@@ -125,7 +210,7 @@ class OwnerSingleProductScreen extends StatelessWidget {
               const Gap(height: 30),
 
               // Additional Product Images
-              if ((productData?.images?.length ?? 0) > 1)
+              if ((productData.images?.length ?? 0) > 1)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -140,14 +225,14 @@ class OwnerSingleProductScreen extends StatelessWidget {
                       height: 80,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: productData?.images?.length ?? 0,
+                        itemCount: productData.images?.length ?? 0,
                         itemBuilder: (context, index) {
                           return Container(
                             margin: const EdgeInsets.only(right: 10),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: AppImage(
-                                url: productData!.images![index],
+                                url: productData.images![index],
                                 height: 80,
                                 width: 80,
                                 fit: BoxFit.cover,
@@ -172,16 +257,36 @@ class OwnerSingleProductScreen extends StatelessWidget {
                 ),
                 const Gap(height: 20),
               ],
-
+              // Create Offer Button
+              AppButton(
+                titleColor: AppColors.instance.white,
+                backgroundColor: AppColors.instance.green500,
+                title: 'Create Offer',
+              ),
+              const Gap(height: 20),
               // Edit Product Button
               AppButton(
                 titleColor: AppColors.instance.white,
                 backgroundColor: AppColors.instance.red500,
-                title: isLoading
-                    ? 'Updating...'
-                    : AppString.instance.editProduct,
-                onTap: () => Get.toNamed(AppRoutes.ownerEditProductScreen),
+                title: AppString.instance.editProduct,
+                onTap: () => Get.toNamed(
+                  AppRoutes.ownerEditProductScreen,
+                  arguments: {
+                    'productId': controller.productID.value,
+                    'productData': productData,
+                  },
+                ),
               ),
+              const Gap(height: 20),
+              // Delete Product Button
+              AppButton(
+                titleColor: AppColors.instance.red500,
+                backgroundColor: AppColors.instance.white,
+                borderColor: AppColors.instance.red500,
+                title: 'Delete Product',
+                onTap: () => showDeleteDialog(context, productData.sId),
+              ),
+              const Gap(height: 40),
             ],
           ),
         );

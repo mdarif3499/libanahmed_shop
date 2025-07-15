@@ -4,6 +4,7 @@ import 'package:ahmed_shop/constant/app_api_end_point.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_categroy_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_product_mode.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/models/owner_view_product_model.dart';
+import 'package:ahmed_shop/screens/ownerScreen/ownerMenu/menuOffer/models/create_offer_model.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
 import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
@@ -75,7 +76,7 @@ class OwnerProductRepository {
     String descrition,
     String price,
     String stock,
-     List<File> images,
+    List<File> images,
     String weight,
     String categoryId,
   ) async {
@@ -83,23 +84,26 @@ class OwnerProductRepository {
       String token = StorageServices.instance.getToken();
       dio.FormData formData = dio.FormData.fromMap({
         "name": name,
-          "details": descrition,
-          "price": price,
-          "stock": stock,
-          "images": await Future.wait(
-          images.map((file) => dio.MultipartFile.fromFile(
-            file.path,
-            filename: file.path.split('/').last,
-          )).toList(),
+        "details": descrition,
+        "price": price,
+        "stock": stock,
+        "images": await Future.wait(
+          images
+              .map(
+                (file) => dio.MultipartFile.fromFile(
+                  file.path,
+                  filename: file.path.split('/').last,
+                ),
+              )
+              .toList(),
         ),
-          "weight": weight,
-          "categoryId": categoryId,
+        "weight": weight,
+        "categoryId": categoryId,
       });
       var response = await ApiServices.instance.apiPostServices(
         url: ApiUrls.instance.ownerProductCreate,
         body: formData,
-        header: {"Authorization": token,
-        "Content-Type": "multipart/form-data",},
+        header: {"Authorization": token, "Content-Type": "multipart/form-data"},
       );
       if (response != null) {
         return true;
@@ -110,8 +114,11 @@ class OwnerProductRepository {
       return null;
     }
   }
+
   //! Owner View Product Model
-  static Future <OwnerSingleProductModel?> fetchSingleProductDetails (String productId) async {
+  static Future<OwnerSingleProductModel?> fetchSingleProductDetails(
+    String productId,
+  ) async {
     try {
       String token = StorageServices.instance.getToken();
       var response = await ApiServices.instance.apiGetServices(
@@ -128,54 +135,110 @@ class OwnerProductRepository {
       return null;
     }
   }
+
+  //! Delete Product
+  static Future<bool?> deleteProduct(String productId) async {
+    try {
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiDeleteServices(
+        url: "${ApiUrls.instance.ownerEditProduct}$productId",
+        token: token,
+        statusCode: 200,
+      );
+
+      if (response != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      errorLog('deleteProduct exception', e); // Log the error for debugging
+      return false;
+    }
+  }
+
   //! Edit Product
   static Future<bool?> editProduct(
-  String name,
-  String description,
-  String price,
-  String availableStock,
-  String weight,
-  List<File> images,
-) async {
-  try {
-    String token = StorageServices.instance.getToken();
+    String productId,
+    String name,
+    String description,
+    String price,
+    String availableStock,
+    String weight,
+    List<File> images,
+  ) async {
+    try {
+      String token = StorageServices.instance.getToken();
 
-    // Create FormData for multipart file upload
-    dio.FormData formData = dio.FormData.fromMap({
-      "name": name,
-      "details": description,
-      "price": price,
-      "availableStock": availableStock,
-      "weight": weight,
-      "images": await Future.wait(
-        images.map((file) => dio.MultipartFile.fromFile(
-          file.path,
-          filename: file.path.split('/').last,
-        )).toList(),
-      ),
-    });
+      // Create FormData for multipart file upload
+      Map<String, dynamic> formDataMap = {
+        "name": name,
+        "details": description,
+        "price": price,
+        "availableStock": availableStock,
+        "weight": weight,
+      };
 
-    // Fixed: Create proper Options object
-    final options = dio.Options(
-      headers: {
-        "Authorization": token,
-        "Content-Type": "multipart/form-data",
-      },
-    );
+      // Only add images if they exist
+      if (images.isNotEmpty) {
+        formDataMap["images"] = await Future.wait(
+          images
+              .map(
+                (file) => dio.MultipartFile.fromFile(
+                  file.path,
+                  filename: file.path.split('/').last,
+                ),
+              )
+              .toList(),
+        );
+      }
 
-    var response = await ApiServices.instance.apiPatchServices(
-      url: ApiUrls.instance.ownerEditProduct,
-      body: formData,
-      options: options, 
-    );
-    
-    if (response != null) {
-      return true;
-    } else {
-      return false; // Return false instead of null for clarity
+      dio.FormData formData = dio.FormData.fromMap(formDataMap);
+
+      // Create proper Options object
+      final options = dio.Options(
+        headers: {
+          "Authorization": token,
+          "Content-Type": "multipart/form-data",
+        },
+      );
+
+      var response = await ApiServices.instance.apiPatchServices(
+        url: "${ApiUrls.instance.ownerEditProduct}$productId",
+        body: formData,
+        options: options,
+      );
+
+      if (response != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      errorLog('editProduct exception', e);
+      return false;
     }
-  } catch (e) {
-    errorLog('editProduct exception', e);
-    return false;
   }
-}}
+
+  static Future<CreateOfferModel?> fetchCreateOffer() async {
+    try {
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiGetServices(
+        ApiUrls.instance.ownerCreateOffer,
+        statusCode: 200,
+        headers: {"Authorization": token},
+      );
+      if (response.statusCode == 200) {
+        return CreateOfferModel.fromJson(
+          response,
+        ); // Changed to return product model
+      } else {
+        appLog('Failed to load category products: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      appLog("Error fetching category products: $e");
+      return null;
+    }
+  }
+}

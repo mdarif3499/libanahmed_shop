@@ -30,7 +30,10 @@ class OwnerProfileScreen extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.instance.grey100,
                   borderRadius: BorderRadius.circular(8),
@@ -45,7 +48,8 @@ class OwnerProfileScreen extends StatelessWidget {
                         children: [
                           AppText(
                             // Display fullName from profileData or fallback
-                            text: controller.profileData.value?.data?.fullName ??
+                            text:
+                                controller.profileData.value?.data?.fullName ??
                                 AppString.instance.gilbert,
                             fontWeight: FontWeight.w500,
                             fontSize: 17,
@@ -54,7 +58,8 @@ class OwnerProfileScreen extends StatelessWidget {
                           const Gap(height: 2),
                           AppText(
                             // Display email from profileData or fallback
-                            text: controller.profileData.value?.data?.email ??
+                            text:
+                                controller.profileData.value?.data?.email ??
                                 AppString.instance.gilbertEmail,
                             fontSize: 15,
                             fontWeight: FontWeight.w400,
@@ -63,7 +68,8 @@ class OwnerProfileScreen extends StatelessWidget {
                           const Gap(height: 2),
                           AppText(
                             // Display phone from profileData or fallback
-                            text: controller.profileData.value?.data?.phone ??
+                            text:
+                                controller.profileData.value?.data?.phone ??
                                 AppString.instance.gilbertPhone,
                             fontSize: 15,
                             fontWeight: FontWeight.w400,

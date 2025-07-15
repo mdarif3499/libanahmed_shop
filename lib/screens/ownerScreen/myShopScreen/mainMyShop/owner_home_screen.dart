@@ -3,6 +3,8 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/controller/owner_shop_controller.dart';
+import 'package:ahmed_shop/utils/app_log.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/app_aspect_ratio/app_aspect_ratio.dart';
 import 'package:ahmed_shop/widgets/app_image/app_image.dart';
@@ -21,20 +23,6 @@ class OwnerMyShop extends StatefulWidget {
 class _OwnerMyShopState extends State<OwnerMyShop> {
   int _selectedIndex =
       0; // Track the selected button index, default to 0 (first button)
-
-  //! Helper method to safely convert price to double
-  double _convertToDouble(dynamic price) {
-    if (price == null) return 0.0;
-    if (price is num) return price.toDouble();
-    if (price is String) return double.tryParse(price) ?? 0.0;
-    return 0.0;
-  }
-
-  //! Helper method to format price for display
-  String _formatPrice(dynamic price) {
-    return _convertToDouble(price).toStringAsFixed(2);
-  }
-
   @override
   Widget build(BuildContext context) {
     final OwnerShopController controller = Get.put(OwnerShopController());
@@ -197,20 +185,20 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
                                     product.images!.isNotEmpty
                                 ? AppImage(
                                     url: product.images![0],
-                                    height: 94,
-                                    width: 94,
+                                    height: AppSize.height(value: 94),
+                                    width: AppSize.width(value: 94),
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(
                                     AppAssertImage
                                         .instance
                                         .strawberry, // Default image
-                                    height: 94,
-                                    width: 94,
+                                    height: AppSize.height(value: 94),
+                                    width: AppSize.width(value: 94),
                                     fit: BoxFit.cover,
                                   ),
                           ),
-                          Gap(height: 10),
+                          Gap(height: AppSize.height(value: 10)),
                           AppText(
                             text: product.name ?? 'Unnamed Product',
                             fontWeight: FontWeight.bold,
@@ -225,23 +213,18 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
                             fontSize: 15,
                             color: AppColors.instance.textColor,
                           ),
-                          Gap(height: 10),
+                          Gap(height: AppSize.height(value: 10)),
                           AppButton(
                             backgroundColor: AppColors.instance.red500,
                             title: AppString.instance.viewDetails,
                             titleColor: AppColors.instance.white,
                             onTap: () {
-                              // Fixed: Pass the correct product data to the edit screen
+                              appLog(
+                                'Navigating with product ID: ${product.id}',
+                              ); // Debug print
                               Get.toNamed(
                                 AppRoutes.ownerEditProduct,
-                                arguments: {
-                                  // 'name': product.name ?? '',
-                                  // 'price': _convertToDouble(product.price),
-                                  // 'description': product.details ?? '',
-                                  // 'images': product.images ?? [],
-                                  'id': product.id ?? '',
-                                  // 'weight': product.weight ?? '',
-                                },
+                                arguments: {'id': product.id ?? ''},
                               );
                             },
                           ),

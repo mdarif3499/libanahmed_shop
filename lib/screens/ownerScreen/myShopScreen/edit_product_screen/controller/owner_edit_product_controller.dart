@@ -1,37 +1,207 @@
 import 'dart:io';
+
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/models/owner_view_product_model.dart';
+import 'package:ahmed_shop/services/repository/owner_product_repository/owner_product_repository.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OwnerEditProductScreenController extends GetxController {
+  // Loading states
   RxBool isLoading = false.obs;
-  Rx<TextEditingController> editProductName = TextEditingController().obs;
-  Rx<TextEditingController> editProductDetails = TextEditingController().obs;
-  Rx<TextEditingController> editPrice = TextEditingController().obs;
-  Rx<TextEditingController> editProductAvaiableStock =
-      TextEditingController().obs;
-  Rx<TextEditingController> editWeight = TextEditingController().obs;
+  RxBool isUpdating = false.obs;
 
-  //! Product Image List
+  // Form controllers
+  late TextEditingController editProductName;
+  late TextEditingController editProductDetails;
+  late TextEditingController editPrice;
+  late TextEditingController editProductAvailableStock;
+  late TextEditingController editWeight;
+
+  // Product data
+  RxString productId = ''.obs;
+  Rx<Data?> currentProductData = Rx<Data?>(null);
+
+  // Image lists
   RxList<XFile> editImages = <XFile>[].obs;
-
-  //! Images Name for display
   RxList<String> editImagesNames = <String>[].obs;
 
-  //! Form Validation State
+  // Form validation state
   RxBool isFormValid = false.obs;
 
-  //! Image Picker Instance
+  // Image picker instance
   final ImagePicker imagePicker = ImagePicker();
+
+  // Get arguments from previous screen
+  final arguments = Get.arguments;
 
   @override
   void onInit() {
     super.onInit();
+
+    // Initialize form controllers
+    editProductName = TextEditingController();
+    editProductDetails = TextEditingController();
+    editPrice = TextEditingController();
+    editProductAvailableStock = TextEditingController();
+    editWeight = TextEditingController();
+
+    // Setup form validation listeners
+    _setupFormValidation();
+
+    // Load product data from arguments
+    _loadProductData();
   }
 
-  //! Pick store images from gallery
+  @override
+  void onClose() {
+    // Dispose form controllers
+    editProductName.dispose();
+    editProductDetails.dispose();
+    editPrice.dispose();
+    editProductAvailableStock.dispose();
+    editWeight.dispose();
+    super.onClose();
+  }
+
+  // Setup form validation listeners
+  void _setupFormValidation() {
+    editProductName.addListener(_validateForm);
+    editProductDetails.addListener(_validateForm);
+    editPrice.addListener(_validateForm);
+    editProductAvailableStock.addListener(_validateForm);
+    editWeight.addListener(_validateForm);
+  }
+
+  // Validate form fields
+  void _validateForm() {
+    isFormValid.value =
+        editProductName.text.trim().isNotEmpty &&
+        editProductDetails.text.trim().isNotEmpty &&
+        editPrice.text.trim().isNotEmpty &&
+        editProductAvailableStock.text.trim().isNotEmpty &&
+        editWeight.text.trim().isNotEmpty;
+  }
+
+  // Load product data from arguments or fetch from API
+  void _loadProductData() {
+    if (arguments == null) {
+      AppSnackBar.error("No product data provided");
+      Get.back();
+      return;
+    }
+
+    productId.value = arguments['productId'] ?? '';
+    if (productId.value.isEmpty) {
+      AppSnackBar.error("Invalid product ID");
+      Get.back();
+      return;
+    }
+
+    if (arguments['productData'] != null) {
+      currentProductData.value = arguments['productData'] as Data;
+      _populateFormWithData(currentProductData.value!);
+    } else {
+      _fetchProductData();
+    }
+  }
+
+  // Fetch product data from API
+  Future<void> _fetchProductData() async {
+    try {
+      isLoading(true);
+      appLog("Fetching product data for ID: ${productId.value}");
+      final result = await OwnerProductRepository.fetchSingleProductDetails(
+        productId.value,
+      );
+
+      if (result != null && result.data != null) {
+        currentProductData.value = result.data;
+        _populateFormWithData(result.data!);
+      } else {
+        AppSnackBar.error("Failed to load product details");
+        Get.back();
+      }
+    } catch (e) {
+      appLog("Error fetching product data: $e");
+      AppSnackBar.error("Failed to load product details: $e");
+      Get.back();
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Populate form with product data
+  void _populateFormWithData(Data productData) {
+    editProductName.text = productData.name ?? '';
+    editProductDetails.text = productData.details ?? '';
+    editPrice.text = productData.price?.toString() ?? '';
+    editProductAvailableStock.text =
+        productData.availableStock?.toString() ?? '';
+    editWeight.text = productData.weight ?? '';
+    _validateForm();
+  }
+
+  // Update product via API
+  Future<void> updateProduct() async {
+    if (!isFormValid.value) {
+      AppSnackBar.error("Please fill all required fields");
+      return;
+    }
+
+    if (productId.value.isEmpty) {
+      AppSnackBar.error("Invalid product ID");
+      return;
+    }
+
+    try {
+      isUpdating(true);
+      appLog("Updating product with ID: ${productId.value}");
+
+      // Convert XFile to File for API call
+      List<File> imageFiles = editImages
+          .map((xFile) => File(xFile.path))
+          .toList();
+      appLog(productId.value);
+      final result = await OwnerProductRepository.editProduct(
+        productId.value,
+        editProductName.text.trim(),
+        editProductDetails.text.trim(),
+        editPrice.text.trim(),
+        editProductAvailableStock.text.trim(),
+        editWeight.text.trim(),
+        imageFiles,
+      );
+
+      if (result == true) {
+        AppSnackBar.success("Product updated successfully");
+        Get.back();
+      } else {
+        AppSnackBar.error("Failed to update product");
+      }
+    } catch (e) {
+      appLog("Error updating product: $e");
+      AppSnackBar.error("Failed to update product: $e");
+    } finally {
+      isUpdating(false);
+    }
+  }
+
+  // Reset form to original values
+  void resetForm() {
+    if (currentProductData.value != null) {
+      _populateFormWithData(currentProductData.value!);
+      editImages.clear();
+      editImagesNames.clear();
+      AppSnackBar.success("Form reset to original values");
+    } else {
+      AppSnackBar.error("No product data available to reset");
+    }
+  }
+
+  // Pick multiple images from gallery
   Future<void> pickStoreImages(BuildContext context) async {
     try {
       List<XFile>? pickedFiles = await imagePicker.pickMultiImage();
@@ -41,23 +211,22 @@ class OwnerEditProductScreenController extends GetxController {
         editImagesNames.assignAll(
           pickedFiles.map((file) => file.name).toList(),
         );
-
-        appLog("Selected ${pickedFiles.length} store images");
-        appLog("Store image names: ${editImagesNames.join(', ')}");
-
+        appLog(
+          "Selected ${pickedFiles.length} images: ${editImagesNames.join(', ')}",
+        );
         AppSnackBar.success(
-          "${pickedFiles.length} store images selected successfully",
+          "${pickedFiles.length} images selected successfully",
         );
       } else {
-        appLog("No store images selected");
+        appLog("No images selected");
       }
     } catch (e) {
-      appLog("Error picking store images: $e");
-      AppSnackBar.error("Failed to pick store images. Please try again.");
+      appLog("Error picking images: $e");
+      AppSnackBar.error("Failed to pick images. Please try again.");
     }
   }
 
-  //! Pick single store image from gallery
+  // Pick single image from gallery
   Future<void> pickSingleStoreImage(BuildContext context) async {
     try {
       XFile? pickedFile = await imagePicker.pickImage(
@@ -70,19 +239,18 @@ class OwnerEditProductScreenController extends GetxController {
         editImages.add(pickedFile);
         editImagesNames.clear();
         editImagesNames.add(pickedFile.name);
-
-        appLog("Selected store image: ${pickedFile.name}");
-        AppSnackBar.success("Store image selected successfully");
+        appLog("Selected image: ${pickedFile.name}");
+        AppSnackBar.success("Image selected successfully");
       } else {
-        appLog("No store image selected");
+        appLog("No image selected");
       }
     } catch (e) {
-      appLog("Error picking store image: $e");
-      AppSnackBar.error("Failed to pick store image. Please try again.");
+      appLog("Error picking image: $e");
+      AppSnackBar.error("Failed to pick image. Please try again.");
     }
   }
 
-  //! Capture store image from camera
+  // Capture image from camera
   Future<void> captureStoreImageFromCamera(BuildContext context) async {
     try {
       XFile? pickedFile = await imagePicker.pickImage(
@@ -93,19 +261,18 @@ class OwnerEditProductScreenController extends GetxController {
       if (pickedFile != null && context.mounted) {
         editImages.add(pickedFile);
         editImagesNames.add(pickedFile.name);
-
-        appLog("Captured store image: ${pickedFile.name}");
-        AppSnackBar.success("Store image captured successfully");
+        appLog("Captured image: ${pickedFile.name}");
+        AppSnackBar.success("Image captured successfully");
       } else {
-        appLog("No store image captured");
+        appLog("No image captured");
       }
     } catch (e) {
-      appLog("Error capturing store image: $e");
-      AppSnackBar.error("Failed to capture store image. Please try again.");
+      appLog("Error capturing image: $e");
+      AppSnackBar.error("Failed to capture image. Please try again.");
     }
   }
 
-  //! Show image source selection dialog for store images
+  // Show image source selection dialog
   Future<void> showStoreImageSourceDialog(BuildContext context) async {
     if (!context.mounted) return;
     await showDialog(
@@ -146,21 +313,26 @@ class OwnerEditProductScreenController extends GetxController {
       },
     );
   }
+
+  // Remove image at index
   void removeStoreImage(int index) {
     if (index >= 0 && index < editImages.length) {
       editImages.removeAt(index);
       editImagesNames.removeAt(index);
-      appLog("Removed store image at index $index");
+      appLog("Removed image at index $index");
+      AppSnackBar.success("Image removed successfully");
     }
   }
 
-  //! Clear store images
+  // Clear all images
   void clearStoreImages() {
     editImages.clear();
     editImagesNames.clear();
-    appLog("Cleared store images");
+    appLog("Cleared all images");
+    AppSnackBar.success("All images cleared");
   }
-  //! Get file size in readable format
+
+  // Get file size in readable format
   String getFileSize(File file) {
     int bytes = file.lengthSync();
     if (bytes <= 0) return "0 B";
@@ -169,11 +341,10 @@ class OwnerEditProductScreenController extends GetxController {
     return "${(bytes / (1 << (i * 10))).toStringAsFixed(1)} ${suffixes[i]}";
   }
 
-  //! Get image file info
+  // Get image file info
   Future<Map<String, dynamic>> getImageInfo(XFile imageFile) async {
     File file = File(imageFile.path);
     int fileSize = await file.length();
-
     return {
       'name': imageFile.name,
       'path': imageFile.path,
@@ -182,11 +353,10 @@ class OwnerEditProductScreenController extends GetxController {
     };
   }
 
-  //! Compress image if needed (optional)
+  // Compress image (optional)
   Future<XFile?> compressImage(XFile imageFile, {int quality = 80}) async {
     try {
-      // You can implement image compression here if needed
-      return imageFile;
+      return imageFile; // Implement compression if needed
     } catch (e) {
       appLog("Error compressing image: $e");
       return null;

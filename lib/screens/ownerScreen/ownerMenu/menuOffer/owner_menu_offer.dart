@@ -2,12 +2,15 @@ import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+
+import '../../../../widgets/app_aspect_ratio/app_aspect_ratio.dart';
 
 class OwnerMenuOffer extends StatelessWidget {
   const OwnerMenuOffer({super.key});
@@ -69,9 +72,7 @@ class OwnerMenuOffer extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white,
       ),
@@ -88,7 +89,7 @@ class OwnerMenuOffer extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 10.0,
-              childAspectRatio: 0.75,
+              childAspectRatio: getResponsiveAspectRatio(context),
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
@@ -107,12 +108,12 @@ class OwnerMenuOffer extends StatelessWidget {
                       Center(
                         child: Image.asset(
                           product['image']!,
-                          height: 94,
-                          width: 94,
+                          height: AppSize.height(value: 94),
+                          width: AppSize.width(value: 94),
                           fit: BoxFit.cover,
                         ),
                       ),
-                      Gap(height: 10),
+                      Gap(height: AppSize.height(value: 10)),
                       AppText(
                         text: product['title']!,
                         fontWeight: FontWeight.w500,
@@ -126,15 +127,16 @@ class OwnerMenuOffer extends StatelessWidget {
                         fontSize: 15,
                         color: AppColors.instance.textColor,
                       ),
-                      Gap(height: 10),
+                      Gap(height: AppSize.height(value: 10)),
                       IconAppButton(
+                        height: AppSize.height(value: 40),
                         iconAlignment: CustomIconAlignment.right,
                         backgroundColor: AppColors.instance.red500,
                         title: AppString.instance.viewDetails,
                         icon: AppAssertIcons.userCartButton,
                         iconSize: 15,
                         onTap: () {},
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/authScreen/createAccount/controller/owner_create_account_controller.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
 import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
@@ -119,7 +120,7 @@ class OwnerCreateAccount extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Gap(height: 50),
+              Gap(height: AppSize.height(value: 30)),
               Center(
                 child: AppText(
                   text: AppString.instance.createAccount,
@@ -158,6 +159,7 @@ class OwnerCreateAccount extends StatelessWidget {
                               ? AppColors.instance.dark900
                               : AppColors.instance.textFieldTextColor,
                           borderradius: 8,
+                          height: AppSize.height(value: 50),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                       );
@@ -183,6 +185,7 @@ class OwnerCreateAccount extends StatelessWidget {
                               ? AppColors.instance.dark900
                               : AppColors.instance.textFieldTextColor,
                           borderradius: 8,
+                          height: AppSize.height(value: 50),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                       );
@@ -244,7 +247,8 @@ class OwnerCreateAccount extends StatelessWidget {
                         backgroundColor: AppColors.instance.red500,
                         borderradius: 10,
                         isLoading: controller
-                            .isLoading.value, // Show loading indicator
+                            .isLoading
+                            .value, // Show loading indicator
                       ),
                       const Gap(height: 20),
                     ],
@@ -327,7 +331,8 @@ class OwnerCreateAccount extends StatelessWidget {
                           borderradius: 10,
                           height: 50,
                           isLoading: controller
-                              .isLoading.value, // Show loading indicator
+                              .isLoading
+                              .value, // Show loading indicator
                         );
                       }),
                       Gap(height: 18),
@@ -350,9 +355,7 @@ class OwnerCreateAccount extends StatelessWidget {
                               color: AppColors.instance.authBorderColor,
                             ),
                           ),
-                          Gap(
-                            width: 3,
-                          ),
+                          Gap(width: 3),
                           AppText(
                             text: "0r",
                             fontSize: 12,
@@ -360,9 +363,7 @@ class OwnerCreateAccount extends StatelessWidget {
                             color: AppColors.instance.greyColor,
                             fontFamily: 2,
                           ),
-                          Gap(
-                            width: 3,
-                          ),
+                          Gap(width: 3),
                           Expanded(
                             child: Container(
                               height: 1,
@@ -371,9 +372,7 @@ class OwnerCreateAccount extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Gap(
-                        height: 18,
-                      ),
+                      Gap(height: 18),
                       IconAppButton(
                         iconAlignment: CustomIconAlignment.left,
                         icon: AppAssertIcons.google,
@@ -383,9 +382,7 @@ class OwnerCreateAccount extends StatelessWidget {
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
                       ),
-                      Gap(
-                        height: 18,
-                      ),
+                      Gap(height: 18),
                       IconAppButton(
                         iconAlignment: CustomIconAlignment.left,
                         icon: AppAssertIcons.apple,
@@ -395,9 +392,7 @@ class OwnerCreateAccount extends StatelessWidget {
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
                       ),
-                      Gap(
-                        height: 18,
-                      ),
+                      Gap(height: 18),
                     ],
                   );
                 }
@@ -443,9 +438,10 @@ Widget _buildInputField({
             : TextInputType.visiblePassword,
         textInputAction: TextInputAction.done,
         hintStyle: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: AppColors.instance.greyColor),
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          color: AppColors.instance.greyColor,
+        ),
       ),
       const Gap(height: 10),
     ],
