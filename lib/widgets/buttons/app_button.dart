@@ -24,6 +24,7 @@ class AppButton extends StatelessWidget {
     this.border,
     this.borderColor,
     this.borderradius,
+    this.fontSize,
   });
 
   final double? loadingSize;
@@ -43,6 +44,7 @@ class AppButton extends StatelessWidget {
   final BoxBorder? border;
   final Color? borderColor;
   final double? borderradius;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -56,25 +58,32 @@ class AppButton extends StatelessWidget {
         alignment: alignment ?? Alignment.center,
         margin: margin,
         padding: padding ?? EdgeInsets.all(AppSize.width(value: 5.0)),
-        decoration: decoration ??
+        decoration:
+            decoration ??
             BoxDecoration(
               color: backgroundColor ?? AppColors.instance.primary,
-              border:
-                  borderColor != null ? Border.all(color: borderColor!) : null,
-              borderRadius: BorderRadius.circular(borderradius ??
-                  AppSize.width(value: AppSize.width(value: 8.0))),
+              border: borderColor != null
+                  ? Border.all(color: borderColor!)
+                  : null,
+              borderRadius: BorderRadius.circular(
+                borderradius ?? AppSize.width(value: AppSize.width(value: 8.0)),
+              ),
             ),
         child: isLoading
             ? SizedBox(
                 width: loadingSize ?? Get.height * 0.04,
                 height: loadingSize ?? Get.height * 0.04,
                 child: CircularProgressIndicator(
-                    color: loaderColor ?? AppColors.instance.white50))
+                  color: loaderColor ?? AppColors.instance.white50,
+                ),
+              )
             : child ??
-                AppText(
+                  AppText(
                     text: title ?? "",
                     color: titleColor ?? AppColors.instance.white50,
-                    fontWeight: FontWeight.w700),
+                    fontWeight: FontWeight.w700,
+                    fontSize: fontSize ?? 14,
+                  ),
       ),
     );
   }

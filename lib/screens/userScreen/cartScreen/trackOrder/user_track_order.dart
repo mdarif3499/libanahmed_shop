@@ -5,6 +5,7 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/trackOrder/controller/user_track_order_controller.dart';
+import 'package:ahmed_shop/services/repository/payment_repository/web_view_screen.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
@@ -42,17 +43,16 @@ class UserTrackOrder extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Gap(height: AppSize.height(value: 20)),
-                    Text(
-                      'Are you sure you want to delete this order?',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                    AppText(
+                      text: 'Are you sure you want to delete this order?',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.instance.black800,
+                      maxLines: 2,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 20),
+                    Gap(height: AppSize.height(value: 20)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -243,16 +243,38 @@ class UserTrackOrder extends StatelessWidget {
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              showDeleteOrderDialog(order.sId ?? '');
-                            },
-                            child: SvgPicture.asset(
-                              AppAssertIcons.trackOrderCross,
-                              height: AppSize.height(value: 35),
-                              width: AppSize.width(value: 35),
-                            ),
-                          ),
+                          controller.isCompleteOrder.value == false
+                              ? Row(
+                                  children: [
+                                    AppButton(
+                                      title: "Pay",
+                                      fontSize: 12,
+                                      titleColor: AppColors.instance.white100,
+                                      backgroundColor:
+                                          AppColors.instance.green500,
+                                      onTap: () {
+                                        //Get.to(() => WebViewScreen(url: "${plan.paymentLink!}"));
+                                        controller.payOrder(order.sId ?? '');
+                                      },
+                                      height: AppSize.height(value: 40),
+                                      width: AppSize.width(value: 50),
+                                    ),
+                                    Gap(width: 10),
+                                    AppButton(
+                                      title: "Delete",
+                                      fontSize: 12,
+                                      titleColor: AppColors.instance.white100,
+                                      backgroundColor:
+                                          AppColors.instance.red500,
+                                      onTap: () {
+                                        showDeleteOrderDialog(order.sId ?? '');
+                                      },
+                                      height: AppSize.height(value: 40),
+                                      width: AppSize.width(value: 50),
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(),
                         ],
                       ),
                     ),

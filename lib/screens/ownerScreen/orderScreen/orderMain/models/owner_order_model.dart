@@ -227,7 +227,7 @@ class ProductId {
   List<String>? images;
   String? weight;
   bool? isDeleted;
-  Null? isOffer;
+  Null isOffer;
   String? createdAt;
   String? updatedAt;
   int? iV;

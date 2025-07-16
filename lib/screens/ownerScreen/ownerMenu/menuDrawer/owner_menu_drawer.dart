@@ -31,7 +31,6 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
     AppString.instance.cancelledOrders,
     AppString.instance.transactions,
     AppString.instance.offers,
-    AppString.instance.ratings,
     AppString.instance.paymentMethod,
     AppString.instance.shopCreation,
   ];
@@ -40,7 +39,6 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
     AppAssertIcons.menuCancelOrder,
     AppAssertIcons.menuTransaction,
     AppAssertIcons.menuOffers,
-    AppAssertIcons.menuRating,
     AppAssertIcons.menuPaymentMethod,
     AppAssertIcons.oShop,
   ];
@@ -49,10 +47,10 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
     AppRoutes.ownerMenuCancelOrder,
     AppRoutes.ownerMenuTransaction,
     AppRoutes.ownerMenuOffers,
-    AppRoutes.ownerMenuRating,
     AppRoutes.ownerMenuPaymentMethod,
     AppRoutes.ownerStoreVerification,
   ];
+
   void showSignourDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -200,7 +198,7 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
                     icon: AppAssertIcons.menuLogout,
                     iconSize: 20,
                     title: AppString.instance.signOut,
-                    onTap: ()  {
+                    onTap: () {
                       showSignourDialog(context);
                     },
                     titleColor: AppColors.instance.textColor,

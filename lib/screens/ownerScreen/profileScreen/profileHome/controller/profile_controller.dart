@@ -41,8 +41,4 @@ class OwnerProfileController extends GetxController {
     fetchProfile();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }

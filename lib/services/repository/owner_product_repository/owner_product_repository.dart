@@ -48,7 +48,7 @@ class OwnerProductRepository {
     }
   }
 
-  //! Fetch Category Products - Fixed to return OwnerAllProductModel
+  //! Fetch Category Products
   static Future<OwnerAllProductModel?> fetchCategoryProducts(
     String categoryName,
   ) async {
@@ -57,9 +57,7 @@ class OwnerProductRepository {
         "${ApiUrls.instance.ownerAllProduct}?categoryName=$categoryName",
       );
       if (response != null) {
-        return OwnerAllProductModel.fromJson(
-          response,
-        ); // Changed to return product model
+        return OwnerAllProductModel.fromJson(response);
       } else {
         appLog('Failed to load category products: ${response.statusCode}');
         return null;
@@ -152,7 +150,7 @@ class OwnerProductRepository {
         return false;
       }
     } catch (e) {
-      errorLog('deleteProduct exception', e); // Log the error for debugging
+      errorLog('deleteProduct exception', e);
       return false;
     }
   }
@@ -170,7 +168,6 @@ class OwnerProductRepository {
     try {
       String token = StorageServices.instance.getToken();
 
-      // Create FormData for multipart file upload
       Map<String, dynamic> formDataMap = {
         "name": name,
         "details": description,
@@ -179,7 +176,6 @@ class OwnerProductRepository {
         "weight": weight,
       };
 
-      // Only add images if they exist
       if (images.isNotEmpty) {
         formDataMap["images"] = await Future.wait(
           images
@@ -195,7 +191,6 @@ class OwnerProductRepository {
 
       dio.FormData formData = dio.FormData.fromMap(formDataMap);
 
-      // Create proper Options object
       final options = dio.Options(
         headers: {
           "Authorization": token,
@@ -228,16 +223,42 @@ class OwnerProductRepository {
         statusCode: 200,
         headers: {"Authorization": token},
       );
-      if (response.statusCode == 200) {
-        return CreateOfferModel.fromJson(
-          response,
-        ); // Changed to return product model
+      if (response != null && response is Map<String, dynamic>) {
+        return CreateOfferModel.fromJson(response);
       } else {
-        appLog('Failed to load category products: ${response.statusCode}');
+        appLog('Failed to load offer products: response is null or invalid');
         return null;
       }
     } catch (e) {
-      appLog("Error fetching category products: $e");
+      appLog("Error fetching offer products: $e");
+      return null;
+    }
+  }
+
+  static Future<bool?> createOffer(
+    String productId,
+    String offer,
+    String startDate,
+    String endDate,
+  ) async {
+    try {
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiPostServices(
+        url: ApiUrls.instance.offerCreate,
+        body: {
+          "productId": productId,
+          "offer": offer,
+          "startDate": startDate,
+          "endDate": endDate,
+        },
+        header: {"Authorization": token},
+      );
+      if (response != null) {
+        return true;
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }

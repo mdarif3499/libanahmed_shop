@@ -1,26 +1,26 @@
-// ignore: library_prefixes
 import 'package:ahmed_shop/screens/userScreen/cartScreen/trackOrder/models/track_order_models.dart'
+    // ignore: library_prefixes
     as TrackOrderModel;
 import 'package:ahmed_shop/services/repository/order_repository/order_repository.dart';
+import 'package:ahmed_shop/services/repository/payment_repository/payment_repository.dart';
+import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:get/get.dart';
 
 class UserTrackOrderController extends GetxController {
   RxBool isCompleteOrder = false.obs;
   RxBool isLoading = false.obs;
   RxBool isOrderDeleted = false.obs;
+  RxBool isPaymentLoading = false.obs;
   var orderList = <TrackOrderModel.TrackOrderModelList>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Load pending orders initially
     getAllOrder("pending");
   }
 
-  // Toggle between ongoing and complete order
   void toggleOrderState(bool isComplete) {
     isCompleteOrder.value = isComplete;
-    // Fetch data based on the new state
     if (isComplete) {
       getAllOrder("paid");
     } else {
@@ -35,25 +35,49 @@ class UserTrackOrderController extends GetxController {
       if (response != null && response.data != null) {
         orderList.assignAll(response.data!);
       } else {
-        orderList.clear(); // Clear the list if no data
+        orderList.clear();
       }
-      isLoading.value = false;
     } catch (e) {
+      orderList.clear();
+    } finally {
       isLoading.value = false;
-      orderList.clear(); // Clear the list on error
     }
   }
 
-  void deleteOrder(String orderId)async {
+  void deleteOrder(String orderId) async {
     isOrderDeleted(true);
-    try{
+    try {
       final response = await OrderRepository.deleteOrder(orderId);
-      if(response == true){
+      if (response == true) {
         getAllOrder("pending");
-        isOrderDeleted(false);
+        AppSnackBar.success('Order deleted successfully');
       }
-    }catch(e){
+    } catch (e) {
+      AppSnackBar.error('Failed to delete order');
+    } finally {
       isOrderDeleted(false);
+    }
+  }
+
+  void payOrder(String orderId) async {
+    isPaymentLoading(true);
+    try {
+      final response = await PaymentRepository.userPayment(
+        orderId: orderId,
+        shippingCost: 30,
+      );
+
+      if (response == true) {
+        // Payment URL opened successfully
+        // The actual payment completion will be handled by the payment screen
+        AppSnackBar.success('Payment URL opened successfully');
+      } else {
+        AppSnackBar.error('Failed to initiate payment');
+      }
+    } catch (e) {
+      AppSnackBar.error('Payment failed: ${e.toString()}');
+    } finally {
+      isPaymentLoading(false);
     }
   }
 }
