@@ -4,7 +4,10 @@ import 'package:get_storage/get_storage.dart';
 
 class StorageServices {
   StorageServices._privateConstructor();
-  static final StorageServices _instance = StorageServices._privateConstructor();
+
+  static final StorageServices _instance =
+      StorageServices._privateConstructor();
+
   static StorageServices get instance => _instance;
 
   ////////////// storage initial
@@ -38,6 +41,7 @@ class StorageServices {
       errorLog("set forgot password token", e);
     }
   }
+
   String getForgotPasswordToken() {
     try {
       return box.read(AppStorageKey.instance.forgotToken) ?? "";
@@ -47,7 +51,7 @@ class StorageServices {
     }
   }
 
-  //// Get Review 
+  //// Get Review
   Future<void> setReviewToken(List<String> value) async {
     try {
       await box.write(AppStorageKey.instance.reviewToken, value);
@@ -56,6 +60,7 @@ class StorageServices {
       errorLog("set review token", e);
     }
   }
+
   String getReviewToken() {
     try {
       return box.read(AppStorageKey.instance.reviewToken) ?? "";
@@ -165,6 +170,27 @@ class StorageServices {
       await clearReviewedOrders();
     } catch (e) {
       errorLog("logout", e);
+    }
+  }
+
+  // Saved data
+  // Generic method to save data with a key
+  Future<void> saveData(String key, dynamic value) async {
+    try {
+      await box.write(key, value);
+      await box.save();
+    } catch (e) {
+      errorLog("saveData - key: $key", e);
+    }
+  }
+
+  /// Generic method to get data by key
+  dynamic getData(String key) {
+    try {
+      return box.read(key);
+    } catch (e) {
+      errorLog("getData - key: $key", e);
+      return null;
     }
   }
 }

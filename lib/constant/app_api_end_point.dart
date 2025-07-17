@@ -67,4 +67,6 @@ class ApiUrls {
   final String ownerEditProduct = "/product/";
   final String offerCreate = "/offer/add-offer";
   final String ownerCreateOffer = "/product/all-product-for-offer";
+  final String ownerConnectedPayment =
+      "/payment/create-stripe-connected-account";
 }

@@ -29,4 +29,7 @@ class AppAssertImage {
   final String ownerOnboarding = "assets/images/owner/onboarding.png";
   final String appLogo = "assets/images/owner/appLoog.png";
   final String logoIcon = "assets/images/owner/logoIcon.png";
+  final String paymentMethod = "assets/images/owner/paymentMethod.png";
+  final String payment = "assets/images/owner/payment.png";
+  final String stripe = "assets/images/owner/stripe.png";
 }

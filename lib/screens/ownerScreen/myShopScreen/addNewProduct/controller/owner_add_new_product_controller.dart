@@ -1,12 +1,16 @@
 import 'dart:io';
 
-import 'package:ahmed_shop/services/repository/owner_product_repository/owner_product_repository.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_categroy_model.dart';
+import 'package:ahmed_shop/services/repository/owner_product_repository/owner_product_repository.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../../../constant/app_colors.dart';
+import '../../../../../widgets/buttons/app_button.dart';
+import '../../../../../widgets/texts/app_text.dart';
 
 class OwnerAddNewProductController extends GetxController {
   //! Loading State
@@ -183,33 +187,74 @@ class OwnerAddNewProductController extends GetxController {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text("Select Image Source"),
+          title: AppText(
+            text: "Select Document Image Source",
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            maxLines: 2,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text("Gallery (Multiple)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickStoreImages(context);
-                },
+              // ListTile(
+              //   leading: Icon(Icons.photo_library),
+              //   title: Text("Gallery (Multiple)"),
+              //   onTap: () {
+              //     Navigator.of(dialogContext).pop();
+              //     pickStoreImages(context);
+              //   },
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: AppButton(
+                  title: "Gallery (Multiple)",
+                  backgroundColor: AppColors.instance.red500,
+                  titleColor: AppColors.instance.white,
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    pickStoreImages(context);
+                  },
+                ),
               ),
-              ListTile(
-                leading: Icon(Icons.photo),
-                title: Text("Gallery (Single)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickSingleStoreImage(context);
-                },
+              // ListTile(
+              //   leading: Icon(Icons.photo),
+              //   title: Text("Gallery (Single)"),
+              //   onTap: () {
+              //     Navigator.of(dialogContext).pop();
+              //     pickSingleStoreImage(context);
+              //   },
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: AppButton(
+                  title: "Gallery (Single)",
+                  backgroundColor: AppColors.instance.red500,
+                  titleColor: AppColors.instance.white,
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    pickSingleStoreImage(context);
+                  },
+                ),
               ),
-              ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text("Camera"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  captureStoreImageFromCamera(context);
-                },
+              // ListTile(
+              //   leading: Icon(Icons.camera_alt),
+              //   title: Text("Camera"),
+              //   onTap: () {
+              //     Navigator.of(dialogContext).pop();
+              //     captureStoreImageFromCamera(context);
+              //   },
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: AppButton(
+                  title: "Camera",
+                  backgroundColor: AppColors.instance.red500,
+                  titleColor: AppColors.instance.white,
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    captureStoreImageFromCamera(context);
+                  },
+                ),
               ),
             ],
           ),
@@ -337,7 +382,7 @@ class OwnerAddNewProductController extends GetxController {
       List<File> itemImageFiles = itemImages
           .map((xFile) => File(xFile.path))
           .toList();
-      
+
       bool? result = await OwnerProductRepository.ownerCreateProduct(
         itemNameController.value.text.trim(),
         itemDescriptionController.value.text.trim(),
@@ -345,7 +390,7 @@ class OwnerAddNewProductController extends GetxController {
         itemstockController.value.text.trim(),
         itemImageFiles,
         itemWeightController.value.text.trim(),
-        selectedCategory.value!.id!, 
+        selectedCategory.value!.id!,
       );
 
       if (result == true) {
@@ -353,8 +398,7 @@ class OwnerAddNewProductController extends GetxController {
         clearForm();
         Get.back();
       } else {
-        AppSnackBar.error(
-            "Failed to create product. Please try again.");
+        AppSnackBar.error("Failed to create product. Please try again.");
       }
     } catch (e) {
       appLog("Error submitting form: $e");

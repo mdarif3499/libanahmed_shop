@@ -64,17 +64,20 @@ class ForgotPasswordOtpScreenController extends GetxController {
       bool hasToken = await authRepository.hasValidRegistrationToken();
       if (!hasToken) {
         AppSnackBar.error(
-            "Registration session expired. Please register again.");
+          "Registration session expired. Please register again.",
+        );
         Get.offAllNamed(AppRoutes.onboardScreen);
         return;
       }
       String forgotToken = appAuthStorage.getForgotPasswordToken();
       final isVerified = (await authRepository.verifyForgotPasswordOtp(
-          otp: otp, token: forgotToken));
+        otp: otp,
+        token: forgotToken,
+      ));
       if (isVerified != null) {
         appLog(hasToken.toString());
         AppSnackBar.success("Account verified successfully!");
-        Get.toNamed(AppRoutes.resetPassword);
+        Get.toNamed(AppRoutes.ownerResetPassword);
       }
     } catch (e) {
       errorLog("verifyOtp controller function", e);
@@ -90,7 +93,8 @@ class ForgotPasswordOtpScreenController extends GetxController {
       bool hasToken = await authRepository.hasValidForgotPasswordToken();
       if (!hasToken) {
         AppSnackBar.error(
-            "Registration session expired. Please register again.");
+          "Registration session expired. Please register again.",
+        );
         Get.offAllNamed(AppRoutes.onboardScreen, arguments: {"isLogin": true});
         return;
       }

@@ -16,8 +16,10 @@ class OwnerStoreVerification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get controller instance
-    final controller =
-        Get.put(OwnerStoreVerificationController(), permanent: true);
+    final controller = Get.put(
+      OwnerStoreVerificationController(),
+      permanent: true,
+    );
 
     return Scaffold(
       backgroundColor: AppColors.instance.ownerPhoneBackground,
@@ -40,7 +42,8 @@ class OwnerStoreVerification extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height -
+            minHeight:
+                MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
                 kToolbarHeight, // Ensure minimum height for full screen
           ),
@@ -64,6 +67,13 @@ class OwnerStoreVerification extends StatelessWidget {
                   textEditingController: controller.storeNameController,
                   validator: controller.validateStoreName,
                 ),
+                // Store Address Input
+                _buildInputField(
+                  label: "Input Store Address",
+                  hintText: "Input Store Address",
+                  textEditingController: controller.storeAddressController,
+                  validator: controller.validateStoreAddress,
+                ),
 
                 // Store Description Input
                 _buildInputField(
@@ -73,6 +83,7 @@ class OwnerStoreVerification extends StatelessWidget {
                   validator: controller.validateStoreDescription,
                   maxLines: 3,
                 ),
+
                 // Store Images Section
                 AppText(
                   text: AppString.instance.storeImage,
@@ -110,77 +121,85 @@ class OwnerStoreVerification extends StatelessWidget {
                       const Gap(height: 10),
 
                       // Display selected store images
-                      Obx(() => ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.storeImageNames.isEmpty
-                                ? 1
-                                : controller.storeImageNames.length,
-                            itemBuilder: (context, index) {
-                              if (controller.storeImageNames.isEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: AppText(
-                                    text: "No store images selected",
-                                    fontFamily: 2,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: AppColors.instance.greyColor,
-                                  ),
-                                );
-                              }
-                              final imageName =
-                                  controller.storeImageNames[index];
-                              return Container(
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 16),
+                      Obx(
+                        () => ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.storeImageNames.isEmpty
+                              ? 1
+                              : controller.storeImageNames.length,
+                          itemBuilder: (context, index) {
+                            if (controller.storeImageNames.isEmpty) {
+                              return Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.instance.white50,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: AppColors.instance.authBorderColor
-                                        .withAlpha(78),
-                                  ),
+                                  horizontal: 16,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.store,
-                                      size: 16,
-                                      color: AppColors.instance.textColor
-                                          .withAlpha(134),
-                                    ),
-                                    const Gap(width: 8),
-                                    Expanded(
-                                      child: AppText(
-                                        text: imageName,
-                                        fontFamily: 2,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          controller.removeStoreImage(index),
-                                      icon: Icon(
-                                        Icons.close,
-                                        size: 16,
-                                        color: AppColors.instance.red500,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                          minWidth: 32, minHeight: 32),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                  ],
+                                child: AppText(
+                                  text: "No store images selected",
+                                  fontFamily: 2,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: AppColors.instance.greyColor,
                                 ),
                               );
-                            },
-                          )),
+                            }
+                            final imageName = controller.storeImageNames[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 16,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.instance.white50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: AppColors.instance.authBorderColor
+                                      .withAlpha(78),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.store,
+                                    size: 16,
+                                    color: AppColors.instance.textColor
+                                        .withAlpha(134),
+                                  ),
+                                  const Gap(width: 8),
+                                  Expanded(
+                                    child: AppText(
+                                      text: imageName,
+                                      fontFamily: 2,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        controller.removeStoreImage(index),
+                                    icon: Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: AppColors.instance.red500,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 32,
+                                      minHeight: 32,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -223,97 +242,109 @@ class OwnerStoreVerification extends StatelessWidget {
                       const Gap(height: 10),
 
                       // Display selected document images
-                      Obx(() => ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.documentImageNames.isEmpty
-                                ? 1
-                                : controller.documentImageNames.length,
-                            itemBuilder: (context, index) {
-                              if (controller.documentImageNames.isEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: AppText(
-                                    text: "No document images selected",
-                                    fontFamily: 2,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: AppColors.instance.greyColor,
-                                  ),
-                                );
-                              }
-                              final fileName =
-                                  controller.documentImageNames[index];
-                              return Container(
-                                margin: const EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 16),
+                      Obx(
+                        () => ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.documentImageNames.isEmpty
+                              ? 1
+                              : controller.documentImageNames.length,
+                          itemBuilder: (context, index) {
+                            if (controller.documentImageNames.isEmpty) {
+                              return Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.instance.white50,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: AppColors.instance.authBorderColor
-                                        .withAlpha(78),
-                                  ),
+                                  horizontal: 16,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.document_scanner,
-                                      size: 16,
-                                      color: AppColors.instance.textColor
-                                          .withAlpha(137),
-                                    ),
-                                    const Gap(width: 8),
-                                    Expanded(
-                                      child: AppText(
-                                        text: fileName,
-                                        fontFamily: 2,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          controller.removeDocumentImage(index),
-                                      icon: Icon(
-                                        Icons.close,
-                                        size: 16,
-                                        color: AppColors.instance.red500,
-                                      ),
-                                      constraints: const BoxConstraints(
-                                          minWidth: 32, minHeight: 32),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                  ],
+                                child: AppText(
+                                  text: "No document images selected",
+                                  fontFamily: 2,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: AppColors.instance.greyColor,
                                 ),
                               );
-                            },
-                          )),
+                            }
+                            final fileName =
+                                controller.documentImageNames[index];
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 16,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.instance.white50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: AppColors.instance.authBorderColor
+                                      .withAlpha(78),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.document_scanner,
+                                    size: 16,
+                                    color: AppColors.instance.textColor
+                                        .withAlpha(137),
+                                  ),
+                                  const Gap(width: 8),
+                                  Expanded(
+                                    child: AppText(
+                                      text: fileName,
+                                      fontFamily: 2,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        controller.removeDocumentImage(index),
+                                    icon: Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: AppColors.instance.red500,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 32,
+                                      minHeight: 32,
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 const Gap(height: 15),
 
                 // Submit Button
-                Obx(() => AppButton(
-                      title: controller.isLoading.value
-                          ? "Submitting..."
-                          : AppString.instance.submitToVerify,
-                      titleColor: AppColors.instance.white50,
-                      onTap: controller.isLoading.value
-                          ? null
-                          : controller.submitStoreVerification,
-                      backgroundColor: controller.isFormValid.value &&
-                              !controller.isLoading.value
-                          ? AppColors.instance.red500
-                          : AppColors.instance.greyColor,
-                      height: 48,
-                    )),
+                Obx(
+                  () => AppButton(
+                    title: controller.isLoading.value
+                        ? "Submitting..."
+                        : AppString.instance.submitToVerify,
+                    titleColor: AppColors.instance.white50,
+                    onTap: controller.isLoading.value
+                        ? null
+                        : controller.submitStoreVerification,
+                    backgroundColor:
+                        controller.isFormValid.value &&
+                            !controller.isLoading.value
+                        ? AppColors.instance.red500
+                        : AppColors.instance.greyColor,
+                    height: 48,
+                  ),
+                ),
                 const Gap(height: 30),
               ],
             ),
@@ -354,10 +385,11 @@ Widget _buildInputField({
         keyboardType: isEmail
             ? TextInputType.emailAddress
             : maxLines > 1
-                ? TextInputType.multiline
-                : TextInputType.text,
-        textInputAction:
-            maxLines > 1 ? TextInputAction.newline : TextInputAction.done,
+            ? TextInputType.multiline
+            : TextInputType.text,
+        textInputAction: maxLines > 1
+            ? TextInputAction.newline
+            : TextInputAction.done,
         maxLines: maxLines,
         hintStyle: TextStyle(
           fontWeight: FontWeight.w500,

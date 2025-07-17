@@ -10,7 +10,7 @@ import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
-import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button_row.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -192,20 +192,15 @@ class _OwnerMenuDrawerState extends State<OwnerMenuDrawer> {
                     );
                   }),
                   Gap(height: AppSize.height(value: 150)),
-                  IconAppButton(
-                    iconAlignment: CustomIconAlignment.left,
-                    fontSize: 16,
-                    icon: AppAssertIcons.menuLogout,
-                    iconSize: 20,
-                    title: AppString.instance.signOut,
+                  AppImageButton(
+                    imagePosition: ImagePosition.left,
+                    svgPath: AppAssertIcons.menuLogout,
+                    titleColor: AppColors.instance.textColor,
+                    backgroundColor: AppColors.instance.black50,
                     onTap: () {
                       showSignourDialog(context);
                     },
-                    titleColor: AppColors.instance.textColor,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    backgroundColor: AppColors.instance.black50,
-                    borderRadius: 8,
-                    height: AppSize.height(value: 56),
+                    title: AppString.instance.signOut,
                   ),
                 ],
               ),

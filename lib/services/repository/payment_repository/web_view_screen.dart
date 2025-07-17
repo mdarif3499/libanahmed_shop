@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
-  WebViewScreen({required this.url});
+  const WebViewScreen({super.key, required this.url});
 
   @override
   _WebViewScreenState createState() => _WebViewScreenState();

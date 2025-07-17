@@ -1,8 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/services/repository/owner_shop_creation_repository/owner_shop_creation_repository.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button.dart';
+import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,58 +17,60 @@ class OwnerStoreVerificationController extends GetxController {
   // Loading state
   RxBool isLoading = false.obs;
 
-  //! Form controllers
+  // Form controllers
   final TextEditingController storeNameController = TextEditingController();
   final TextEditingController storeDescriptionController =
       TextEditingController();
+  final TextEditingController storeAddressController = TextEditingController();
 
-  //! Image lists - both store images and document images
+  // Image lists - both store images and document images
   RxList<XFile> storeImages = <XFile>[].obs;
   RxList<XFile> documentImages = <XFile>[].obs;
 
-  //! Image names for display
+  // Image names for display
   RxList<String> storeImageNames = <String>[].obs;
   RxList<String> documentImageNames = <String>[].obs;
 
-  //! Form validation
+  // Form validation
   RxBool isFormValid = false.obs;
 
-  //! Image picker instance
+  // Image picker instance
   final ImagePicker _imagePicker = ImagePicker();
 
-  //! Ensure controller is permanent to prevent deletion
+  // Ensure controller is permanent to prevent deletion
   static OwnerStoreVerificationController get to => Get.find();
 
   @override
   void onInit() {
     super.onInit();
-    //! Listen to form changes for validation
+    // Listen to form changes for validation
     _setupFormValidation();
-    //! Mark controller as permanent to prevent deletion
+    // Mark controller as permanent to prevent deletion
     Get.put(this, permanent: true);
   }
 
   @override
   void onClose() {
-    //! Dispose controllers
+    // Dispose controllers
     storeNameController.dispose();
     storeDescriptionController.dispose();
     super.onClose();
   }
 
-  //! Setup form validation listeners
+  // Setup form validation listeners
   void _setupFormValidation() {
     storeNameController.addListener(_validateForm);
     storeDescriptionController.addListener(_validateForm);
 
-    //! Listen to image changes
+    // Listen to image changes
     ever(storeImages, (_) => _validateForm());
     ever(documentImages, (_) => _validateForm());
   }
 
-  //! Validate form fields
+  // Validate form fields
   void _validateForm() {
-    bool isValid = storeNameController.text.trim().isNotEmpty &&
+    bool isValid =
+        storeNameController.text.trim().isNotEmpty &&
         storeDescriptionController.text.trim().isNotEmpty &&
         storeImages.isNotEmpty &&
         documentImages.isNotEmpty;
@@ -70,21 +78,23 @@ class OwnerStoreVerificationController extends GetxController {
     isFormValid.value = isValid;
   }
 
-  //! Pick store images from gallery
+  // Pick store images from gallery
   Future<void> pickStoreImages(BuildContext context) async {
     try {
       List<XFile>? pickedFiles = await _imagePicker.pickMultiImage();
 
       if (pickedFiles.isNotEmpty && context.mounted) {
         storeImages.assignAll(pickedFiles);
-        storeImageNames
-            .assignAll(pickedFiles.map((file) => file.name).toList());
+        storeImageNames.assignAll(
+          pickedFiles.map((file) => file.name).toList(),
+        );
 
         log("Selected ${pickedFiles.length} store images");
         log("Store image names: ${storeImageNames.join(', ')}");
 
         AppSnackBar.success(
-            "${pickedFiles.length} store images selected successfully");
+          "${pickedFiles.length} store images selected successfully",
+        );
       } else {
         log("No store images selected");
       }
@@ -94,12 +104,12 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Pick single store image from gallery
+  // Pick single store image from gallery
   Future<void> pickSingleStoreImage(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 80,
+        imageQuality: 5,
       );
 
       if (pickedFile != null && context.mounted) {
@@ -119,12 +129,12 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Pick store image from camera
+  // Pick store image from camera
   Future<void> captureStoreImageFromCamera(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 80,
+        imageQuality: 5,
       );
 
       if (pickedFile != null && context.mounted) {
@@ -142,21 +152,23 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Pick document images from gallery
+  // Pick document images from gallery
   Future<void> pickDocumentImages(BuildContext context) async {
     try {
       List<XFile>? pickedFiles = await _imagePicker.pickMultiImage();
 
       if (pickedFiles.isNotEmpty && context.mounted) {
         documentImages.assignAll(pickedFiles);
-        documentImageNames
-            .assignAll(pickedFiles.map((file) => file.name).toList());
+        documentImageNames.assignAll(
+          pickedFiles.map((file) => file.name).toList(),
+        );
 
         log("Selected ${pickedFiles.length} document images");
         log("Document image names: ${documentImageNames.join(', ')}");
 
         AppSnackBar.success(
-            "${pickedFiles.length} document images selected successfully");
+          "${pickedFiles.length} document images selected successfully",
+        );
       } else {
         log("No document images selected");
       }
@@ -166,7 +178,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Pick single document image from gallery
+  // Pick single document image from gallery
   Future<void> pickSingleDocumentImage(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
@@ -191,12 +203,12 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Pick document image from camera
+  // Pick document image from camera
   Future<void> captureDocumentImageFromCamera(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 80,
+        imageQuality: 5,
       );
 
       if (pickedFile != null && context.mounted) {
@@ -214,91 +226,138 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Show image source selection dialog for store images
+  // Show image source selection dialog for store images
   Future<void> showStoreImageSourceDialog(BuildContext context) async {
     if (!context.mounted) return;
     await showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text("Select Image Source"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text("Gallery (Multiple)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickStoreImages(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo),
-                title: Text("Gallery (Single)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickSingleStoreImage(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text("Camera"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  captureStoreImageFromCamera(context);
-                },
-              ),
-            ],
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 05, sigmaY: 05),
+          child: AlertDialog(
+            title: AppText(
+              text: "Select Image Source",
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              maxLines: 2,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: AppButton(
+                    title: "Gallery (Multiple)",
+                    backgroundColor: AppColors.instance.red500,
+                    titleColor: AppColors.instance.white,
+                    onTap: () {
+                      Navigator.of(dialogContext).pop();
+                      pickStoreImages(context);
+                    },
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: AppButton(
+                    title: "Gallery (Single)",
+                    backgroundColor: AppColors.instance.red500,
+                    titleColor: AppColors.instance.white,
+                    onTap: () {
+                      Navigator.of(dialogContext).pop();
+                      pickSingleStoreImage(context);
+                    },
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: AppButton(
+                    title: "Camera",
+                    backgroundColor: AppColors.instance.red500,
+                    titleColor: AppColors.instance.white,
+                    onTap: () {
+                      Navigator.of(dialogContext).pop();
+                      captureStoreImageFromCamera(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  //! Show image source selection dialog for document images
+  // Show image source selection dialog for document images
   Future<void> showDocumentImageSourceDialog(BuildContext context) async {
     if (!context.mounted) return;
     await showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text("Select Document Image Source"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text("Gallery (Multiple)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickDocumentImages(context);
-                },
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 05, sigmaY: 05),
+          child: AlertDialog(
+            title: AppText(
+              text: "Select Document Image Source",
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              maxLines: 2,
+            ),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AppButton(
+                      title: "Gallery (Multiple)",
+                      backgroundColor: AppColors.instance.red500,
+                      titleColor: AppColors.instance.white,
+                      onTap: () {
+                        Navigator.of(dialogContext).pop();
+                        pickDocumentImages(context);
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AppButton(
+                      title: "Gallery (Single)",
+                      backgroundColor: AppColors.instance.red500,
+                      titleColor: AppColors.instance.white,
+                      onTap: () {
+                        Navigator.of(dialogContext).pop();
+                        pickSingleDocumentImage(context);
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: AppButton(
+                      title: "Camera",
+                      backgroundColor: AppColors.instance.red500,
+                      titleColor: AppColors.instance.white,
+                      onTap: () {
+                        Navigator.of(dialogContext).pop();
+                        captureDocumentImageFromCamera(context);
+                      },
+                    ),
+                  ),
+                ],
               ),
-              ListTile(
-                leading: Icon(Icons.photo),
-                title: Text("Gallery (Single)"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  pickSingleDocumentImage(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text("Camera"),
-                onTap: () {
-                  Navigator.of(dialogContext).pop();
-                  captureDocumentImageFromCamera(context);
-                },
-              ),
-            ],
+            ),
           ),
         );
       },
     );
   }
 
-  //! Remove store image by index
+  // Remove store image by index
   void removeStoreImage(int index) {
     if (index >= 0 && index < storeImages.length) {
       storeImages.removeAt(index);
@@ -307,7 +366,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Remove document image by index
+  // Remove document image by index
   void removeDocumentImage(int index) {
     if (index >= 0 && index < documentImages.length) {
       documentImages.removeAt(index);
@@ -316,27 +375,37 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Clear all store images
+  // Clear all store images
   void clearStoreImages() {
     storeImages.clear();
     storeImageNames.clear();
     log("Cleared all store images");
   }
 
-  //! Clear all document images
+  // Clear all document images
   void clearDocumentImages() {
     documentImages.clear();
     documentImageNames.clear();
     log("Cleared all document images");
   }
 
-  //! Validate individual fields
+  // Validate individual fields
   String? validateStoreName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Store name is required';
     }
     if (value.trim().length < 3) {
       return 'Store name must be at least 3 characters';
+    }
+    return null;
+  }
+
+  String? validateStoreAddress(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Store address is required';
+    }
+    if (value.trim().length < 10) {
+      return 'Store address must be at least 10 characters';
     }
     return null;
   }
@@ -351,7 +420,13 @@ class OwnerStoreVerificationController extends GetxController {
     return null;
   }
 
-  //! Submit form data
+  // Convert XFile to Uint8List
+  Future<Uint8List> _convertToBytes(XFile image) async {
+    File file = File(image.path);
+    return Uint8List.fromList(await file.readAsBytes());
+  }
+
+  // Submit form data with Uint8List
   Future<void> submitStoreVerification() async {
     if (!isFormValid.value) {
       AppSnackBar.error("Please fill all required fields");
@@ -370,21 +445,23 @@ class OwnerStoreVerificationController extends GetxController {
 
     try {
       isLoading.value = true;
-
-      // Convert XFile to File for store images
-      List<File> storeImageFiles =
-          storeImages.map((xFile) => File(xFile.path)).toList();
+      // Convert XFile to File for document images
+      List<File> storeImageFiles = storeImages
+          .map((xFile) => File(xFile.path))
+          .toList();
 
       // Convert XFile to File for document images
-      List<File> documentImageFiles =
-          documentImages.map((xFile) => File(xFile.path)).toList();
+      List<File> documentImageFiles = documentImages
+          .map((xFile) => File(xFile.path))
+          .toList();
 
-      // Call repository method with all images
+      // Call repository method with Dio Multipart files
       bool? result = await OwnerShopCreationRepository.shopCreation(
         storeNameController.text.trim(),
+        storeAddressController.text.trim(),
         storeDescriptionController.text.trim(),
-        storeImageFiles, // Pass all store images
-        documentImageFiles, // Pass all document images
+        storeImageFiles,
+        documentImageFiles,
       );
 
       if (result == true) {
@@ -393,7 +470,8 @@ class OwnerStoreVerificationController extends GetxController {
         Get.offNamed(AppRoutes.ownerBottomNav);
       } else {
         AppSnackBar.error(
-            "Failed to submit store verification. Please try again.");
+          "Failed to submit store verification. Please try again.",
+        );
       }
     } catch (e) {
       log("Error submitting store verification: $e");
@@ -403,7 +481,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Clear form data
+  // Clear form data
   void _clearForm() {
     storeNameController.clear();
     storeDescriptionController.clear();
@@ -413,7 +491,7 @@ class OwnerStoreVerificationController extends GetxController {
     documentImageNames.clear();
   }
 
-  //! Get file size in readable format
+  // Get file size in readable format
   String getFileSize(File file) {
     int bytes = file.lengthSync();
     if (bytes <= 0) return "0 B";
@@ -422,7 +500,7 @@ class OwnerStoreVerificationController extends GetxController {
     return "${(bytes / (1 << (i * 10))).toStringAsFixed(1)} ${suffixes[i]}";
   }
 
-  //! Get image file info
+  // Get image file info
   Future<Map<String, dynamic>> getImageInfo(XFile imageFile) async {
     File file = File(imageFile.path);
     int fileSize = await file.length();
@@ -435,7 +513,7 @@ class OwnerStoreVerificationController extends GetxController {
     };
   }
 
-  //! Compress image if needed (optional)
+  // Compress image if needed (optional)
   Future<XFile?> compressImage(XFile imageFile, {int quality = 80}) async {
     try {
       // You can implement image compression here if needed
@@ -446,10 +524,10 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  //! Check if all required images are selected
+  // Check if all required images are selected
   bool get hasAllRequiredImages =>
       storeImages.isNotEmpty && documentImages.isNotEmpty;
 
-  //! Get total number of selected images
+  // Get total number of selected images
   int get totalSelectedImages => storeImages.length + documentImages.length;
 }

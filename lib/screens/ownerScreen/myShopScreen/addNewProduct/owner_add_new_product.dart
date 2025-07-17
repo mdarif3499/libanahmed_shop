@@ -188,6 +188,12 @@ class OwnerAddNewProduct extends StatelessWidget {
               color: AppColors.instance.textColor,
             ),
             Gap(height: 10),
+            AppInputWidget(
+              controller: controller.itemNameController.value,
+              fillColor: AppColors.instance.white,
+              borderColor: AppColors.instance.authBorderColor,
+              hintText: "Enter item name",
+            ),
             Gap(height: 20),
             AppText(
               text: AppString.instance.itemPrice,
