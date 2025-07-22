@@ -12,6 +12,7 @@ import 'package:ahmed_shop/widgets/buttons/app_button.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OwnerMyShop extends StatefulWidget {
   const OwnerMyShop({super.key});
@@ -56,7 +57,12 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
               if (controller.isCategory.value) {
                 return SizedBox(
                   height: 40,
-                  child: const Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColors.instance.red400,
+                      size: AppSize.height(value: 40),
+                    ),
+                  ),
                 );
               }
 
@@ -115,10 +121,13 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
               // Show loading indicator
               if (controller.isProduct.value ||
                   controller.isCategoryProductLoading.value) {
-                return const Center(
+                return Center(
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
-                    child: CircularProgressIndicator(),
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColors.instance.red400,
+                      size: AppSize.height(value: 40),
+                    ),
                   ),
                 );
               }

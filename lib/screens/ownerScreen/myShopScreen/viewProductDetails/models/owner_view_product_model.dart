@@ -8,7 +8,7 @@ class OwnerSingleProductModel {
   OwnerSingleProductModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
-    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,7 +23,7 @@ class OwnerSingleProductModel {
 }
 
 class Data {
-  String? sId;
+  String? id;
   String? sellerId;
   String? shopId;
   String? categoryId;
@@ -34,36 +34,43 @@ class Data {
   int? stock;
   int? availableStock;
   List<String>? images;
-  String? weight;
+  int? weight;
+  int? length;
+  int? height;
+  int? width;
   bool? isDeleted;
-  Null isOffer;
+  dynamic isOffer;
   String? createdAt;
   String? updatedAt;
-  int? iV;
+  int? version;
   bool? isFavorite;
 
-  Data(
-      {this.sId,
-      this.sellerId,
-      this.shopId,
-      this.categoryId,
-      this.categoryName,
-      this.name,
-      this.details,
-      this.price,
-      this.stock,
-      this.availableStock,
-      this.images,
-      this.weight,
-      this.isDeleted,
-      this.isOffer,
-      this.createdAt,
-      this.updatedAt,
-      this.iV,
-      this.isFavorite});
+  Data({
+    this.id,
+    this.sellerId,
+    this.shopId,
+    this.categoryId,
+    this.categoryName,
+    this.name,
+    this.details,
+    this.price,
+    this.stock,
+    this.availableStock,
+    this.images,
+    this.weight,
+    this.length,
+    this.height,
+    this.width,
+    this.isDeleted,
+    this.isOffer,
+    this.createdAt,
+    this.updatedAt,
+    this.version,
+    this.isFavorite,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+    id = json['_id'];
     sellerId = json['sellerId'];
     shopId = json['shopId'];
     categoryId = json['categoryId'];
@@ -73,19 +80,22 @@ class Data {
     price = json['price'];
     stock = json['stock'];
     availableStock = json['availableStock'];
-    images = json['images'].cast<String>();
+    images = json['images']?.cast<String>();
     weight = json['weight'];
+    length = json['length'];
+    height = json['height'];
+    width = json['width'];
     isDeleted = json['isDeleted'];
     isOffer = json['isOffer'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    iV = json['__v'];
+    version = json['__v'];
     isFavorite = json['isFavorite'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
+    data['_id'] = id;
     data['sellerId'] = sellerId;
     data['shopId'] = shopId;
     data['categoryId'] = categoryId;
@@ -97,11 +107,14 @@ class Data {
     data['availableStock'] = availableStock;
     data['images'] = images;
     data['weight'] = weight;
+    data['length'] = length;
+    data['height'] = height;
+    data['width'] = width;
     data['isDeleted'] = isDeleted;
     data['isOffer'] = isOffer;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
+    data['__v'] = version;
     data['isFavorite'] = isFavorite;
     return data;
   }

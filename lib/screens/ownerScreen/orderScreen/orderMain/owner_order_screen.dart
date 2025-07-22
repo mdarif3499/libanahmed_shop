@@ -11,6 +11,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OwnerOrderScreen extends StatelessWidget {
   const OwnerOrderScreen({super.key});
@@ -88,8 +89,9 @@ class OwnerOrderScreen extends StatelessWidget {
               ); // Debug print
               if (controller.isLoading.value) {
                 return Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.instance.red500,
+                  child: LoadingAnimationWidget.threeArchedCircle(
+                    color: AppColors.instance.red400,
+                    size: AppSize.height(value: 40),
                   ),
                 );
               }
@@ -187,7 +189,7 @@ class OwnerOrderScreen extends StatelessWidget {
                                   children: [
                                     AppText(
                                       text:
-                                          "Order #${order.sId?.substring(order.sId!.length - 6) ?? 'N/A'}",
+                                          "Order #${order.id?.substring(order.id!.length - 6) ?? 'N/A'}",
                                       fontFamily: 2,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15,
@@ -198,8 +200,8 @@ class OwnerOrderScreen extends StatelessWidget {
                                     Gap(height: 2),
                                     AppText(
                                       text:
-                                          order.address ??
-                                          order.locality ??
+                                          order.addressLine1 ??
+                                          order.addressLine2 ??
                                           "Address not available",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,

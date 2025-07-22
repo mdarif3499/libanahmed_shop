@@ -58,7 +58,7 @@ class Meta {
 }
 
 class Data {
-  String? sId;
+  String? id;
   String? customerId;
   String? sellerId;
   String? shopId;
@@ -68,41 +68,40 @@ class Data {
   String? status;
   String? paymentStatus;
   String? phoneNumber;
-  String? zipCode;
-  String? streetName;
+  String? postalCode;
   String? stateCode;
-  String? locality;
-  String? houseNumber;
-  String? country;
-  String? address;
-  List<History>? history;
+  String? countryCode;
+  String? addressLine1;
+  String? addressLine2;
+  String? city;
   String? createdAt;
   String? updatedAt;
+  String? trackingNumber;
 
-  Data(
-      {this.sId,
-      this.customerId,
-      this.sellerId,
-      this.shopId,
-      this.productList,
-      this.totalAmount,
-      this.orderDate,
-      this.status,
-      this.paymentStatus,
-      this.phoneNumber,
-      this.zipCode,
-      this.streetName,
-      this.stateCode,
-      this.locality,
-      this.houseNumber,
-      this.country,
-      this.address,
-      this.history,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.customerId,
+    this.sellerId,
+    this.shopId,
+    this.productList,
+    this.totalAmount,
+    this.orderDate,
+    this.status,
+    this.paymentStatus,
+    this.phoneNumber,
+    this.postalCode,
+    this.stateCode,
+    this.countryCode,
+    this.addressLine1,
+    this.addressLine2,
+    this.city,
+    this.createdAt,
+    this.updatedAt,
+    this.trackingNumber,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+    id = json['_id'];
     customerId = json['customerId'];
     sellerId = json['sellerId'];
     shopId = json['shopId'];
@@ -117,26 +116,20 @@ class Data {
     status = json['status'];
     paymentStatus = json['paymentStatus'];
     phoneNumber = json['phone_number'];
-    zipCode = json['zip_code'];
-    streetName = json['street_name'];
+    postalCode = json['postal_code'];
     stateCode = json['state_code'];
-    locality = json['locality'];
-    houseNumber = json['house_number'];
-    country = json['country'];
-    address = json['address'];
-    if (json['history'] != null) {
-      history = <History>[];
-      json['history'].forEach((v) {
-        history!.add(History.fromJson(v));
-      });
-    }
+    countryCode = json['country_code'];
+    addressLine1 = json['address_line1'];
+    addressLine2 = json['address_line2'];
+    city = json['city'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    trackingNumber = json['tacking_number'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
+    data['_id'] = id;
     data['customerId'] = customerId;
     data['sellerId'] = sellerId;
     data['shopId'] = shopId;
@@ -148,18 +141,15 @@ class Data {
     data['status'] = status;
     data['paymentStatus'] = paymentStatus;
     data['phone_number'] = phoneNumber;
-    data['zip_code'] = zipCode;
-    data['street_name'] = streetName;
+    data['postal_code'] = postalCode;
     data['state_code'] = stateCode;
-    data['locality'] = locality;
-    data['house_number'] = houseNumber;
-    data['country'] = country;
-    data['address'] = address;
-    if (history != null) {
-      data['history'] = history!.map((v) => v.toJson()).toList();
-    }
+    data['country_code'] = countryCode;
+    data['address_line1'] = addressLine1;
+    data['address_line2'] = addressLine2;
+    data['city'] = city;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    data['tacking_number'] = trackingNumber;
     return data;
   }
 }
@@ -172,17 +162,24 @@ class ProductList {
   int? quantity;
   int? offer;
   int? weight;
-  String? sId;
+  int? height;
+  int? width;
+  int? length;
+  String? id;
 
-  ProductList(
-      {this.productId,
-      this.sellerId,
-      this.customerId,
-      this.price,
-      this.quantity,
-      this.offer,
-      this.weight,
-      this.sId});
+  ProductList({
+    this.productId,
+    this.sellerId,
+    this.customerId,
+    this.price,
+    this.quantity,
+    this.offer,
+    this.weight,
+    this.height,
+    this.width,
+    this.length,
+    this.id,
+  });
 
   ProductList.fromJson(Map<String, dynamic> json) {
     productId = json['productId'] != null
@@ -194,7 +191,10 @@ class ProductList {
     quantity = json['quantity'];
     offer = json['offer'];
     weight = json['weight'];
-    sId = json['_id'];
+    height = json['height'];
+    width = json['width'];
+    length = json['length'];
+    id = json['_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -208,13 +208,16 @@ class ProductList {
     data['quantity'] = quantity;
     data['offer'] = offer;
     data['weight'] = weight;
-    data['_id'] = sId;
+    data['height'] = height;
+    data['width'] = width;
+    data['length'] = length;
+    data['_id'] = id;
     return data;
   }
 }
 
 class ProductId {
-  String? sId;
+  String? id;
   String? sellerId;
   String? shopId;
   String? categoryId;
@@ -225,34 +228,41 @@ class ProductId {
   int? stock;
   int? availableStock;
   List<String>? images;
-  String? weight;
+  int? weight;
+  int? length;
+  int? height;
+  int? width;
   bool? isDeleted;
-  Null isOffer;
+  dynamic isOffer;
   String? createdAt;
   String? updatedAt;
-  int? iV;
+  int? version;
 
-  ProductId(
-      {this.sId,
-      this.sellerId,
-      this.shopId,
-      this.categoryId,
-      this.categoryName,
-      this.name,
-      this.details,
-      this.price,
-      this.stock,
-      this.availableStock,
-      this.images,
-      this.weight,
-      this.isDeleted,
-      this.isOffer,
-      this.createdAt,
-      this.updatedAt,
-      this.iV});
+  ProductId({
+    this.id,
+    this.sellerId,
+    this.shopId,
+    this.categoryId,
+    this.categoryName,
+    this.name,
+    this.details,
+    this.price,
+    this.stock,
+    this.availableStock,
+    this.images,
+    this.weight,
+    this.length,
+    this.height,
+    this.width,
+    this.isDeleted,
+    this.isOffer,
+    this.createdAt,
+    this.updatedAt,
+    this.version,
+  });
 
   ProductId.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+    id = json['_id'];
     sellerId = json['sellerId'];
     shopId = json['shopId'];
     categoryId = json['categoryId'];
@@ -262,18 +272,21 @@ class ProductId {
     price = json['price'];
     stock = json['stock'];
     availableStock = json['availableStock'];
-    images = json['images'].cast<String>();
+    images = json['images']?.cast<String>();
     weight = json['weight'];
+    length = json['length'];
+    height = json['height'];
+    width = json['width'];
     isDeleted = json['isDeleted'];
     isOffer = json['isOffer'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    iV = json['__v'];
+    version = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
+    data['_id'] = id;
     data['sellerId'] = sellerId;
     data['shopId'] = shopId;
     data['categoryId'] = categoryId;
@@ -285,33 +298,14 @@ class ProductId {
     data['availableStock'] = availableStock;
     data['images'] = images;
     data['weight'] = weight;
+    data['length'] = length;
+    data['height'] = height;
+    data['width'] = width;
     data['isDeleted'] = isDeleted;
     data['isOffer'] = isOffer;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
-    return data;
-  }
-}
-
-class History {
-  String? status;
-  String? date;
-  String? sId;
-
-  History({this.status, this.date, this.sId});
-
-  History.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    date = json['date'];
-    sId = json['_id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['date'] = date;
-    data['_id'] = sId;
+    data['__v'] = version;
     return data;
   }
 }

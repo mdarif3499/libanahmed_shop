@@ -6,7 +6,7 @@ import 'package:ahmed_shop/screens/ownerScreen/authScreen/createAccount/controll
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
-import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button_row.dart';
 import 'package:ahmed_shop/widgets/inputs/app_input_widget.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
@@ -329,7 +329,7 @@ class OwnerCreateAccount extends StatelessWidget {
                           titleColor: AppColors.instance.white100,
                           backgroundColor: AppColors.instance.red500,
                           borderradius: 10,
-                          height: 50,
+                          height: AppSize.height(value: 50),
                           isLoading: controller
                               .isLoading
                               .value, // Show loading indicator
@@ -339,7 +339,7 @@ class OwnerCreateAccount extends StatelessWidget {
                       Center(
                         child: AppText(
                           text: AppString.instance.continueAsGuest,
-                          fontSize: 16,
+                          fontSize: AppSize.width(value: 16),
                           fontFamily: 2,
                           fontWeight: FontWeight.w600,
                           color: AppColors.instance.blue2_500,
@@ -373,24 +373,26 @@ class OwnerCreateAccount extends StatelessWidget {
                         ],
                       ),
                       Gap(height: 18),
-                      IconAppButton(
-                        iconAlignment: CustomIconAlignment.left,
-                        icon: AppAssertIcons.google,
+                      AppImageButton(
+                        height: AppSize.height(value: 50),
+                        imagePosition: ImagePosition.left,
+                        svgPath: AppAssertIcons.google,
                         title: AppString.instance.signUpWithGoogle,
-                        titleColor: AppColors.instance.textColor,
                         fontSize: 14,
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
+                        titleColor: AppColors.instance.black900,
                       ),
                       Gap(height: 18),
-                      IconAppButton(
-                        iconAlignment: CustomIconAlignment.left,
-                        icon: AppAssertIcons.apple,
+                      AppImageButton(
+                        height: AppSize.height(value: 50),
+                        imagePosition: ImagePosition.left,
+                        svgPath: AppAssertIcons.apple,
                         title: AppString.instance.signUpWithApple,
-                        titleColor: AppColors.instance.textColor,
                         fontSize: 14,
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
+                        titleColor: AppColors.instance.black900,
                       ),
                       Gap(height: 18),
                     ],

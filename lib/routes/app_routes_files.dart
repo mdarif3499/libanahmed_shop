@@ -19,6 +19,7 @@ import 'package:ahmed_shop/screens/ownerScreen/ownerMenu/menuRatings/owner_menu_
 import 'package:ahmed_shop/screens/ownerScreen/ownerMenu/menuTransection/owner_menu_transection.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/aboutUs/owner_about_us.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/contactSupport/owner_contact_support.dart';
+import 'package:ahmed_shop/screens/ownerScreen/profileScreen/editProfile/owner_edit_profile.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/faq/owner_faqs.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/privacyPolicy/owner_privacy_policy.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/termsNcondition/owner_terms_and_condition.dart';
@@ -286,6 +287,11 @@ List<GetPage> appRoutesFile = <GetPage>[
     name: AppRoutes.ownerEditProductScreen,
     page: () => OwnerEditProductScreen(),
     transition: Transition.rightToLeft,
+  ),
+  GetPage(
+    name: AppRoutes.ownerEditProfile,
+    page: () => OwnerEditProfile(),
+    transition: Transition.fadeIn,
   ),
 
   // Forgot Password

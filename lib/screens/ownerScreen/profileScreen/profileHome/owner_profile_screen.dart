@@ -9,6 +9,7 @@ import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OwnerProfileScreen extends StatelessWidget {
   const OwnerProfileScreen({super.key});
@@ -27,7 +28,12 @@ class OwnerProfileScreen extends StatelessWidget {
             Obx(() {
               // Check if loading or data is available
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: LoadingAnimationWidget.threeArchedCircle(
+                    color: AppColors.instance.red400,
+                    size: AppSize.height(value: 40),
+                  ),
+                );
               }
               return Container(
                 padding: const EdgeInsets.symmetric(
@@ -80,7 +86,7 @@ class OwnerProfileScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(AppRoutes.editProfile);
+                        Get.toNamed(AppRoutes.ownerEditProfile);
                       },
                       child: AppText(
                         text: AppString.instance.edit,

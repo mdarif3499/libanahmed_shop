@@ -185,7 +185,7 @@ class OwnerSingleProductScreen extends StatelessWidget {
 
               // Weight/Unit Display
               AppText(
-                text: productData.weight?.isNotEmpty ?? false
+                text: productData.weight != null && productData.weight! > 0
                     ? '${productData.weight} ${AppString.instance.oneKg}'
                     : '500g',
                 fontSize: 16,
@@ -257,12 +257,6 @@ class OwnerSingleProductScreen extends StatelessWidget {
                 ),
                 const Gap(height: 20),
               ],
-              // Create Offer Button
-              AppButton(
-                titleColor: AppColors.instance.white,
-                backgroundColor: AppColors.instance.green500,
-                title: 'Create Offer',
-              ),
               const Gap(height: 20),
               // Edit Product Button
               AppButton(
@@ -278,13 +272,13 @@ class OwnerSingleProductScreen extends StatelessWidget {
                 ),
               ),
               const Gap(height: 20),
-              // Delete Product Button
+              //! Delete Product Button
               AppButton(
                 titleColor: AppColors.instance.red500,
                 backgroundColor: AppColors.instance.white,
                 borderColor: AppColors.instance.red500,
                 title: 'Delete Product',
-                onTap: () => showDeleteDialog(context, productData.sId),
+                onTap: () => showDeleteDialog(context, productData.id),
               ),
               const Gap(height: 40),
             ],

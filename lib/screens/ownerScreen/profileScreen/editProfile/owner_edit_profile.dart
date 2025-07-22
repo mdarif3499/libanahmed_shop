@@ -2,10 +2,10 @@ import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
-import 'package:ahmed_shop/screens/ownerScreen/bottomNav/owner_bottom_nav.dart';
 import 'package:ahmed_shop/screens/ownerScreen/profileScreen/editProfile/controller/owner_edit_profile_controller.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
+import 'package:ahmed_shop/widgets/app_image/app_image.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
 import 'package:ahmed_shop/widgets/inputs/app_input_widget.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
@@ -18,8 +18,9 @@ class OwnerEditProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OwnerEditProfileController controller =
-        Get.put(OwnerEditProfileController());
+    final OwnerEditProfileController controller = Get.put(
+      OwnerEditProfileController(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: AppText(
@@ -33,9 +34,7 @@ class OwnerEditProfile extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white50,
       ),
@@ -52,13 +51,41 @@ class OwnerEditProfile extends StatelessWidget {
                 children: [
                   // Display the profile image
                   Obx(() {
-                    return CircleAvatar(
-                      radius: 80,
-                      backgroundColor: Colors.grey[300],
-                      backgroundImage: controller.selectedImage.value != null
-                          ? FileImage(controller.selectedImage.value!)
-                          : AssetImage(AppAssertImage.instance.profile),
-                    );
+                    // Priority: 1. Selected new image, 2. Current profile image, 3. Default image
+                    if (controller.selectedImage.value != null) {
+                      // Show newly selected image using AppImage
+                      return AppImage(
+                        filePath: controller.selectedImage.value!.path,
+                        width: 160, // radius 80 * 2
+                        height: 160,
+                        fit: BoxFit.cover,
+                        shape: ImageShape.circle,
+                        color: Colors
+                            .grey[300], // Background color for placeholder
+                      );
+                    } else if (controller.currentImageUrl.value.isNotEmpty) {
+                      // Show existing profile image from server using AppImage
+                      return AppImage(
+                        url: controller.currentImageUrl.value,
+                        width: 160, // radius 80 * 2
+                        height: 160,
+                        fit: BoxFit.cover,
+                        shape: ImageShape.circle,
+                        color: Colors
+                            .grey[300], // Background color for placeholder
+                      );
+                    } else {
+                      // Show default image using AppImage
+                      return AppImage(
+                        path: AppAssertImage.instance.profile,
+                        width: 160, // radius 80 * 2
+                        height: 160,
+                        fit: BoxFit.cover,
+                        shape: ImageShape.circle,
+                        color: Colors
+                            .grey[300], // Background color for placeholder
+                      );
+                    }
                   }),
                   Padding(
                     padding: EdgeInsets.only(left: 100),
@@ -91,26 +118,54 @@ class OwnerEditProfile extends StatelessWidget {
               hintText: AppString.instance.hintName,
             ),
             _buildInputField(
-              label: AppString.instance.address,
-              controller: controller.addressController,
+              label: AppString.instance.phoneNumber,
+              controller: controller.phoneNumberController,
+              hintText: AppString.instance.hintPhone,
+            ),
+            _buildInputField(
+              label: "Address Line 1",
+              controller: controller.addressLine1Controller,
               hintText: AppString.instance.hintAddress,
             ),
             _buildInputField(
-              label: AppString.instance.phoneNumber,
-              controller: controller.phoneNumberController,
+              label: "Address Line 2",
+              controller: controller.addressLine2Controller,
+              hintText: AppString.instance.hintAddress,
+            ),
+            _buildInputField(
+              label: "Enter Your City",
+              controller: controller.cityController,
+              hintText: AppString.instance.hintPhone,
+            ),
+            _buildInputField(
+              label: "Enter Country Code",
+              controller: controller.countryCodeController,
+              hintText: AppString.instance.hintPhone,
+            ),
+            _buildInputField(
+              label: "Enter Your State Code",
+              controller: controller.stateCodeController,
+              hintText: AppString.instance.hintPhone,
+            ),
+            _buildInputField(
+              label: "Enter Your Zip Code",
+              controller: controller.postalCodeController,
               hintText: AppString.instance.hintPhone,
             ),
             Gap(height: 30),
             AppButton(
               title: AppString.instance.updateProfile,
-              onTap: () {
-                Get.to(() => OwnerBottomNav(), arguments: 3);
-              },
+              onTap: controller.isLoading.value
+                  ? null
+                  : () async {
+                      await controller.updateOwnerProfile();
+                    },
               backgroundColor: AppColors.instance.red500,
               titleColor: AppColors.instance.white50,
               borderradius: 8,
               height: AppSize.height(value: 50),
-            )
+            ),
+            Gap(height: AppSize.height(value: 50)),
           ],
         ),
       ),

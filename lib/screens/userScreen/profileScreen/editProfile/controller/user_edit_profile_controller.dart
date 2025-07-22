@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:ahmed_shop/services/repository/profile_repository/profile_repository.dart';
+import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -30,7 +31,6 @@ class UserEditProfileController extends GetxController {
     super.onInit();
     // Load existing profile data
     loadExistingProfile();
-    
     // Add listeners to sync text controllers with observable variables
     userNameController.addListener(() {
       userName.value = userNameController.text;
@@ -69,7 +69,7 @@ class UserEditProfileController extends GetxController {
         currentImageUrl.value = profileData.data?.image ?? '';
       }
     } catch (e) {
-      print('Error loading existing profile: $e');
+      appLog('Error loading existing profile: $e');
     }
   }
 
@@ -77,9 +77,9 @@ class UserEditProfileController extends GetxController {
   Future<void> pickImage() async {
     final pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 800, // Limit width to 800px
-      maxHeight: 800, // Limit height to 800px
-      imageQuality: 70, // Compress to 70% quality
+      maxWidth: 800, 
+      maxHeight: 800,
+      imageQuality: 10,
     );
     if (pickedFile != null) {
       selectedImage.value = File(pickedFile.path);

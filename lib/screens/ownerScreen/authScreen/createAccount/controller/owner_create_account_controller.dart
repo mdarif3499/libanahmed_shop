@@ -1,5 +1,6 @@
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/services/repository/owner_auth_repository/owner_auth_repository.dart';
+import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 
 class OwnerCreateAccountController extends GetxController {
   final OwnerAuthRepository authRepository = OwnerAuthRepository();
+  
   // Controllers for form fields
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -85,8 +87,10 @@ class OwnerCreateAccountController extends GetxController {
       );
       if (isRegistered) {
         AppSnackBar.success("Registration successful!");
-        Get.offAllNamed(AppRoutes.shopOwnerOtpVerificationScreen,
-            arguments: emailController.text); // Navigate to the next screen
+        Get.offAllNamed(
+          AppRoutes.shopOwnerOtpVerificationScreen,
+          arguments: emailController.text,
+        ); // Navigate to the next screen
       }
     } catch (e) {
       errorLog("registerUser controller function", e);
@@ -100,6 +104,7 @@ class OwnerCreateAccountController extends GetxController {
   Future<void> loginUser() async {
     try {
       isLoading.value = true; // Show loading indicator
+      appLog("Trying to login in");
 
       // Validate email and password
       if (emailController.text.trim().isEmpty ||
@@ -115,10 +120,9 @@ class OwnerCreateAccountController extends GetxController {
 
       if (isLoggedIn) {
         AppSnackBar.success("Login successful!");
-        Get.offAllNamed(
-            AppRoutes.ownerBottomNav); // Navigate to the main screen
+        Get.offAllNamed(AppRoutes.ownerBottomNav);
       } else {
-        AppSnackBar.error("Invalid email or password.");
+        AppSnackBar.error("Invalid credentials. Please check your email and password.");
       }
     } catch (e) {
       errorLog("loginUser controller function", e);

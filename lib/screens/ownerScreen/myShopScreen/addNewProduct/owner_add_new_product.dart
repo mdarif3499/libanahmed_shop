@@ -228,7 +228,7 @@ class OwnerAddNewProduct extends StatelessWidget {
             ),
             Gap(height: 20),
             AppText(
-              text: "Item Weight",
+              text: "Item Weight (Pounds)",
               fontSize: 15,
               fontWeight: FontWeight.w500,
               fontFamily: 2,
@@ -240,6 +240,54 @@ class OwnerAddNewProduct extends StatelessWidget {
               fillColor: AppColors.instance.white,
               borderColor: AppColors.instance.authBorderColor,
               hintText: "Enter item weight",
+            ),
+            Gap(height: 20),
+            //! Height
+            AppText(
+              text: "Resize Height (CM)",
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              fontFamily: 2,
+              color: AppColors.instance.textColor,
+            ),
+            Gap(height: 10),
+            AppInputWidget(
+              controller: controller.itemHeightController.value,
+              fillColor: AppColors.instance.white,
+              borderColor: AppColors.instance.authBorderColor,
+              hintText: "Enter item height",
+            ),
+            Gap(height: 20),
+            //! Length
+            AppText(
+              text: "Resize Length (CM)",
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              fontFamily: 2,
+              color: AppColors.instance.textColor,
+            ),
+            Gap(height: 10),
+            AppInputWidget(
+              controller: controller.itemLengthController.value,
+              fillColor: AppColors.instance.white,
+              borderColor: AppColors.instance.authBorderColor,
+              hintText: "Enter item length",
+            ),
+            Gap(height: 20),
+            //! Width
+            AppText(
+              text: "Resize Width (CM)",
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              fontFamily: 2,
+              color: AppColors.instance.textColor,
+            ),
+            Gap(height: 10),
+            AppInputWidget(
+              controller: controller.itemWidthController.value,
+              fillColor: AppColors.instance.white,
+              borderColor: AppColors.instance.authBorderColor,
+              hintText: "Enter item width",
             ),
             Gap(height: 20),
             AppText(

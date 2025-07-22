@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:ahmed_shop/constant/app_api_end_point.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
 import 'package:ahmed_shop/services/storage_services/storage_services.dart';
@@ -11,32 +14,98 @@ class OwnerAuthRepository {
   ApiServices apiServices = ApiServices.instance;
   StorageServices appAuthStorage = StorageServices.instance;
 
-
   //! Login ShopOwner
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     try {
-      var response = await apiServices.apiPostServices(
-        url: ApiUrls.instance.login,
-        body: {"email": email, "password": password},
+      // Log the request details for debugging
+      appLog("Attempting login with email: $email");
+
+      // Create a direct Dio instance with shorter timeouts
+      final dio = Dio();
+      dio.options.baseUrl = ApiUrls.instance.baseUrl;
+      dio.options.connectTimeout = const Duration(seconds: 10);
+      dio.options.receiveTimeout = const Duration(seconds: 10);
+      dio.options.sendTimeout = const Duration(seconds: 10);
+
+      appLog(
+        "Using direct Dio with URL: ${dio.options.baseUrl}${ApiUrls.instance.login}",
       );
-      if (response != null) {
-        if (response["data"]["accessToken"] != null &&
-            response["data"]["refreshToken"] != null) {
-          await appAuthStorage.setToken(response["data"]["accessToken"]);
-          await appAuthStorage.setUserRole(response["data"]["user"]["role"]);
+
+      // Make the request directly with Dio
+      final response = await dio
+          .post(
+            ApiUrls.instance.login,
+            data: {"email": email, "password": password},
+            options: Options(headers: {"Content-Type": "application/json"}),
+          )
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw TimeoutException('Request timed out after 10 seconds');
+            },
+          );
+
+      appLog("Login response status: ${response.statusCode}");
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+
+        if (data["data"] != null &&
+            data["data"]["accessToken"] != null &&
+            data["data"]["refreshToken"] != null) {
+          await appAuthStorage.setToken(data["data"]["accessToken"]);
+          await appAuthStorage.setUserRole(data["data"]["user"]["role"]);
           return true;
+        } else {
+          appLog("Login response missing required tokens");
+          AppSnackBar.error(
+            "Invalid response from server. Missing authentication tokens.",
+          );
         }
+      } else {
+        appLog("Login response was unsuccessful: ${response.statusCode}");
+        AppSnackBar.error("Server returned error: ${response.statusCode}");
+      }
+      return false;
+    } on TimeoutException catch (e) {
+      errorLog("login timeout exception", e);
+      appLog("Login timeout: ${e.toString()}");
+      AppSnackBar.error(
+        "Login request timed out. Server might be unreachable.",
+      );
+      return false;
+    } on SocketException catch (e) {
+      errorLog("login socket exception", e);
+      appLog("Socket error: ${e.toString()}");
+      AppSnackBar.error("Network error. Please check your connection.");
+      return false;
+    } on DioException catch (e) {
+      errorLog("login dio exception", e);
+      appLog("Dio error: ${e.toString()}");
+
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        AppSnackBar.error("Connection timed out. Server might be unreachable.");
+      } else if (e.type == DioExceptionType.connectionError) {
+        AppSnackBar.error(
+          "Cannot connect to server at ${ApiUrls.instance.baseUrl}. Check your network and server address.",
+        );
+      } else if (e.response != null) {
+        AppSnackBar.error(
+          "Server error: ${e.response?.statusCode} - ${e.response?.statusMessage}",
+        );
+      } else {
+        AppSnackBar.error("Network error: ${e.message}");
       }
       return false;
     } catch (e) {
       errorLog("login repo function", e);
+      appLog("General error: ${e.toString()}");
+      AppSnackBar.error("Login failed: ${e.toString().split('\n')[0]}");
       return false;
     }
   }
-
 
   //! Register ShopOwner
   Future<bool> registerUser({
@@ -110,7 +179,7 @@ class OwnerAuthRepository {
       // Check the "success" field in the response
       if (response["success"] == true) {
         appLog("OTP verification successful =================$createUserToken");
-      
+
         return true;
       }
       AppSnackBar.error("Invalid OTP or verification failed.");
@@ -152,7 +221,9 @@ class OwnerAuthRepository {
       );
       // Check the "success" field in the response
       if (response["success"] == true) {
-        appLog("OTP verification successful ==============================$createUserToken");
+        appLog(
+          "OTP verification successful ==============================$createUserToken",
+        );
         // Clear the temporary token after successful verification
         // await SharePrefsHelper.removeString(SharedPreferenceValue.createUserToken);
         return true;
@@ -193,8 +264,9 @@ class OwnerAuthRepository {
       );
       if (response != null && response["success"] == true) {
         // Store the token in get storage
-        await appAuthStorage
-            .setForgotPasswordToken(response["data"]["forgetToken"]);
+        await appAuthStorage.setForgotPasswordToken(
+          response["data"]["forgetToken"],
+        );
 
         // Show the log message the forgot password token
         appLog("Forgot Password Token: ${response["data"]["forgetToken"]}");
@@ -220,7 +292,9 @@ class OwnerAuthRepository {
       var response = await apiServices.apiPatchServices(
         url: ApiUrls.instance.forgotPasswordOtpMatch,
         body: {"otp": otp}, // Send OTP as a string
-        options: Options(headers: {"token": forgotPasswordToken}), // Pass token in header
+        options: Options(
+          headers: {"token": forgotPasswordToken},
+        ), // Pass token in header
       );
       if (response != null) {
         if (response["message"] != null) {
@@ -267,10 +341,7 @@ class OwnerAuthRepository {
       var forgotPasswordToken = appAuthStorage.getForgotPasswordToken();
       var response = await apiServices.apiPatchServices(
         url: ApiUrls.instance.resetPassword,
-        body: {
-          "newPassword": newPassword,
-          "confirmPassword": confirmPassword,
-        },
+        body: {"newPassword": newPassword, "confirmPassword": confirmPassword},
         options: Options(headers: {"token": forgotPasswordToken}),
       );
       if (response != null) {

@@ -80,7 +80,7 @@ class OwnerOrderScreenController extends GetxController {
 
           // Log sample data for debugging
           final sampleOrder = response.data!.first;
-          appLog('Sample order ID: ${sampleOrder.sId}');
+          appLog('Sample order ID: ${sampleOrder.id}');
           appLog('Sample order status: ${sampleOrder.status}');
           appLog('Sample order total: ${sampleOrder.totalAmount}');
         } else {

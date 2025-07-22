@@ -2,8 +2,16 @@ import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:flutter/foundation.dart';
 
 String _getDomain() {
+  // Check if the IP is accessible, if not, you might need to update this
+  // to your actual server IP or domain
   String liveServer = "http://10.10.7.30:5003";
   String localServer = "http://10.10.7.30:5003";
+
+  // For testing, you can try using localhost if you're running on an emulator
+  // String localServer = "http://localhost:5003";
+  // Or 10.0.2.2 for Android emulator to access host machine
+  // String localServer = "http://10.0.2.2:5003";
+
   try {
     if (kDebugMode) {
       return localServer;

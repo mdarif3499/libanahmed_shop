@@ -24,6 +24,9 @@ class OwnerAddNewProductController extends GetxController {
   Rx<TextEditingController> itemPriceContrller = TextEditingController().obs;
   Rx<TextEditingController> itemstockController = TextEditingController().obs;
   Rx<TextEditingController> itemWeightController = TextEditingController().obs;
+  Rx<TextEditingController> itemHeightController = TextEditingController().obs;
+  Rx<TextEditingController> itemWidthController = TextEditingController().obs;
+  Rx<TextEditingController> itemLengthController = TextEditingController().obs;
 
   //! Category Selection
   var categoryList = <Datum>[].obs;
@@ -78,6 +81,9 @@ class OwnerAddNewProductController extends GetxController {
         itemstockController.value.text.trim().isNotEmpty &&
         itemImages.isNotEmpty &&
         itemWeightController.value.text.trim().isNotEmpty &&
+        itemHeightController.value.text.trim().isNotEmpty &&
+        itemWidthController.value.text.trim().isNotEmpty &&
+        itemLengthController.value.text.trim().isNotEmpty &&
         selectedCategory.value != null;
 
     isFormValid.value = isValid;
@@ -90,6 +96,9 @@ class OwnerAddNewProductController extends GetxController {
     itemPriceContrller.value.addListener(validateForm);
     itemstockController.value.addListener(validateForm);
     itemWeightController.value.addListener(validateForm);
+    itemHeightController.value.addListener(validateForm);
+    itemWidthController.value.addListener(validateForm);
+    itemLengthController.value.addListener(validateForm);
 
     //! Listen to image changes and category selection
     ever(itemImages, (_) => validateForm());
@@ -103,6 +112,9 @@ class OwnerAddNewProductController extends GetxController {
     itemPriceContrller.value.dispose();
     itemstockController.value.dispose();
     itemWeightController.value.dispose();
+    itemHeightController.value.dispose();
+    itemWidthController.value.dispose();
+    itemLengthController.value.dispose();
     super.onClose();
   }
 
@@ -196,14 +208,6 @@ class OwnerAddNewProductController extends GetxController {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ListTile(
-              //   leading: Icon(Icons.photo_library),
-              //   title: Text("Gallery (Multiple)"),
-              //   onTap: () {
-              //     Navigator.of(dialogContext).pop();
-              //     pickStoreImages(context);
-              //   },
-              // ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppButton(
@@ -216,14 +220,6 @@ class OwnerAddNewProductController extends GetxController {
                   },
                 ),
               ),
-              // ListTile(
-              //   leading: Icon(Icons.photo),
-              //   title: Text("Gallery (Single)"),
-              //   onTap: () {
-              //     Navigator.of(dialogContext).pop();
-              //     pickSingleStoreImage(context);
-              //   },
-              // ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppButton(
@@ -236,14 +232,6 @@ class OwnerAddNewProductController extends GetxController {
                   },
                 ),
               ),
-              // ListTile(
-              //   leading: Icon(Icons.camera_alt),
-              //   title: Text("Camera"),
-              //   onTap: () {
-              //     Navigator.of(dialogContext).pop();
-              //     captureStoreImageFromCamera(context);
-              //   },
-              // ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: AppButton(
@@ -391,6 +379,9 @@ class OwnerAddNewProductController extends GetxController {
         itemImageFiles,
         itemWeightController.value.text.trim(),
         selectedCategory.value!.id!,
+        itemHeightController.value.text.trim(),
+        itemWidthController.value.text.trim(),
+        itemLengthController.value.text.trim(),
       );
 
       if (result == true) {
@@ -414,6 +405,9 @@ class OwnerAddNewProductController extends GetxController {
     itemPriceContrller.value.clear();
     itemstockController.value.clear();
     itemWeightController.value.clear();
+    itemHeightController.value.clear();
+    itemWidthController.value.clear();
+    itemLengthController.value.clear();
     selectedCategory.value = null;
     itemImages.clear();
     itemImagesNames.clear();

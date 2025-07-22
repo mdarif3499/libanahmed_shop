@@ -3,6 +3,7 @@ import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -73,8 +74,9 @@ class AppButton extends StatelessWidget {
             ? SizedBox(
                 width: loadingSize ?? Get.height * 0.04,
                 height: loadingSize ?? Get.height * 0.04,
-                child: CircularProgressIndicator(
-                  color: loaderColor ?? AppColors.instance.white50,
+                child: LoadingAnimationWidget.progressiveDots(
+                  color: AppColors.instance.white,
+                  size: loadingSize ?? Get.height * 0.04,
                 ),
               )
             : child ??

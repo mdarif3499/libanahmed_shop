@@ -8,10 +8,10 @@ import 'package:get/get.dart';
 class ResetPasswordScreenController extends GetxController {
   final AuthRepository authRepository = AuthRepository();
 
-  // Controller for new password input
+  //! Controller for new password input
   final newPasswordController = TextEditingController();
 
-  // Controller for confirm password input
+  //! Controller for confirm password input
   final confirmPasswordController = TextEditingController();
 
   RxBool isLoading = false.obs;
@@ -23,12 +23,12 @@ class ResetPasswordScreenController extends GetxController {
     super.onClose();
   }
 
-  // Reset Password API call
+  //! Reset Password API call
   Future<void> resetPassword() async {
     try {
       isLoading.value = true;
 
-      // Validate passwords
+      //! Validate passwords
       if (newPasswordController.text.trim().isEmpty) {
         AppSnackBar.error("New password is required.");
         return;
@@ -51,10 +51,10 @@ class ResetPasswordScreenController extends GetxController {
           confirmPassword: confirmPasswordController.text.trim(),
           token: forgotToken);
       AppSnackBar.success("Password reset successfully.");
-      // Clear the token from storage
+      //! Clear the token from storage
       Get.toNamed(AppRoutes.createAccount);
       return;
-    // Navigate back to the previous screen
+    //! Navigate back to the previous screen
     } catch (e) {
       AppSnackBar.error("An error occurred. Please try again.");
     } finally {

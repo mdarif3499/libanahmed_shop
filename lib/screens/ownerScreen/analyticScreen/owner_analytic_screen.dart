@@ -1,10 +1,12 @@
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'controller/analytics_screen_controller.dart';
 
@@ -41,7 +43,12 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
       // Light background color
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: AppColors.instance.red400,
+              size: AppSize.height(value: 40),
+            ),
+          );
         }
 
         return SingleChildScrollView(

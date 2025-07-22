@@ -2,7 +2,7 @@ import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
-import 'package:ahmed_shop/screens/ownerScreen/onboardingScreen/owner_onboarding_screen.dart';
+import 'package:ahmed_shop/screens/ownerScreen/authScreen/createAccount/owner_create%20account.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
@@ -26,10 +26,7 @@ class _UserOnboardingScreenTwoState extends State<UserOnboardingScreenTwo> {
       fit: StackFit.expand,
       children: [
         // Background image
-        Image.asset(
-          AppAssertImage.instance.onboard2,
-          fit: BoxFit.cover,
-        ),
+        Image.asset(AppAssertImage.instance.onboard2, fit: BoxFit.cover),
         Positioned(
           bottom: 0,
           left: 0,
@@ -49,9 +46,7 @@ class _UserOnboardingScreenTwoState extends State<UserOnboardingScreenTwo> {
                     fontFamily: 1,
                   ),
                 ),
-                Gap(
-                  height: 20,
-                ),
+                Gap(height: 20),
                 AppText(
                   text: AppString.instance.beforeContinuing,
                   fontFamily: 1,
@@ -59,9 +54,7 @@ class _UserOnboardingScreenTwoState extends State<UserOnboardingScreenTwo> {
                   fontSize: 14,
                   maxLines: 2,
                 ),
-                Gap(
-                  height: 23,
-                ),
+                Gap(height: 23),
                 // Join as the Customer Button
                 IconAppButton(
                   icon: AppAssertIcons.forwardIcon,
@@ -77,14 +70,12 @@ class _UserOnboardingScreenTwoState extends State<UserOnboardingScreenTwo> {
                   fontSize: 16,
                   rowWidth: 200.0,
                 ),
-                Gap(
-                  height: 12,
-                ),
+                Gap(height: 12),
                 IconAppButton(
                   icon: AppAssertIcons.forwardIcon,
                   backgroundColor: AppColors.instance.red500,
                   onTap: () {
-                    Get.offAll(() => OwnerOnboardingScreen());
+                    Get.offAll(() => OwnerCreateAccount());
                   },
                   title: AppString.instance.joinAsOwner,
                   titleColor: AppColors.instance.white100,
@@ -97,7 +88,7 @@ class _UserOnboardingScreenTwoState extends State<UserOnboardingScreenTwo> {
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

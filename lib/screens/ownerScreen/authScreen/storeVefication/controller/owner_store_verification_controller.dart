@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/services/repository/owner_shop_creation_repository/owner_shop_creation_repository.dart';
@@ -14,60 +13,60 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OwnerStoreVerificationController extends GetxController {
-  // Loading state
+  //! Loading state
   RxBool isLoading = false.obs;
 
-  // Form controllers
+  //! Form controllers
   final TextEditingController storeNameController = TextEditingController();
   final TextEditingController storeDescriptionController =
       TextEditingController();
   final TextEditingController storeAddressController = TextEditingController();
 
-  // Image lists - both store images and document images
+  //! Image lists - both store images and document images
   RxList<XFile> storeImages = <XFile>[].obs;
   RxList<XFile> documentImages = <XFile>[].obs;
 
-  // Image names for display
+  //! Image names for display
   RxList<String> storeImageNames = <String>[].obs;
   RxList<String> documentImageNames = <String>[].obs;
 
-  // Form validation
+  //! Form validation
   RxBool isFormValid = false.obs;
 
-  // Image picker instance
+  //! Image picker instance
   final ImagePicker _imagePicker = ImagePicker();
 
-  // Ensure controller is permanent to prevent deletion
+  //! Ensure controller is permanent to prevent deletion
   static OwnerStoreVerificationController get to => Get.find();
 
   @override
   void onInit() {
     super.onInit();
-    // Listen to form changes for validation
+    //! Listen to form changes for validation
     _setupFormValidation();
-    // Mark controller as permanent to prevent deletion
+    //! Mark controller as permanent to prevent deletion
     Get.put(this, permanent: true);
   }
 
   @override
   void onClose() {
-    // Dispose controllers
+    //! Dispose controllers
     storeNameController.dispose();
     storeDescriptionController.dispose();
     super.onClose();
   }
 
-  // Setup form validation listeners
+  //! Setup form validation listeners
   void _setupFormValidation() {
     storeNameController.addListener(_validateForm);
     storeDescriptionController.addListener(_validateForm);
 
-    // Listen to image changes
+    //! Listen to image changes
     ever(storeImages, (_) => _validateForm());
     ever(documentImages, (_) => _validateForm());
   }
 
-  // Validate form fields
+  //! Validate form fields
   void _validateForm() {
     bool isValid =
         storeNameController.text.trim().isNotEmpty &&
@@ -78,7 +77,7 @@ class OwnerStoreVerificationController extends GetxController {
     isFormValid.value = isValid;
   }
 
-  // Pick store images from gallery
+  //! Pick store images from gallery
   Future<void> pickStoreImages(BuildContext context) async {
     try {
       List<XFile>? pickedFiles = await _imagePicker.pickMultiImage();
@@ -104,7 +103,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Pick single store image from gallery
+  //! Pick single store image from gallery
   Future<void> pickSingleStoreImage(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
@@ -129,7 +128,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Pick store image from camera
+  //! Pick store image from camera
   Future<void> captureStoreImageFromCamera(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
@@ -152,7 +151,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Pick document images from gallery
+  //! Pick document images from gallery
   Future<void> pickDocumentImages(BuildContext context) async {
     try {
       List<XFile>? pickedFiles = await _imagePicker.pickMultiImage();
@@ -178,7 +177,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Pick single document image from gallery
+  //! Pick single document image from gallery
   Future<void> pickSingleDocumentImage(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
@@ -203,7 +202,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Pick document image from camera
+  //! Pick document image from camera
   Future<void> captureDocumentImageFromCamera(BuildContext context) async {
     try {
       XFile? pickedFile = await _imagePicker.pickImage(
@@ -226,7 +225,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Show image source selection dialog for store images
+  //! Show image source selection dialog for store images
   Future<void> showStoreImageSourceDialog(BuildContext context) async {
     if (!context.mounted) return;
     await showDialog(
@@ -290,7 +289,7 @@ class OwnerStoreVerificationController extends GetxController {
     );
   }
 
-  // Show image source selection dialog for document images
+  //! Show image source selection dialog for document images
   Future<void> showDocumentImageSourceDialog(BuildContext context) async {
     if (!context.mounted) return;
     await showDialog(
@@ -357,7 +356,7 @@ class OwnerStoreVerificationController extends GetxController {
     );
   }
 
-  // Remove store image by index
+  //! Remove store image by index
   void removeStoreImage(int index) {
     if (index >= 0 && index < storeImages.length) {
       storeImages.removeAt(index);
@@ -366,7 +365,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Remove document image by index
+  //! Remove document image by index
   void removeDocumentImage(int index) {
     if (index >= 0 && index < documentImages.length) {
       documentImages.removeAt(index);
@@ -375,21 +374,21 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Clear all store images
+  //! Clear all store images
   void clearStoreImages() {
     storeImages.clear();
     storeImageNames.clear();
     log("Cleared all store images");
   }
 
-  // Clear all document images
+  //! Clear all document images
   void clearDocumentImages() {
     documentImages.clear();
     documentImageNames.clear();
     log("Cleared all document images");
   }
 
-  // Validate individual fields
+  //! Validate individual fields
   String? validateStoreName(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Store name is required';
@@ -420,13 +419,13 @@ class OwnerStoreVerificationController extends GetxController {
     return null;
   }
 
-  // Convert XFile to Uint8List
+  //! Convert XFile to Uint8List
   Future<Uint8List> _convertToBytes(XFile image) async {
     File file = File(image.path);
     return Uint8List.fromList(await file.readAsBytes());
   }
 
-  // Submit form data with Uint8List
+  //! Submit form data with Uint8List
   Future<void> submitStoreVerification() async {
     if (!isFormValid.value) {
       AppSnackBar.error("Please fill all required fields");
@@ -445,17 +444,17 @@ class OwnerStoreVerificationController extends GetxController {
 
     try {
       isLoading.value = true;
-      // Convert XFile to File for document images
+      //! Convert XFile to File for document images
       List<File> storeImageFiles = storeImages
           .map((xFile) => File(xFile.path))
           .toList();
 
-      // Convert XFile to File for document images
+      //! Convert XFile to File for document images
       List<File> documentImageFiles = documentImages
           .map((xFile) => File(xFile.path))
           .toList();
 
-      // Call repository method with Dio Multipart files
+      //! Call repository method with Dio Multipart files
       bool? result = await OwnerShopCreationRepository.shopCreation(
         storeNameController.text.trim(),
         storeAddressController.text.trim(),
@@ -481,7 +480,7 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Clear form data
+  //! Clear form data
   void _clearForm() {
     storeNameController.clear();
     storeDescriptionController.clear();
@@ -491,7 +490,7 @@ class OwnerStoreVerificationController extends GetxController {
     documentImageNames.clear();
   }
 
-  // Get file size in readable format
+  //! Get file size in readable format
   String getFileSize(File file) {
     int bytes = file.lengthSync();
     if (bytes <= 0) return "0 B";
@@ -500,7 +499,7 @@ class OwnerStoreVerificationController extends GetxController {
     return "${(bytes / (1 << (i * 10))).toStringAsFixed(1)} ${suffixes[i]}";
   }
 
-  // Get image file info
+  //! Get image file info
   Future<Map<String, dynamic>> getImageInfo(XFile imageFile) async {
     File file = File(imageFile.path);
     int fileSize = await file.length();
@@ -513,10 +512,10 @@ class OwnerStoreVerificationController extends GetxController {
     };
   }
 
-  // Compress image if needed (optional)
+  //! Compress image if needed (optional)
   Future<XFile?> compressImage(XFile imageFile, {int quality = 80}) async {
     try {
-      // You can implement image compression here if needed
+      //! You can implement image compression here if needed
       return imageFile;
     } catch (e) {
       log("Error compressing image: $e");
@@ -524,10 +523,10 @@ class OwnerStoreVerificationController extends GetxController {
     }
   }
 
-  // Check if all required images are selected
+  //! Check if all required images are selected
   bool get hasAllRequiredImages =>
       storeImages.isNotEmpty && documentImages.isNotEmpty;
 
-  // Get total number of selected images
+  //! Get total number of selected images
   int get totalSelectedImages => storeImages.length + documentImages.length;
 }

@@ -3,9 +3,10 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/userScreen/authScreen/createAccount/controller/user_create_account_controller.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
-import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button_row.dart';
 import 'package:ahmed_shop/widgets/inputs/app_input_widget.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
@@ -173,7 +174,8 @@ class CreateAccountScreenUser extends StatelessWidget {
                         backgroundColor: AppColors.instance.green500,
                         borderradius: 10,
                         isLoading: controller
-                            .isLoading.value, // Show loading indicator
+                            .isLoading
+                            .value, // Show loading indicator
                       ),
                       const Gap(height: 20),
                     ],
@@ -255,9 +257,10 @@ class CreateAccountScreenUser extends StatelessWidget {
                           titleColor: AppColors.instance.white100,
                           backgroundColor: AppColors.instance.green500,
                           borderradius: 10,
-                          height: 50,
+                          height: AppSize.height(value: 50),
                           isLoading: controller
-                              .isLoading.value, // Show loading indicator
+                              .isLoading
+                              .value, // Show loading indicator
                         );
                       }),
                       Gap(height: 18),
@@ -280,9 +283,7 @@ class CreateAccountScreenUser extends StatelessWidget {
                               color: AppColors.instance.authBorderColor,
                             ),
                           ),
-                          Gap(
-                            width: 3,
-                          ),
+                          Gap(width: 3),
                           AppText(
                             text: "0r",
                             fontSize: 12,
@@ -290,9 +291,7 @@ class CreateAccountScreenUser extends StatelessWidget {
                             color: AppColors.instance.greyColor,
                             fontFamily: 2,
                           ),
-                          Gap(
-                            width: 3,
-                          ),
+                          Gap(width: 3),
                           Expanded(
                             child: Container(
                               height: 1,
@@ -301,33 +300,29 @@ class CreateAccountScreenUser extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Gap(
-                        height: 18,
-                      ),
-                      IconAppButton(
-                        iconAlignment: CustomIconAlignment.left,
-                        icon: AppAssertIcons.google,
+                      Gap(height: 18),
+                      AppImageButton(
+                        height: AppSize.height(value: 50),
+                        imagePosition: ImagePosition.left,
+                        svgPath: AppAssertIcons.google,
                         title: AppString.instance.signUpWithGoogle,
-                        titleColor: AppColors.instance.textColor,
                         fontSize: 14,
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
+                        titleColor: AppColors.instance.black900,
                       ),
-                      Gap(
-                        height: 18,
-                      ),
-                      IconAppButton(
-                        iconAlignment: CustomIconAlignment.left,
-                        icon: AppAssertIcons.apple,
+                      Gap(height: 18),
+                      AppImageButton(
+                        height: AppSize.height(value: 50),
+                        imagePosition: ImagePosition.left,
+                        svgPath: AppAssertIcons.apple,
                         title: AppString.instance.signUpWithApple,
-                        titleColor: AppColors.instance.textColor,
                         fontSize: 14,
                         backgroundColor: AppColors.instance.white100,
                         borderColor: AppColors.instance.authBorderColor,
+                        titleColor: AppColors.instance.black900,
                       ),
-                      Gap(
-                        height: 18,
-                      ),
+                      Gap(height: 18),
                     ],
                   );
                 }
@@ -372,9 +367,10 @@ class CreateAccountScreenUser extends StatelessWidget {
               : TextInputType.visiblePassword,
           textInputAction: TextInputAction.done,
           hintStyle: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: AppColors.instance.greyColor),
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: AppColors.instance.greyColor,
+          ),
         ),
         const Gap(height: 10),
       ],

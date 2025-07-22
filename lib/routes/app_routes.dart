@@ -78,4 +78,5 @@ class AppRoutes {
       "/shopOwnerOtpVerificationScreen";
 
   static const ownerEditProductScreen = "/ownerEditProductScreen";
+  static const ownerEditProfile = "/ownerEditProfile";
 }

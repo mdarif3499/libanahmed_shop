@@ -140,7 +140,7 @@ class OwnerEditProductScreenController extends GetxController {
     editPrice.text = productData.price?.toString() ?? '';
     editProductAvailableStock.text =
         productData.availableStock?.toString() ?? '';
-    editWeight.text = productData.weight ?? '';
+    editWeight.text = productData.weight?.toString() ?? '';
     _validateForm();
   }
 

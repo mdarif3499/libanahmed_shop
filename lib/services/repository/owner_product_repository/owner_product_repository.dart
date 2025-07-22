@@ -77,6 +77,9 @@ class OwnerProductRepository {
     List<File> images,
     String weight,
     String categoryId,
+    String height,
+    String width,
+    String length,
   ) async {
     try {
       String token = StorageServices.instance.getToken();
@@ -97,6 +100,9 @@ class OwnerProductRepository {
         ),
         "weight": weight,
         "categoryId": categoryId,
+        "height": height,
+        "width": width,
+        "length": length,
       });
       var response = await ApiServices.instance.apiPostServices(
         url: ApiUrls.instance.ownerProductCreate,
