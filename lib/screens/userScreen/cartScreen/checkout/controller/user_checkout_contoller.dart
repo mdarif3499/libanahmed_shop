@@ -5,41 +5,40 @@ import 'package:get/get.dart';
 
 class UserCheckoutContoller extends GetxController {
   RxBool isCheckOutCompleted = false.obs;
-  var zipCode = TextEditingController();
-  var streetName = TextEditingController();
-  var stateCode = TextEditingController();
+  var postalCode = TextEditingController();
   var phoneNumber = TextEditingController();
-  var locality = TextEditingController();
-  var houseNumnber = TextEditingController();
-  var country = TextEditingController();
-  var address = TextEditingController();
   final RxString completePhoneNumber = ''.obs;
+  var stateCode = TextEditingController();
+  var cityName = TextEditingController();
+  var countryCode = TextEditingController();
+  var addressLine1 = TextEditingController();
+  var addressLine2 = TextEditingController();
 
   void updatePhoneNumber(String phoneNumber) {
     completePhoneNumber.value = phoneNumber;
   }
 
   void orderCheckout(
-      String zipCode,
-      String streetName,
-      String stateCode,
-      String phoneNumber,
-      String locality,
-      String houseNumnber,
-      String country,
-      String address) async {
+    String zipCode,
+    String streetName,
+    String stateCode,
+    String phoneNumber,
+    String locality,
+    String houseNumnber,
+    String country,
+    String address,
+  ) async {
     isCheckOutCompleted(true);
 
     try {
       var response = await OrderRepository.createOrder(
-        zipCode: zipCode,
-        streetName: streetName,
-        stateCode: stateCode,
-        phoneNumber: phoneNumber,
-        locality: locality,
-        houseNumnber: houseNumnber,
-        country: country,
-        address: address,
+        postalCode: postalCode.text.trim(),
+        phoneNumber: phoneNumber.trim(),
+        stateCode: stateCode.trim(),
+        cityName: cityName.text.trim(),
+        countryCode: countryCode.text.trim(),
+        addressLine1: addressLine1.text.trim(),
+        addressLine2: addressLine2.text.trim(),
       );
 
       if (response != null && response == true) {
@@ -59,27 +58,24 @@ class UserCheckoutContoller extends GetxController {
   }
 
   void _clearAllFields() {
-    zipCode.clear();
-    streetName.clear();
+    postalCode.clear();
+    completePhoneNumber.value = '';
     stateCode.clear();
-    phoneNumber.clear();
-    locality.clear();
-    houseNumnber.clear();
-    country.clear();
-    address.clear();
+    cityName.clear();
+    countryCode.clear();
+    addressLine1.clear();
+    addressLine2.clear();
   }
 
   @override
   void onClose() {
     // Dispose controllers when the controller is destroyed
-    zipCode.dispose();
-    streetName.dispose();
+    postalCode.dispose();
     stateCode.dispose();
-    phoneNumber.dispose();
-    locality.dispose();
-    houseNumnber.dispose();
-    country.dispose();
-    address.dispose();
+    cityName.dispose();
+    countryCode.dispose();
+    addressLine1.dispose();
+    addressLine2.dispose();
     super.onClose();
   }
 }

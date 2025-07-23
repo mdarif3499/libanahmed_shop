@@ -15,6 +15,13 @@ class CartController extends GetxController {
     fetchCartProduct();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    // This will run every time the screen becomes active
+    fetchCartProduct();
+  }
+
   double get totalCost {
     double total = 0.0;
     for (var item in cartList) {
@@ -66,7 +73,8 @@ class CartController extends GetxController {
       // productQuantityLoading[productId] = true;
       // productQuantityLoading.refresh(); // Notify UI of change
       appLog(
-          "Updating product quantity for ID: $productId with action: $action");
+        "Updating product quantity for ID: $productId with action: $action",
+      );
 
       final response = await CartRepository.addingQuantity(productId, action);
 

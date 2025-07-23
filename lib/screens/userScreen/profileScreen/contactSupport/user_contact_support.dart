@@ -1,7 +1,7 @@
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
-import 'package:ahmed_shop/screens/userScreen/bottomNav/user_bottom_nav.dart';
+import 'package:ahmed_shop/screens/userScreen/bottomNav/user_bottom_navigation.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
@@ -28,7 +28,7 @@ class UserContactSupportScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            Get.to(() => UserBottomNav(), arguments: 3);
+            Get.to(() => UserNavigationScreen(), arguments: 3);
           },
           icon: SvgPicture.asset(
             AppAssertIcons.backIcon,

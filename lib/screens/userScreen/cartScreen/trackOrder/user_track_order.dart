@@ -88,6 +88,129 @@ class UserTrackOrder extends StatelessWidget {
       );
     }
 
+    void showPaymentDetailsDialog(
+      String orderId,
+      double totalAmount,
+      double shippingCharge,
+    ) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 300,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Gap(height: AppSize.height(value: 10)),
+                    AppText(
+                      text: 'Payment Details',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.instance.green500,
+                      textAlign: TextAlign.center,
+                    ),
+                    Gap(height: AppSize.height(value: 20)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText(
+                          text: 'Order Amount:',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black800,
+                        ),
+                        AppText(
+                          text:
+                              '\$${(totalAmount - shippingCharge).toStringAsFixed(2)}',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black800,
+                        ),
+                      ],
+                    ),
+                    Gap(height: AppSize.height(value: 10)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText(
+                          text: 'Shipping Charge:',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black800,
+                        ),
+                        AppText(
+                          text: '\$${shippingCharge.toStringAsFixed(2)}',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black800,
+                        ),
+                      ],
+                    ),
+                    Gap(height: AppSize.height(value: 10)),
+                    Divider(color: AppColors.instance.black300),
+                    Gap(height: AppSize.height(value: 10)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AppText(
+                          text: 'Total Amount:',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.instance.green500,
+                        ),
+                        AppText(
+                          text: '\$${totalAmount.toStringAsFixed(2)}',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.instance.green500,
+                        ),
+                      ],
+                    ),
+                    Gap(height: AppSize.height(value: 25)),
+                    AppButton(
+                      height: AppSize.height(value: 48),
+                      width: double.infinity,
+                      title: "Proceed to Payment",
+                      titleColor: AppColors.instance.white100,
+                      backgroundColor: AppColors.instance.green500,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        controller.payOrder(orderId);
+                      },
+                    ),
+                    Gap(height: AppSize.height(value: 10)),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: AppText(
+                        text: "Cancel",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.instance.black300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: AppText(
@@ -182,7 +305,7 @@ class UserTrackOrder extends StatelessWidget {
                     onTap: () {
                       Get.toNamed(
                         AppRoutes.userOrderProgress,
-                        arguments: order.sId,
+                        arguments: order.id,
                       );
                     },
                     child: Container(
@@ -210,7 +333,7 @@ class UserTrackOrder extends StatelessWidget {
                               children: [
                                 AppText(
                                   text:
-                                      "Order #${order.sId?.substring(order.sId!.length - 6) ?? 'N/A'}",
+                                      "Order #${order.id?.substring(order.id!.length - 6) ?? 'N/A'}",
                                   fontFamily: 2,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
@@ -220,7 +343,7 @@ class UserTrackOrder extends StatelessWidget {
                                 ),
                                 Gap(height: 2),
                                 AppText(
-                                  text: order.address ?? 'N/A',
+                                  text: order.addressLine1 ?? 'N/A',
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 2,
@@ -253,7 +376,15 @@ class UserTrackOrder extends StatelessWidget {
                                           AppColors.instance.green500,
                                       onTap: () {
                                         //Get.to(() => WebViewScreen(url: "${plan.paymentLink!}"));
-                                        controller.payOrder(order.sId ?? '');
+                                        //controller.payOrder(order.id ?? '');
+                                        controller.addShippingCharge(
+                                          order.id ?? '',
+                                        );
+                                        showPaymentDetailsDialog(
+                                          order.id ?? '',
+                                          (order.totalAmount ?? 0).toDouble(),
+                                          30.0,
+                                        );
                                       },
                                       height: AppSize.height(value: 40),
                                       width: AppSize.width(value: 50),
@@ -266,7 +397,7 @@ class UserTrackOrder extends StatelessWidget {
                                       backgroundColor:
                                           AppColors.instance.red500,
                                       onTap: () {
-                                        showDeleteOrderDialog(order.sId ?? '');
+                                        showDeleteOrderDialog(order.id ?? '');
                                       },
                                       height: AppSize.height(value: 40),
                                       width: AppSize.width(value: 50),

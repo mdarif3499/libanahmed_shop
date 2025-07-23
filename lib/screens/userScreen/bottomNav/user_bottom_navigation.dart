@@ -26,34 +26,39 @@ class UserNavigationScreen extends StatelessWidget {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     return GetBuilder(
-        init: NavigationController(),
-        builder: (controller) {
-          return Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(
-              backgroundColor: AppColors.instance.white50,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(AppAssertImage.instance.logoIcon, height: 40,width: 40,)
-                ],
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                onPressed: () {
-                  scaffoldKey.currentState?.openDrawer();
-                },
-                icon: SvgPicture.asset(AppAssertIcons.userMenu),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {}, // Add functionality for notifications
-                  icon: SvgPicture.asset(AppAssertIcons.userNotification),
+      init: NavigationController(),
+      builder: (controller) {
+        return Scaffold(
+          key: scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: AppColors.instance.white50,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  AppAssertImage.instance.logoIcon,
+                  height: 40,
+                  width: 40,
                 ),
               ],
             ),
-            drawer: const UserMenuDrawer(),
-            body: Obx(
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                scaffoldKey.currentState?.openDrawer();
+              },
+              icon: SvgPicture.asset(AppAssertIcons.userMenu),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {}, // Add functionality for notifications
+                icon: SvgPicture.asset(AppAssertIcons.userNotification),
+              ),
+            ],
+          ),
+          drawer: const UserMenuDrawer(),
+          body: GetBuilder<NavigationController>(
+            builder: (controller) => Obx(
               () => IndexedStack(
                 index: controller.selectedIndex.value,
                 children: [
@@ -62,160 +67,165 @@ class UserNavigationScreen extends StatelessWidget {
                   ////////// index 1
                   UserSearchScreen(),
                   /////////// index 2
-                  const UserCartScreen(),
+                  UserCartScreen(),
                   /////////// index 3
                   UserProfileScreen(),
-                  UserProductDetailsScreen()
+                  /////////// index 4 - Product Details with arguments
+                  UserProductDetailsScreen(
+                    arguments: controller.productDetailsArguments.value,
+                  ),
                 ],
               ),
             ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: ClipOval(
-              child: Container(
-                padding: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: AppColors.instance.green500.withAlpha(80),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: ClipOval(
+            child: Container(
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppColors.instance.green500.withAlpha(80),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: Material(
+                color: AppColors.instance.green500,
+                borderRadius: BorderRadius.circular(100),
+                child: InkWell(
+                  onTap: () {
+                    controller.changeIndex(4);
+                  },
                   borderRadius: BorderRadius.circular(100),
-                ),
-                child: Material(
-                  color: AppColors.instance.green500,
-                  borderRadius: BorderRadius.circular(100),
-                  child: InkWell(
-                    onTap: () {
-                      controller.changeIndex(4);
-                    },
-                    borderRadius: BorderRadius.circular(100),
-                    child: Container(
-                      width: AppSize.width(value: 50),
-                      height: AppSize.height(value: 50),
-                      alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        AppAssertIcons.uProduct,
-                        height: AppSize.width(value: 22),
-                        width: AppSize.height(value: 22),
-                        colorFilter: ColorFilter.mode(
-                          AppColors.instance.white50,
-                          BlendMode.srcIn,
-                        ),
+                  child: Container(
+                    width: AppSize.width(value: 50),
+                    height: AppSize.height(value: 50),
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      AppAssertIcons.uProduct,
+                      height: AppSize.width(value: 22),
+                      width: AppSize.height(value: 22),
+                      colorFilter: ColorFilter.mode(
+                        AppColors.instance.white50,
+                        BlendMode.srcIn,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            bottomNavigationBar: Container(
-              height: AppSize.height(value: 70),
-              padding: EdgeInsets.symmetric(vertical: AppSize.width(value: 8)),
-              decoration: BoxDecoration(color: AppColors.instance.white),
-              child: Obx(
-                () => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    //////////////////  home
-                    GestureDetector(
-                      onTap: () {
-                        controller.changeIndex(0);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            controller.selectedIndex.value == 0
-                                ? AppAssertIcons.uHomeSelected
-                                : AppAssertIcons.uHome,
-                            width: AppSize.width(value: 25),
-                            height: AppSize.height(value: 25),
-                          ),
-                          AppText(
-                            text: AppString.instance.home,
-                            color: controller.selectedIndex.value == 0
-                                ? AppColors.instance.green500
-                                : AppColors.instance.bottomNavText,
-                          )
-                        ],
-                      ),
+          ),
+          bottomNavigationBar: Container(
+            height: AppSize.height(value: 70),
+            padding: EdgeInsets.symmetric(vertical: AppSize.width(value: 8)),
+            decoration: BoxDecoration(color: AppColors.instance.white),
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  //////////////////  home
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeIndex(0);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          controller.selectedIndex.value == 0
+                              ? AppAssertIcons.uHomeSelected
+                              : AppAssertIcons.uHome,
+                          width: AppSize.width(value: 25),
+                          height: AppSize.height(value: 25),
+                        ),
+                        AppText(
+                          text: AppString.instance.home,
+                          color: controller.selectedIndex.value == 0
+                              ? AppColors.instance.green500
+                              : AppColors.instance.bottomNavText,
+                        ),
+                      ],
                     ),
+                  ),
 
-                    ////////////  Search
-                    GestureDetector(
-                      onTap: () {
-                        controller.changeIndex(1);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            controller.selectedIndex.value == 1
-                                ? AppAssertIcons.uSearchSelected
-                                : AppAssertIcons.uSearch,
-                            width: AppSize.width(value: 25),
-                            height: AppSize.height(value: 25),
-                          ),
-                          AppText(
-                            text: AppString.instance.search,
-                            color: controller.selectedIndex.value == 1
-                                ? AppColors.instance.green500
-                                : AppColors.instance.bottomNavText,
-                          )
-                        ],
-                      ),
+                  ////////////  Search
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeIndex(1);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          controller.selectedIndex.value == 1
+                              ? AppAssertIcons.uSearchSelected
+                              : AppAssertIcons.uSearch,
+                          width: AppSize.width(value: 25),
+                          height: AppSize.height(value: 25),
+                        ),
+                        AppText(
+                          text: AppString.instance.search,
+                          color: controller.selectedIndex.value == 1
+                              ? AppColors.instance.green500
+                              : AppColors.instance.bottomNavText,
+                        ),
+                      ],
                     ),
-                    const Gap(width: 30),
+                  ),
+                  const Gap(width: 30),
 
-                    /////////////  cart
-                    GestureDetector(
-                      onTap: () {
-                        controller.changeIndex(2);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            controller.selectedIndex.value == 2
-                                ? AppAssertIcons.uCartSelected
-                                : AppAssertIcons.uCart,
-                            width: AppSize.width(value: 25),
-                            height: AppSize.height(value: 25),
-                          ),
-                          AppText(
-                            text: AppString.instance.cart,
-                            color: controller.selectedIndex.value == 2
-                                ? AppColors.instance.green500
-                                : AppColors.instance.bottomNavText,
-                          )
-                        ],
-                      ),
+                  /////////////  cart
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeIndex(2);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          controller.selectedIndex.value == 2
+                              ? AppAssertIcons.uCartSelected
+                              : AppAssertIcons.uCart,
+                          width: AppSize.width(value: 25),
+                          height: AppSize.height(value: 25),
+                        ),
+                        AppText(
+                          text: AppString.instance.cart,
+                          color: controller.selectedIndex.value == 2
+                              ? AppColors.instance.green500
+                              : AppColors.instance.bottomNavText,
+                        ),
+                      ],
                     ),
-                    //////////// account
-                    GestureDetector(
-                      onTap: () {
-                        controller.changeIndex(3);
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            controller.selectedIndex.value == 3
-                                ? AppAssertIcons.uProfileSelected
-                                : AppAssertIcons.uProfile,
-                            width: AppSize.width(value: 25),
-                            height: AppSize.height(value: 25),
-                          ),
-                          AppText(
-                            text: AppString.instance.userProfile,
-                            color: controller.selectedIndex.value == 3
-                                ? AppColors.instance.green500
-                                : AppColors.instance.bottomNavText,
-                          )
-                        ],
-                      ),
+                  ),
+                  //////////// account
+                  GestureDetector(
+                    onTap: () {
+                      controller.changeIndex(3);
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.asset(
+                          controller.selectedIndex.value == 3
+                              ? AppAssertIcons.uProfileSelected
+                              : AppAssertIcons.uProfile,
+                          width: AppSize.width(value: 25),
+                          height: AppSize.height(value: 25),
+                        ),
+                        AppText(
+                          text: AppString.instance.userProfile,
+                          color: controller.selectedIndex.value == 3
+                              ? AppColors.instance.green500
+                              : AppColors.instance.bottomNavText,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

@@ -11,6 +11,7 @@ class UserTrackOrderController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isOrderDeleted = false.obs;
   RxBool isPaymentLoading = false.obs;
+  RxBool isShippingLoading = false.obs;
   var orderList = <TrackOrderModel.TrackOrderModelList>[].obs;
 
   @override
@@ -78,6 +79,22 @@ class UserTrackOrderController extends GetxController {
       AppSnackBar.error('Payment failed: ${e.toString()}');
     } finally {
       isPaymentLoading(false);
+    }
+  }
+
+  void addShippingCharge (String orderId) async {
+    try {
+      isShippingLoading(true);
+      final response = await OrderRepository.addShipingCharge(orderId);
+      if (response == true) {
+        AppSnackBar.success('Shipping charge added successfully');
+      } else {
+        AppSnackBar.error('Failed to add shipping charge');
+      }
+    } catch (e) {
+      AppSnackBar.error('Failed to add shipping charge');
+    } finally {
+      isShippingLoading(false);
     }
   }
 }

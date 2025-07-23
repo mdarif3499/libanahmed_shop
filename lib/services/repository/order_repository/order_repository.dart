@@ -6,28 +6,26 @@ import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 
 class OrderRepository {
   static Future<bool?> createOrder({
-    required String zipCode,
-    required String streetName,
-    required String stateCode,
+    required String postalCode,
     required String phoneNumber,
-    required String locality,
-    required String houseNumnber,
-    required String country,
-    required String address,
+    required String stateCode,
+    required String cityName,
+    required String countryCode,
+    required String addressLine1,
+    required String addressLine2,
   }) async {
     try {
       String token = StorageServices.instance.getToken();
       var response = await ApiServices.instance.apiPostServices(
         url: ApiUrls.instance.createOrder,
         body: {
-          "zip_code": zipCode,
-          "street_name": streetName,
-          "state_code": stateCode,
+          "postal_code": postalCode,
           "phone_number": phoneNumber,
-          "locality": locality,
-          "house_number": houseNumnber,
-          "country": country,
-          "address": address
+          "state_code": stateCode,
+          "city": cityName,
+          "country_code": countryCode,
+          "address_line1": addressLine1,
+          "address_line2": addressLine2,
         },
         header: {"Authorization": token},
       );
@@ -56,8 +54,9 @@ class OrderRepository {
       return null;
     }
   }
+
   static Future<ViewOrderModel?> showSingleOrder(String orderId) async {
-    try{
+    try {
       String token = StorageServices.instance.getToken();
       var response = await ApiServices.instance.apiGetServices(
         "${ApiUrls.instance.viewOrder}$orderId",
@@ -68,19 +67,39 @@ class OrderRepository {
         return ViewOrderModel.fromJson(response);
       }
       return null;
-    }catch(e){
+    } catch (e) {
       return null;
     }
   }
-  static Future<bool?> deleteOrder(String orderId)async{
-    try{
+
+  static Future<bool?> deleteOrder(String orderId) async {
+    try {
       String token = StorageServices.instance.getToken();
-      var response = await ApiServices.instance.apiDeleteServices(url: "${ApiUrls.instance.deleteOrder}$orderId",statusCode: 200,query : {"Authorization": token});
+      var response = await ApiServices.instance.apiDeleteServices(
+        url: "${ApiUrls.instance.deleteOrder}$orderId",
+        statusCode: 200,
+        query: {"Authorization": token},
+      );
       if (response != null) {
         return true;
       }
       return false;
-    }catch(e){
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool?> addShipingCharge(String orderId) async {
+    try {
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiPostServices(
+        url: "${ApiUrls.instance.addShipingCharge}/$orderId",
+        query: {"Authorization": token}, 
+      );
+      if (response != null) {
+        return true;
+      }
+    } catch (e) {
       return false;
     }
   }

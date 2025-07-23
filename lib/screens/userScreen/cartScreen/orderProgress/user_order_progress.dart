@@ -52,9 +52,7 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white,
       ),
@@ -87,8 +85,10 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 15),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.instance.green50,
                   borderRadius: BorderRadius.circular(8),
@@ -108,7 +108,7 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
                         children: [
                           AppText(
                             text:
-                                "Order #${orderData.sId?.substring(orderData.sId!.length - 6) ?? 'N/A'}",
+                                "Order #${orderData.id?.substring(orderData.id!.length - 6) ?? 'N/A'}",
                             fontFamily: 2,
                             fontWeight: FontWeight.w500,
                             fontSize: 15,
@@ -118,7 +118,7 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
                           ),
                           Gap(height: 2),
                           AppText(
-                            text: orderData.address ?? 'N/A',
+                            text: orderData.addressLine1 ?? 'N/A',
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             fontFamily: 2,
@@ -154,8 +154,7 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
               Gap(height: 15),
 
               // Progress Steps based on order history
-              _buildProgressSteps(orderData.history ?? []),
-
+              //_buildProgressSteps(orderData. ?? []),
               Gap(height: 20),
               AppButton(
                 title: AppString.instance.viewOrder,
@@ -173,10 +172,13 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
                 backgroundColor: AppColors.instance.green500,
                 onTap: () {
                   if (controller.singleOrderList.isNotEmpty) {
-                    Get.toNamed(AppRoutes.menuRating, arguments: [
-                      controller.singleOrderList.first.sellerId,
-                      controller.singleOrderList.first.sId
-                    ]);
+                    Get.toNamed(
+                      AppRoutes.menuRating,
+                      arguments: [
+                        controller.singleOrderList.first.sellerId,
+                        controller.singleOrderList.first.id,
+                      ],
+                    );
                   } else {
                     // Handle empty list case
                     AppSnackBar.error("Order details not available");
@@ -196,27 +198,27 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
       {
         'key': 'completed',
         'title': 'Order Placed',
-        'icon': AppAssertIcons.stepper1
+        'icon': AppAssertIcons.stepper1,
       },
       {
         'key': 'recived',
         'title': 'Order Received',
-        'icon': AppAssertIcons.stepper2
+        'icon': AppAssertIcons.stepper2,
       },
       {
         'key': 'ongoing',
         'title': 'Processing',
-        'icon': AppAssertIcons.stepper3
+        'icon': AppAssertIcons.stepper3,
       },
       {
         'key': 'delivery',
         'title': 'Out for Delivery',
-        'icon': AppAssertIcons.stepper4
+        'icon': AppAssertIcons.stepper4,
       },
       {
         'key': 'finished',
         'title': 'Delivered',
-        'icon': AppAssertIcons.stepper4
+        'icon': AppAssertIcons.stepper4,
       },
     ];
 

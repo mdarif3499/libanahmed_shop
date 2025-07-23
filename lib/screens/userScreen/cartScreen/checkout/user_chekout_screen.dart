@@ -25,12 +25,16 @@ class UserCheckoutScreen extends StatefulWidget {
 
 class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
   final UserCheckoutContoller controller = Get.put(UserCheckoutContoller());
-  String _countryFlag = "🇧🇩";
+  String _countryFlag = "🇺🇸"; // USA flag emoji
+  String _selectedCountryCode =
+      "US"; // This will store the actual country code like "BD", "US"
 
   @override
   void initState() {
     super.initState();
-    controller.country.text = "Bangladesh";
+    controller.countryCode.text =
+        "United States"; // Set initial country to USA (for display)
+    _selectedCountryCode = "US"; // Set initial country code (for API)
   }
 
   void _pickCountry(BuildContext context) {
@@ -39,9 +43,16 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
       showPhoneCode: false,
       onSelect: (Country country) {
         setState(() {
-          controller.country.text = country.name;
+          controller.countryCode.text =
+              country.countryCode; // Store name for display
           _countryFlag = country.flagEmoji;
+          _selectedCountryCode = country.countryCode;
         });
+
+        // Debug log
+        log(
+          "Selected Country Code: $_selectedCountryCode",
+        ); // This will be "BD", "US", etc.
       },
     );
   }
@@ -61,9 +72,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white50,
       ),
@@ -73,9 +82,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Gap(
-              height: AppSize.height(value: 10),
-            ),
+            Gap(height: AppSize.height(value: 10)),
             Center(
               child: Image.asset(
                 AppAssertImage.instance.checkoutPage,
@@ -84,23 +91,17 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
               ),
             ),
             Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("Zip Code", "Zip Code", controller.zipCode,
-                TextInputType.number),
-            Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("Street Number", "Street Number",
-                controller.streetName, TextInputType.streetAddress),
-            Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("Street Code", "Street Code",
-                controller.stateCode, TextInputType.streetAddress),
-            Gap(height: AppSize.height(value: 10)),
-            //!Phone Number
-            AppText(
-              text: AppString.instance.phoneNumber,
+            editInfoTextField(
+              "Postal Code",
+              "Enter Postal Code",
+              controller.postalCode,
+              TextInputType.number,
             ),
+            //!Phone Number
+            AppText(text: AppString.instance.phoneNumber),
             Gap(height: AppSize.height(value: 5)),
-
             IntlPhoneFieldWidget(
-              hintText: "enterYourPhoneNumber".tr,
+              hintText: "Enter Your Number".tr,
               controller: controller.phoneNumber,
               onChanged: (phone) {
                 controller.updatePhoneNumber(phone.completeNumber);
@@ -108,15 +109,22 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
               },
               fillColor: AppColors.instance.createOrderTextFiledFill,
               borderColor: AppColors.instance.createOrderTextFieldBorder,
-              initialCountryCode: "BD",
+              initialCountryCode: "US", // Set initial country code to USA
             ),
             Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("Locality", "Locality", controller.locality,
-                TextInputType.streetAddress),
+            editInfoTextField(
+              "State Code",
+              "Enter your state code",
+              controller.stateCode,
+              TextInputType.streetAddress,
+            ),
             Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("House Number", "House Number",
-                controller.houseNumnber, TextInputType.streetAddress),
-            Gap(height: AppSize.height(value: 10)),
+            editInfoTextField(
+              "City",
+              "Enter your city",
+              controller.cityName,
+              TextInputType.streetAddress,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,7 +137,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
                 ),
                 Gap(height: AppSize.height(value: 5)),
                 TextFormField(
-                  controller: controller.country,
+                  controller: controller.countryCode,
                   readOnly: true,
                   decoration: InputDecoration(
                     hintText: "Country",
@@ -142,10 +150,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
                     fillColor: AppColors.instance.createOrderTextFiledFill,
                     prefixIcon: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(
-                        _countryFlag,
-                        style: TextStyle(fontSize: 20),
-                      ),
+                      child: Text(_countryFlag, style: TextStyle(fontSize: 20)),
                     ),
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 16,
@@ -157,35 +162,52 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
               ],
             ),
             Gap(height: AppSize.height(value: 10)),
-            editInfoTextField("Address", "Address", controller.address,
-                TextInputType.streetAddress),
-            Gap(height: 20),
-            Obx(() => AppButton(
-                  title: controller.isCheckOutCompleted.value
-                      ? "Processing..."
-                      : "Booking Order Now",
-                  titleColor: AppColors.instance.white,
-                  backgroundColor: controller.isCheckOutCompleted.value
-                      ? AppColors.instance.grey500
-                      : AppColors.instance.green500,
-                  height: AppSize.height(value: 64),
-                  onTap: controller.isCheckOutCompleted.value
-                      ? null
-                      : () {
-                          _submitOrder();
-                        },
-                )),
-            Gap(
-              height: AppSize.height(value: 40),
+            editInfoTextField(
+              "Address 1",
+              "Enter Your Address 1",
+              controller.addressLine1,
+              TextInputType.streetAddress,
             ),
+            Gap(height: AppSize.height(value: 10)),
+            editInfoTextField(
+              "Address 2",
+              "Enter Your Address 2",
+              controller.addressLine2,
+              TextInputType.streetAddress,
+            ),
+            Gap(height: AppSize.height(value: 10)),
+
+            Gap(height: 20),
+            Obx(
+              () => AppButton(
+                title: controller.isCheckOutCompleted.value
+                    ? "Processing..."
+                    : "Booking Order Now",
+                titleColor: AppColors.instance.white,
+                backgroundColor: controller.isCheckOutCompleted.value
+                    ? AppColors.instance.grey500
+                    : AppColors.instance.green500,
+                height: AppSize.height(value: 64),
+                onTap: controller.isCheckOutCompleted.value
+                    ? null
+                    : () {
+                        _submitOrder();
+                      },
+              ),
+            ),
+            Gap(height: AppSize.height(value: 40)),
           ],
         ),
       ),
     );
   }
 
-  Widget editInfoTextField(String label, String hintText,
-      TextEditingController textController, TextInputType? keyboardtype) {
+  Widget editInfoTextField(
+    String label,
+    String hintText,
+    TextEditingController textController,
+    TextInputType? keyboardtype,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -209,10 +231,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
             ),
             filled: true,
             fillColor: AppColors.instance.createOrderTextFiledFill,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 12,
-            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           ),
         ),
       ],
@@ -221,27 +240,30 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
 
   void _submitOrder() {
     // Basic validation
-    if (controller.zipCode.text.isEmpty ||
-        controller.streetName.text.isEmpty ||
-        controller.stateCode.text.isEmpty ||
+    if (controller.postalCode.text.isEmpty ||
         controller.phoneNumber.text.isEmpty ||
-        controller.locality.text.isEmpty ||
-        controller.houseNumnber.text.isEmpty ||
-        controller.country.text.isEmpty ||
-        controller.address.text.isEmpty) {
+        controller.stateCode.text.isEmpty ||
+        controller.cityName.text.isEmpty ||
+        controller.countryCode.text.isEmpty ||
+        controller.addressLine1.text.isEmpty ||
+        controller.addressLine2.text.isEmpty) {
       AppSnackBar.error("Please fill all fields");
       return;
     }
 
+    // Log to verify what we're sending
+    log("Country Name (Display): ${controller.countryCode.text}");
+    log("Country Code (API): $_selectedCountryCode");
+
     controller.orderCheckout(
-      controller.zipCode.text,
-      controller.streetName.text,
+      controller.postalCode.text,
+      controller.addressLine1.text,
       controller.stateCode.text,
       controller.phoneNumber.text,
-      controller.locality.text,
-      controller.houseNumnber.text,
-      controller.country.text,
-      controller.address.text,
+      controller.cityName.text,
+      controller.addressLine2.text,
+      _selectedCountryCode, // Send the actual country code: "BD", "US", etc.
+      "${controller.addressLine1.text}, ${controller.addressLine2.text}",
     );
   }
 }

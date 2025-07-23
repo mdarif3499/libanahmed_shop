@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
@@ -8,12 +7,11 @@ import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
-import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
+import 'package:ahmed_shop/widgets/buttons/app_button_row.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
 import '../../../../services/storage_services/storage_services.dart';
 import '../../../../utils/error_log.dart';
 import '../../../../widgets/app_snack_bar/app_snack_bar.dart';
@@ -192,35 +190,17 @@ class _UserMenuDrawerState extends State<UserMenuDrawer> {
                     );
                   }),
                   Gap(height: 200),
-                  IconAppButton(
-                    iconAlignment: CustomIconAlignment.left,
-                    fontSize: 16,
-                    icon: AppAssertIcons.menuLogout,
-                    iconSize: 20,
+                  AppImageButton(
+                    imagePosition: ImagePosition.left,
+                    fontSize: AppSize.width(value: 15),
+                    svgPath: AppAssertIcons.menuLogout,
                     title: AppString.instance.logOut,
                     onTap: () {
                       showSignourDialog(context);
-                      // try {
-                      //   // Clear all stored user data
-                      //   await StorageServices.instance.storageClear();
-
-                      //   // Navigate to the onboarding screen
-                      //   Get.offAllNamed(AppRoutes.onboardScreenTwo);
-
-                      //   // Show success message
-                      //   AppSnackBar.success("Logged out successfully.");
-                      // } catch (e) {
-                      //   // Log the error and show an error message
-                      //   errorLog("Logout Error", e);
-                      //   AppSnackBar.error(
-                      //     "Failed to log out. Please try again.",
-                      //   );
-                      // }
                     },
                     titleColor: AppColors.instance.textColor,
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                     backgroundColor: AppColors.instance.black50,
-                    borderRadius: 8,
                     height: AppSize.height(value: 56),
                   ),
                 ],

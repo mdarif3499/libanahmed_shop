@@ -60,6 +60,8 @@ class ApiUrls {
   final String deleteOrder = "/order/";
   final String rating = "/review";
   final String userProfileSettings = "/setting";
+  final String favouriteProduct = "/favorite-product";
+  final String addShipingCharge = "/shipping/rates";
 
   //! Owner Product End Points
   final String ownerAllProduct = "/product/seller";

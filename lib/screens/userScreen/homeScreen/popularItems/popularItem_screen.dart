@@ -11,6 +11,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class PopularitemScreen extends StatelessWidget {
   const PopularitemScreen({super.key});
@@ -41,7 +42,10 @@ class PopularitemScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (productController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: LoadingAnimationWidget.threeArchedCircle(
+                      color: AppColors.instance.red400,
+                      size: AppSize.height(value: 40),
+                    ));
         }
         if (productController.productList.isEmpty) {
           return const Center(child: AppText(text: 'No products available'));

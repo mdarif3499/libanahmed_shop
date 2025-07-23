@@ -12,6 +12,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UserCartScreen extends StatelessWidget {
   const UserCartScreen({super.key});
@@ -21,18 +22,29 @@ class UserCartScreen extends StatelessWidget {
     // Initialize the controller
     final CartController controller = Get.put(CartController());
 
+    // Refresh cart data when screen is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchCartProduct();
+    });
+
     return Scaffold(
       backgroundColor: AppColors.instance.userPhoneBackground,
       body: Obx(() {
         // Show loading indicator when data is being fetched
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: AppColors.instance.green500,
+              size: AppSize.height(value: 40),
+            ),
+          );
         }
 
         // Show empty state if cart is empty
         if (controller.cartList.isEmpty) {
           return const Center(
-              child: AppText(text: "Your cart is empty", fontSize: 18));
+            child: AppText(text: "Your cart is empty", fontSize: 18),
+          );
         }
 
         return SingleChildScrollView(
@@ -51,26 +63,31 @@ class UserCartScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(
                     bottom: 15,
                   ), // Add margin for spacing
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.instance.white,
                     borderRadius: BorderRadius.circular(16),
-                    border:
-                        Border.all(color: AppColors.instance.authBorderColor),
+                    border: Border.all(
+                      color: AppColors.instance.authBorderColor,
+                    ),
                   ),
                   child: Row(
                     // Changed from Column to Row to properly use Expanded
                     children: [
                       // Display product image
                       AppImage(
-                        url: cartItem.productId?.images?[0] ??
+                        url:
+                            cartItem.productId?.images?[0] ??
                             'default_image_url',
                         height: AppSize.height(value: 60),
                         width: AppSize.width(value: 60),
                       ),
                       const Gap(
-                          width: 10), // Add spacing between image and content
+                        width: 10,
+                      ), // Add spacing between image and content
                       // Product details - now properly wrapped in Expanded
                       Expanded(
                         child: Column(
@@ -117,9 +134,7 @@ class UserCartScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               if (cartItem.id != null) {
-                                controller.deleteCartProduct(
-                                  cartItem.id!,
-                                );
+                                controller.deleteCartProduct(cartItem.id!);
                               }
                             },
                             child: SvgPicture.asset(
@@ -190,42 +205,35 @@ class UserCartScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    ...List.generate(
-                      controller.cartList.length,
-                      (index) {
-                        final cartItem = controller.cartList[index];
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                AppText(
-                                  text: cartItem.productId!.name ??
-                                      "Unknown Product",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.instance.textColor,
-                                ),
-                                AppText(
-                                  text:
-                                      '\$${cartItem.price!.toStringAsFixed(2)}',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.instance.textColor,
-                                )
-                              ],
-                            ),
-                            Gap(
-                              height: AppSize.height(value: 10),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                    ...List.generate(controller.cartList.length, (index) {
+                      final cartItem = controller.cartList[index];
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AppText(
+                                text:
+                                    cartItem.productId!.name ??
+                                    "Unknown Product",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.instance.textColor,
+                              ),
+                              AppText(
+                                text: '\$${cartItem.price!.toStringAsFixed(2)}',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.instance.textColor,
+                              ),
+                            ],
+                          ),
+                          Gap(height: AppSize.height(value: 10)),
+                        ],
+                      );
+                    }),
                     Image.asset(AppAssertImage.instance.checkOutImage),
-                    Gap(
-                      height: AppSize.height(value: 10),
-                    ),
+                    Gap(height: AppSize.height(value: 10)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

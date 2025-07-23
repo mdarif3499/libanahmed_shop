@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../../routes/app_routes.dart';
 import '../../../../../services/repository/customer_auth_repository/auth_repository.dart';
 import '../../../../../utils/error_log.dart';
@@ -9,24 +8,24 @@ import '../../../../../widgets/app_snack_bar/app_snack_bar.dart';
 class CreateAccountController extends GetxController {
   final AuthRepository authRepository = AuthRepository();
 
-  // Controllers for form fields
+  //! Controllers for form fields
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  // To track whether the user is on login or sign-up screen
+  //! To track whether the user is on login or sign-up screen
   RxBool isLogin = true.obs;
   RxBool isLoading = false.obs;
 
-  // Reactive variable for "Remember Me"
+  //! Reactive variable for "Remember Me"
   RxBool isRememberMeChecked = false.obs;
 
-  // GlobalKey for form validation
+  //! GlobalKey for form validation
   final formKey = GlobalKey<FormState>();
 
-  // Dispose all controllers when they are no longer needed
+  //! Dispose all controllers when they are no longer needed
   @override
   void onClose() {
     firstNameController.dispose();
@@ -37,12 +36,12 @@ class CreateAccountController extends GetxController {
     super.onClose();
   }
 
-  // Toggle between login and signup view
+  //! Toggle between login and signup view
   void toggleLoginSignup() {
     isLogin.value = !isLogin.value;
   }
 
-  // Form validation
+  //! Form validation
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password cannot be empty';
@@ -70,12 +69,12 @@ class CreateAccountController extends GetxController {
     return null;
   }
 
-  // Logic to handle "Remember Me" checkbox
+  //! Logic to handle "Remember Me" checkbox
   void toggleRememberMe(bool? value) {
     isRememberMeChecked.value = value ?? false;
   }
 
-  // Register User
+  //! Register User
 
   Future<void> registerUser() async {
     try {
@@ -100,7 +99,7 @@ class CreateAccountController extends GetxController {
     }
   }
 
-  // Login User
+  //! Login User
   Future<void> loginUser() async {
     try {
       isLoading.value = true; 

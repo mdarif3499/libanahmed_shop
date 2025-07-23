@@ -28,7 +28,6 @@ import 'package:ahmed_shop/screens/userScreen/authScreen/createAccount/create_ac
 import 'package:ahmed_shop/screens/userScreen/authScreen/forgotPassword/user_forgot_password_screen.dart';
 import 'package:ahmed_shop/screens/userScreen/authScreen/forgot_password_otp/forgot_password_otp_screen.dart';
 import 'package:ahmed_shop/screens/userScreen/authScreen/otpVerification/user_otp_verification_screen.dart';
-import 'package:ahmed_shop/screens/userScreen/bottomNav/user_bottom_nav.dart';
 import 'package:ahmed_shop/screens/userScreen/bottomNav/user_bottom_navigation.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/checkout/edit_information/edit_information.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/checkout/user_chekout_screen.dart';
@@ -124,11 +123,11 @@ List<GetPage> appRoutesFile = <GetPage>[
     transition: Transition.rightToLeft,
     //middlewares: [InternetCheckMiddleWare()],
   ),
-  GetPage(
-    name: AppRoutes.userBottomNav,
-    page: () => UserBottomNav(),
-    transition: Transition.fadeIn,
-  ),
+  // GetPage(
+  //   name: AppRoutes.userBottomNav,
+  //   page: () => UserBottomNav(),
+  //   transition: Transition.fadeIn,
+  // ),
   GetPage(
     name: AppRoutes.userNavigationScreen,
     page: () => UserNavigationScreen(),
