@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OwnerOrderDetails extends StatelessWidget {
-  const OwnerOrderDetails({Key? key}) : super(key: key);
+  const OwnerOrderDetails({super.key});
 
   @override
   Widget build(BuildContext context) {

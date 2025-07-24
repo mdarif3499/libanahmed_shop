@@ -2,7 +2,6 @@ import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
-import 'package:ahmed_shop/screens/ownerScreen/orderScreen/orderDetails/models/owner_order_details_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/orderScreen/orderProgress/controller/owner_order_progress_controller.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
