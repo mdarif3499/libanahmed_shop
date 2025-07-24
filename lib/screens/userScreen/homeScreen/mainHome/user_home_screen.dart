@@ -10,7 +10,6 @@ import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/app_aspect_ratio/app_aspect_ratio.dart';
 import 'package:ahmed_shop/widgets/app_image/app_image.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button_row.dart';
-import 'package:ahmed_shop/widgets/buttons/icon_app_button.dart';
 import 'package:ahmed_shop/widgets/inputs/app_custom_text_field.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
@@ -317,7 +316,10 @@ class UserHomeScreen extends StatelessWidget {
                       crossAxisCount: 2,
                       crossAxisSpacing: 15.0,
                       mainAxisSpacing: 15.0,
-                      childAspectRatio: getResponsiveAspectRatio(context),
+                      childAspectRatio: getResponsiveAspectRatio(
+                        context: context,
+                        ratioAdjuster: 0.174,
+                      ),
                     ),
                     itemCount: controller.categoryProductList.length,
                     itemBuilder: (context, index) {
@@ -413,7 +415,10 @@ class UserHomeScreen extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 15.0,
                     mainAxisSpacing: 15.0,
-                    childAspectRatio: getResponsiveAspectRatio(context),
+                    childAspectRatio: getResponsiveAspectRatio(
+                      context: context,
+                      ratioAdjuster: 0.238,
+                    ),
                   ),
                   itemCount: controller.productList.length,
                   itemBuilder: (context, index) {

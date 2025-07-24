@@ -13,6 +13,7 @@ class UserTrackOrderController extends GetxController {
   RxBool isPaymentLoading = false.obs;
   RxBool isShippingLoading = false.obs;
   var orderList = <TrackOrderModel.TrackOrderModelList>[].obs;
+  Rx<Map<String, dynamic>?> shippingData = Rx<Map<String, dynamic>?>(null);
 
   @override
   void onInit() {
@@ -60,12 +61,12 @@ class UserTrackOrderController extends GetxController {
     }
   }
 
-  void payOrder(String orderId) async {
+  void payOrder(String orderId, double shippingCost) async {
     isPaymentLoading(true);
     try {
       final response = await PaymentRepository.userPayment(
         orderId: orderId,
-        shippingCost: 30,
+        shippingCost: shippingCost,
       );
 
       if (response == true) {
@@ -82,16 +83,19 @@ class UserTrackOrderController extends GetxController {
     }
   }
 
-  void addShippingCharge (String orderId) async {
+  void addShippingCharge(String orderId) async {
     try {
       isShippingLoading(true);
       final response = await OrderRepository.addShipingCharge(orderId);
-      if (response == true) {
+      if (response != null) {
+        shippingData.value = response;
         AppSnackBar.success('Shipping charge added successfully');
       } else {
+        shippingData.value = null;
         AppSnackBar.error('Failed to add shipping charge');
       }
     } catch (e) {
+      shippingData.value = null;
       AppSnackBar.error('Failed to add shipping charge');
     } finally {
       isShippingLoading(false);

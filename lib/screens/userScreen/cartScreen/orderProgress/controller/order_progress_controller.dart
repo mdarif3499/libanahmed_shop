@@ -1,3 +1,4 @@
+import 'package:ahmed_shop/screens/userScreen/cartScreen/orderProgress/models/parcel_tracking_models.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/viewOrder/model/view_order_model.dart'
     as ViewOrderModel;
 import 'package:ahmed_shop/services/repository/order_repository/order_repository.dart';
@@ -6,7 +7,9 @@ import 'package:get/get.dart';
 
 class OrderProgressController extends GetxController {
   RxBool isLoading = false.obs;
+  RxBool isTracking = false.obs;
   var singleOrderList = <ViewOrderModel.ViewOrderModelData>[].obs;
+  var trackOrderDataList = Rxn<ParcelDeliveryTrackingModel>();
 
   void showSingleOrderData(String orderId) async {
     isLoading.value = true;
@@ -16,7 +19,7 @@ class OrderProgressController extends GetxController {
         singleOrderList.clear();
         singleOrderList.add(response.data!);
       } else {
-        singleOrderList.clear(); 
+        singleOrderList.clear();
       }
     } catch (e) {
       singleOrderList.clear();
@@ -24,6 +27,37 @@ class OrderProgressController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void trackingOrder(String trackingNumber) async {
+    try {
+      isTracking(true);
+      final response = await OrderRepository.trackingOrder(trackingNumber);
+      if (response != null && response.data != null) {
+        trackOrderDataList.value = response;
+      } else {
+        trackOrderDataList.value = null;
+      }
+    } catch (e) {
+      appLog('Error tracking order: $e');
+    } finally {
+      isTracking(false);
+    }
+  }
+
+  // Helper method to check if order is paid and has tracking number
+  bool canTrackOrder() {
+    if (singleOrderList.isEmpty) return false;
+    final order = singleOrderList.first;
+    return order.paymentStatus == 'paid' &&
+        order.trackingNumber != null &&
+        order.trackingNumber!.isNotEmpty;
+  }
+
+  // Helper method to get tracking number
+  String? getTrackingNumber() {
+    if (singleOrderList.isEmpty) return null;
+    return singleOrderList.first.trackingNumber;
   }
 
   // Helper method to get current order status
@@ -35,7 +69,7 @@ class OrderProgressController extends GetxController {
   // Helper method to get order progress percentage
   double getOrderProgress() {
     if (singleOrderList.isEmpty) return 0.0;
-    
+
     final status = getCurrentOrderStatus();
     switch (status) {
       case 'completed':
@@ -54,7 +88,6 @@ class OrderProgressController extends GetxController {
   }
 
   @override
-
   void onClose() {
     singleOrderList.clear();
     super.onClose();

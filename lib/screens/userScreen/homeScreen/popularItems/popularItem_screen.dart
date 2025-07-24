@@ -62,7 +62,7 @@ class PopularitemScreen extends StatelessWidget {
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
                   childAspectRatio: getResponsiveAspectRatio(
-                      context), // Adjust based on content
+                      context: context,ratioAdjuster: 0.174,), // Adjust based on content
                 ),
                 itemCount: productController.productList.length,
                 itemBuilder: (context, index) {

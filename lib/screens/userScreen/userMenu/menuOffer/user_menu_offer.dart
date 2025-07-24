@@ -70,9 +70,7 @@ class UserMenuOffer extends StatelessWidget {
           onPressed: () {
             Get.back();
           },
-          icon: SvgPicture.asset(
-            AppAssertIcons.backIcon,
-          ),
+          icon: SvgPicture.asset(AppAssertIcons.backIcon),
         ),
         backgroundColor: AppColors.instance.white,
       ),
@@ -89,7 +87,10 @@ class UserMenuOffer extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 10.0,
-              childAspectRatio: getResponsiveAspectRatio(context),
+              childAspectRatio: getResponsiveAspectRatio(
+                context: context,
+                ratioAdjuster: 0.174,
+              ),
             ),
             itemCount: products.length,
             itemBuilder: (context, index) {
@@ -135,7 +136,7 @@ class UserMenuOffer extends StatelessWidget {
                         icon: AppAssertIcons.userCartButton,
                         iconSize: 15,
                         onTap: () {},
-                      )
+                      ),
                     ],
                   ),
                 ),

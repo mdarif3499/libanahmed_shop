@@ -112,12 +112,23 @@ class OwnerOrderScreen extends StatelessWidget {
                         color: AppColors.instance.textColor,
                       ),
                       Gap(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
+                      AppButton(
+                        width: AppSize.width(value: 150),
+                        onTap: () {
                           controller.refreshAllOrders();
                         },
-                        child: Text('Refresh'),
+                        title: "Refresh",
+                        backgroundColor: AppColors.instance.red500,
+                        titleColor: AppColors.instance.white,
+                        borderradius: 8,
                       ),
+                      Gap(height: 20),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     controller.refreshAllOrders();
+                      //   },
+                      //   child: Text('Refresh'),
+                      // ),
                     ],
                   ),
                 );
@@ -157,7 +168,10 @@ class OwnerOrderScreen extends StatelessWidget {
                     children: currentOrders.map((order) {
                       return GestureDetector(
                         onTap: () {
-                          Get.toNamed(AppRoutes.ownerOrderProgress);
+                          Get.toNamed(
+                            AppRoutes.ownerOrderProgress,
+                            arguments: order.id,
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 15),

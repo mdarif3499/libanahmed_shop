@@ -5,13 +5,12 @@ import 'package:ahmed_shop/services/storage_services/storage_services.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PaymentRepository {
   //! User Payment Repository
   static Future<bool?> userPayment({
     required String orderId,
-    required int shippingCost,
+    required double shippingCost,
   }) async {
     try {
       String token = StorageServices.instance.getToken();
@@ -24,13 +23,7 @@ class PaymentRepository {
       if (response != null && response["data"] != null) {
         String paymentUrl = response["data"]["url"];
         appLog("Payment URL: $paymentUrl");
-
-        // Option 1: Use url_launcher (recommended)
-        //await _launchPaymentUrl(paymentUrl);
-
-        // Option 2: Use custom payment screen
         Get.to(() => PaymentScreen(url: paymentUrl, orderId: orderId));
-
         return true;
       }
       return false;

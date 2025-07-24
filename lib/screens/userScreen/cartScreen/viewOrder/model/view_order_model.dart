@@ -7,21 +7,24 @@ class ViewOrderModel {
 
   ViewOrderModel({this.success, this.message, this.data});
 
-  factory ViewOrderModel.fromRawJson(String str) => ViewOrderModel.fromJson(json.decode(str));
+  factory ViewOrderModel.fromRawJson(String str) =>
+      ViewOrderModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory ViewOrderModel.fromJson(Map<String, dynamic> json) => ViewOrderModel(
-        success: json['success'],
-        message: json['message'],
-        data: json['data'] != null ? ViewOrderModelData.fromJson(json['data']) : null,
-      );
+    success: json['success'],
+    message: json['message'],
+    data: json['data'] != null
+        ? ViewOrderModelData.fromJson(json['data'])
+        : null,
+  );
 
   Map<String, dynamic> toJson() => {
-        'success': success,
-        'message': message,
-        'data': data?.toJson(),
-      };
+    'success': success,
+    'message': message,
+    'data': data?.toJson(),
+  };
 }
 
 class ViewOrderModelData {
@@ -43,6 +46,7 @@ class ViewOrderModelData {
   String? city;
   String? createdAt;
   String? updatedAt;
+  String? trackingNumber;
   int? v;
 
   ViewOrderModelData({
@@ -64,20 +68,25 @@ class ViewOrderModelData {
     this.city,
     this.createdAt,
     this.updatedAt,
+    this.trackingNumber,
     this.v,
   });
 
-  factory ViewOrderModelData.fromRawJson(String str) => ViewOrderModelData.fromJson(json.decode(str));
+  factory ViewOrderModelData.fromRawJson(String str) =>
+      ViewOrderModelData.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory ViewOrderModelData.fromJson(Map<String, dynamic> json) => ViewOrderModelData(
+  factory ViewOrderModelData.fromJson(Map<String, dynamic> json) =>
+      ViewOrderModelData(
         id: json['_id'],
         customerId: json['customerId'],
         sellerId: json['sellerId'],
         shopId: json['shopId'],
         productList: json['productList'] != null
-            ? List<ProductList>.from(json['productList'].map((x) => ProductList.fromJson(x)))
+            ? List<ProductList>.from(
+                json['productList'].map((x) => ProductList.fromJson(x)),
+              )
             : null,
         totalAmount: json['totalAmount'],
         orderDate: json['orderDate'],
@@ -92,30 +101,32 @@ class ViewOrderModelData {
         city: json['city'],
         createdAt: json['createdAt'],
         updatedAt: json['updatedAt'],
+        trackingNumber: json['tacking_number'],
         v: json['__v'],
       );
 
   Map<String, dynamic> toJson() => {
-        '_id': id,
-        'customerId': customerId,
-        'sellerId': sellerId,
-        'shopId': shopId,
-        'productList': productList?.map((v) => v.toJson()).toList(),
-        'totalAmount': totalAmount,
-        'orderDate': orderDate,
-        'status': status,
-        'paymentStatus': paymentStatus,
-        'phone_number': phoneNumber,
-        'postal_code': postalCode,
-        'state_code': stateCode,
-        'country_code': countryCode,
-        'address_line1': addressLine1,
-        'address_line2': addressLine2,
-        'city': city,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
-        '__v': v,
-      };
+    '_id': id,
+    'customerId': customerId,
+    'sellerId': sellerId,
+    'shopId': shopId,
+    'productList': productList?.map((v) => v.toJson()).toList(),
+    'totalAmount': totalAmount,
+    'orderDate': orderDate,
+    'status': status,
+    'paymentStatus': paymentStatus,
+    'phone_number': phoneNumber,
+    'postal_code': postalCode,
+    'state_code': stateCode,
+    'country_code': countryCode,
+    'address_line1': addressLine1,
+    'address_line2': addressLine2,
+    'city': city,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+    'tacking_number': trackingNumber,
+    '__v': v,
+  };
 }
 
 class ProductList {
@@ -145,37 +156,40 @@ class ProductList {
     this.id,
   });
 
-  factory ProductList.fromRawJson(String str) => ProductList.fromJson(json.decode(str));
+  factory ProductList.fromRawJson(String str) =>
+      ProductList.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory ProductList.fromJson(Map<String, dynamic> json) => ProductList(
-        productId: json['productId'] != null ? ProductId.fromJson(json['productId']) : null,
-        sellerId: json['sellerId'],
-        customerId: json['customerId'],
-        price: json['price'],
-        quantity: json['quantity'],
-        offer: json['offer'],
-        weight: json['weight'],
-        height: json['height'],
-        width: json['width'],
-        length: json['length'],
-        id: json['_id'],
-      );
+    productId: json['productId'] != null
+        ? ProductId.fromJson(json['productId'])
+        : null,
+    sellerId: json['sellerId'],
+    customerId: json['customerId'],
+    price: json['price'],
+    quantity: json['quantity'],
+    offer: json['offer'],
+    weight: json['weight'],
+    height: json['height'],
+    width: json['width'],
+    length: json['length'],
+    id: json['_id'],
+  );
 
   Map<String, dynamic> toJson() => {
-        'productId': productId?.toJson(),
-        'sellerId': sellerId,
-        'customerId': customerId,
-        'price': price,
-        'quantity': quantity,
-        'offer': offer,
-        'weight': weight,
-        'height': height,
-        'width': width,
-        'length': length,
-        '_id': id,
-      };
+    'productId': productId?.toJson(),
+    'sellerId': sellerId,
+    'customerId': customerId,
+    'price': price,
+    'quantity': quantity,
+    'offer': offer,
+    'weight': weight,
+    'height': height,
+    'width': width,
+    'length': length,
+    '_id': id,
+  };
 }
 
 class ProductId {
@@ -223,53 +237,54 @@ class ProductId {
     this.v,
   });
 
-  factory ProductId.fromRawJson(String str) => ProductId.fromJson(json.decode(str));
+  factory ProductId.fromRawJson(String str) =>
+      ProductId.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory ProductId.fromJson(Map<String, dynamic> json) => ProductId(
-        id: json['_id'],
-        sellerId: json['sellerId'],
-        shopId: json['shopId'],
-        categoryId: json['categoryId'],
-        categoryName: json['categoryName'],
-        name: json['name'],
-        details: json['details'],
-        price: json['price'],
-        stock: json['stock'],
-        availableStock: json['availableStock'],
-        images: json['images'] != null ? List<String>.from(json['images']) : null,
-        weight: json['weight'],
-        length: json['length'],
-        height: json['height'],
-        width: json['width'],
-        isDeleted: json['isDeleted'],
-        isOffer: json['isOffer'],
-        createdAt: json['createdAt'],
-        updatedAt: json['updatedAt'],
-        v: json['__v'],
-      );
+    id: json['_id'],
+    sellerId: json['sellerId'],
+    shopId: json['shopId'],
+    categoryId: json['categoryId'],
+    categoryName: json['categoryName'],
+    name: json['name'],
+    details: json['details'],
+    price: json['price'],
+    stock: json['stock'],
+    availableStock: json['availableStock'],
+    images: json['images'] != null ? List<String>.from(json['images']) : null,
+    weight: json['weight'],
+    length: json['length'],
+    height: json['height'],
+    width: json['width'],
+    isDeleted: json['isDeleted'],
+    isOffer: json['isOffer'],
+    createdAt: json['createdAt'],
+    updatedAt: json['updatedAt'],
+    v: json['__v'],
+  );
 
   Map<String, dynamic> toJson() => {
-        '_id': id,
-        'sellerId': sellerId,
-        'shopId': shopId,
-        'categoryId': categoryId,
-        'categoryName': categoryName,
-        'name': name,
-        'details': details,
-        'price': price,
-        'stock': stock,
-        'availableStock': availableStock,
-        'images': images,
-        'weight': weight,
-        'length': length,
-        'height': height,
-        'width': width,
-        'isDeleted': isDeleted,
-        'isOffer': isOffer,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
-        '__v': v,
-      };
+    '_id': id,
+    'sellerId': sellerId,
+    'shopId': shopId,
+    'categoryId': categoryId,
+    'categoryName': categoryName,
+    'name': name,
+    'details': details,
+    'price': price,
+    'stock': stock,
+    'availableStock': availableStock,
+    'images': images,
+    'weight': weight,
+    'length': length,
+    'height': height,
+    'width': width,
+    'isDeleted': isDeleted,
+    'isOffer': isOffer,
+    'createdAt': createdAt,
+    'updatedAt': updatedAt,
+    '__v': v,
+  };
 }

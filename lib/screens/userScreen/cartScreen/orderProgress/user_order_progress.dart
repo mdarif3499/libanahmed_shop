@@ -34,7 +34,22 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
     // Fetch order details if orderId is available
     if (orderId != null) {
       controller.showSingleOrderData(orderId!);
+
+      // Listen for order data changes and fetch tracking if available
+      ever(controller.singleOrderList, (orderList) {
+        if (orderList.isNotEmpty && controller.canTrackOrder()) {
+          final trackingNumber = controller.getTrackingNumber();
+          if (trackingNumber != null) {
+            controller.trackingOrder(trackingNumber);
+          }
+        }
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -153,6 +168,12 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
               ),
               Gap(height: 15),
 
+              // Show tracking information for paid orders
+              if (controller.canTrackOrder()) ...[
+                _buildTrackingSection(),
+                Gap(height: 20),
+              ],
+
               // Progress Steps based on order history
               //_buildProgressSteps(orderData. ?? []),
               Gap(height: 20),
@@ -192,113 +213,164 @@ class _UserOrderProgressState extends State<UserOrderProgress> {
     );
   }
 
-  Widget _buildProgressSteps(List<dynamic> history) {
-    // Define the order progression steps
-    final steps = [
-      {
-        'key': 'completed',
-        'title': 'Order Placed',
-        'icon': AppAssertIcons.stepper1,
-      },
-      {
-        'key': 'recived',
-        'title': 'Order Received',
-        'icon': AppAssertIcons.stepper2,
-      },
-      {
-        'key': 'ongoing',
-        'title': 'Processing',
-        'icon': AppAssertIcons.stepper3,
-      },
-      {
-        'key': 'delivery',
-        'title': 'Out for Delivery',
-        'icon': AppAssertIcons.stepper4,
-      },
-      {
-        'key': 'finished',
-        'title': 'Delivered',
-        'icon': AppAssertIcons.stepper4,
-      },
-    ];
+  Widget _buildTrackingSection() {
+    return Obx(() {
+      if (controller.isTracking.value) {
+        return Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: AppColors.instance.green50,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.instance.green500,
+            ),
+          ),
+        );
+      }
 
-    return Column(
-      children: steps.map((step) {
-        // Find if this step has a date in history - FIXED VERSION
-        dynamic historyItem;
-        try {
-          historyItem = history.firstWhere(
-            (h) => h != null && h is Map && h['status'] == step['key'],
-          );
-        } catch (e) {
-          // If no matching item found, set to null
-          historyItem = null;
-        }
+      final trackingData = controller.trackOrderDataList.value;
+      if (trackingData?.data?.trackResponse?.shipment?.isNotEmpty == true) {
+        final shipment = trackingData!.data!.trackResponse!.shipment!.first;
+        final package = shipment.package?.isNotEmpty == true
+            ? shipment.package!.first
+            : null;
 
-        final isCompleted = historyItem != null && historyItem['date'] != null;
-        final stepDate = historyItem?['date'];
-
-        return Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isCompleted
-                        ? AppColors.instance.green500
-                        : AppColors.instance.black300,
-                  ),
-                  child: SvgPicture.asset(
-                    step['icon'] as String,
-                    color: AppColors.instance.white,
-                  ),
+        return Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: AppColors.instance.green50,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppText(
+                text: 'Tracking Information',
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.instance.green500,
+              ),
+              Gap(height: 15),
+              if (shipment.inquiryNumber != null) ...[
+                _buildTrackingRow(
+                  'Tracking Inquiry Number:',
+                  shipment.inquiryNumber!,
                 ),
-                Gap(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(
-                        text: step['title'] as String,
-                        fontFamily: 1,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        color: isCompleted
-                            ? AppColors.instance.textColor
-                            : AppColors.instance.black300,
-                      ),
-                      Gap(height: 5),
-                      AppText(
-                        text: stepDate != null
-                            ? _formatDate(stepDate)
-                            : 'Pending',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 1,
-                        color: AppColors.instance.black300,
-                      ),
-                    ],
-                  ),
+                Gap(height: 8),
+              ],
+              if (package?.trackingNumber != null) ...[
+                _buildTrackingRow('Tracking Number:', package!.trackingNumber!),
+                Gap(height: 8),
+              ],
+              if (package?.currentStatus?.description != null) ...[
+                _buildTrackingRow(
+                  'Current Status:',
+                  package!.currentStatus!.description!,
+                ),
+                Gap(height: 8),
+              ],
+              if (package?.currentStatus?.code != null) ...[
+                _buildTrackingRow(
+                  'Simplified Status:',
+                  _getSimplifiedStatus(package!.currentStatus!.code!),
+                ),
+                Gap(height: 8),
+              ],
+              if (package?.deliveryInformation != null) ...[
+                _buildTrackingRow('Delivery Location:', 'Front Door'),
+                Gap(height: 8),
+              ],
+              if (package?.packageCount != null) ...[
+                _buildTrackingRow(
+                  'Package Count:',
+                  package!.packageCount.toString(),
+                ),
+                Gap(height: 8),
+              ],
+              if (package?.service?.description != null) ...[
+                _buildTrackingRow(
+                  'Service Description:',
+                  package!.service!.description!,
                 ),
               ],
-            ),
-            if (step != steps.last) Gap(height: 25),
-          ],
+            ],
+          ),
         );
-      }).toList(),
+      }
+
+      return Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.instance.green50,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            AppText(
+              text: 'Tracking Information',
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.instance.green500,
+            ),
+            Gap(height: 10),
+            AppText(
+              text:
+                  'Tracking information will be available once the package is shipped.',
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: AppColors.instance.black300,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildTrackingRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: 120,
+          child: AppText(
+            text: label,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: AppColors.instance.black800,
+          ),
+        ),
+        Gap(width: 10),
+        Expanded(
+          child: AppText(
+            text: value,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: AppColors.instance.black600,
+          ),
+        ),
+      ],
     );
   }
 
-  String _formatDate(String? dateString) {
-    if (dateString == null) return 'Pending';
-
-    try {
-      final date = DateTime.parse(dateString);
-      return "${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}";
-    } catch (e) {
-      return dateString;
+  String _getSimplifiedStatus(String statusCode) {
+    switch (statusCode.toLowerCase()) {
+      case 'd':
+      case 'delivered':
+        return 'Delivered';
+      case 'in_transit':
+      case 'i':
+        return 'In Transit';
+      case 'out_for_delivery':
+      case 'o':
+        return 'Out for Delivery';
+      case 'exception':
+      case 'x':
+        return 'Exception';
+      default:
+        return 'In Progress';
     }
   }
 }

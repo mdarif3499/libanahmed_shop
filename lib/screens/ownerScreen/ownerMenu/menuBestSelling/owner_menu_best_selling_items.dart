@@ -69,7 +69,7 @@ class OwnerMenuBestSellingItems extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
-                childAspectRatio: getResponsiveAspectRatio(context),
+                childAspectRatio: getResponsiveAspectRatio(context: context,ratioAdjuster: 0.174,),
               ),
               itemCount: controller.bestSellingItems.value!.data!.length,
               itemBuilder: (context, index) {

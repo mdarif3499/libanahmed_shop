@@ -1,4 +1,5 @@
 import 'package:ahmed_shop/constant/app_api_end_point.dart';
+import 'package:ahmed_shop/screens/userScreen/cartScreen/orderProgress/models/parcel_tracking_models.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/trackOrder/models/track_order_models.dart';
 import 'package:ahmed_shop/screens/userScreen/cartScreen/viewOrder/model/view_order_model.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
@@ -89,18 +90,56 @@ class OrderRepository {
     }
   }
 
-  static Future<bool?> addShipingCharge(String orderId) async {
+  static Future<Map<String, dynamic>?> addShipingCharge(String orderId) async {
     try {
       String token = StorageServices.instance.getToken();
       var response = await ApiServices.instance.apiPostServices(
         url: "${ApiUrls.instance.addShipingCharge}/$orderId",
-        query: {"Authorization": token}, 
+        query: {"Authorization": token},
       );
       if (response != null) {
-        return true;
+        // Parse the shipping rate information from the response
+        if (response.containsKey('data') &&
+            response['data'].containsKey('RateResponse') &&
+            response['data']['RateResponse'].containsKey('RatedShipment')) {
+          var ratedShipment = response['data']['RateResponse']['RatedShipment'];
+
+          // Extract the required information
+          var billingWeight = ratedShipment['BillingWeight']['Weight'];
+          var transportationCharges =
+              ratedShipment['TransportationCharges']['MonetaryValue'];
+          var serviceOptionsCharges =
+              ratedShipment['ServiceOptionsCharges']['MonetaryValue'];
+          var totalCharges = ratedShipment['TotalCharges']['MonetaryValue'];
+
+          return {
+            'billingWeight': billingWeight,
+            'transportationCharges': transportationCharges,
+            'serviceOptionsCharges': serviceOptionsCharges,
+            'totalCharges': totalCharges,
+          };
+        }
       }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
+  }
+
+  static Future<ParcelDeliveryTrackingModel?> trackingOrder(String trackingNumber) async {
+    try{
+      String token = StorageServices.instance.getToken();
+      var response = await ApiServices.instance.apiGetServices(
+        "${ApiUrls.instance.trackingOrder}$trackingNumber",
+        statusCode: 200,
+        headers: {"Authorization": token},
+      );
+      if (response != null) {
+        return ParcelDeliveryTrackingModel.fromJson(response);
+      }
+    }catch(e){
+      return null;
+    }
+    return null;
   }
 }

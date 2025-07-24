@@ -62,6 +62,7 @@ class ApiUrls {
   final String userProfileSettings = "/setting";
   final String favouriteProduct = "/favorite-product";
   final String addShipingCharge = "/shipping/rates";
+  final String trackingOrder = "/shipping/tacking/";
 
   //! Owner Product End Points
   final String ownerAllProduct = "/product/seller";

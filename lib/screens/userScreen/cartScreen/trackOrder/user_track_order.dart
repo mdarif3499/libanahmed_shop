@@ -12,6 +12,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UserTrackOrder extends StatelessWidget {
   const UserTrackOrder({super.key});
@@ -19,7 +20,9 @@ class UserTrackOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(UserTrackOrderController());
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getAllOrder("pending");
+    });
     void showDeleteOrderDialog(String orderId) {
       showDialog(
         context: context,
@@ -110,100 +113,202 @@ class UserTrackOrder extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   color: Colors.white,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Gap(height: AppSize.height(value: 10)),
-                    AppText(
-                      text: 'Payment Details',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.instance.green500,
-                      textAlign: TextAlign.center,
-                    ),
-                    Gap(height: AppSize.height(value: 20)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppText(
-                          text: 'Order Amount:',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.instance.black800,
-                        ),
-                        AppText(
-                          text:
-                              '\$${(totalAmount - shippingCharge).toStringAsFixed(2)}',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.instance.black800,
-                        ),
-                      ],
-                    ),
-                    Gap(height: AppSize.height(value: 10)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppText(
-                          text: 'Shipping Charge:',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.instance.black800,
-                        ),
-                        AppText(
-                          text: '\$${shippingCharge.toStringAsFixed(2)}',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.instance.black800,
-                        ),
-                      ],
-                    ),
-                    Gap(height: AppSize.height(value: 10)),
-                    Divider(color: AppColors.instance.black300),
-                    Gap(height: AppSize.height(value: 10)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AppText(
-                          text: 'Total Amount:',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.instance.green500,
-                        ),
-                        AppText(
-                          text: '\$${totalAmount.toStringAsFixed(2)}',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.instance.green500,
-                        ),
-                      ],
-                    ),
-                    Gap(height: AppSize.height(value: 25)),
-                    AppButton(
-                      height: AppSize.height(value: 48),
-                      width: double.infinity,
-                      title: "Proceed to Payment",
-                      titleColor: AppColors.instance.white100,
-                      backgroundColor: AppColors.instance.green500,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        controller.payOrder(orderId);
-                      },
-                    ),
-                    Gap(height: AppSize.height(value: 10)),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: AppText(
-                        text: "Cancel",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.instance.black300,
+                child: Obx(() {
+                  final shippingData = controller.shippingData.value;
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Gap(height: AppSize.height(value: 10)),
+                      AppText(
+                        text: 'Payment Details',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.instance.green500,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  ],
-                ),
+                      Gap(height: AppSize.height(value: 20)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppText(
+                            text: 'Order Amount:',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.instance.black800,
+                          ),
+                          AppText(
+                            text: '\$${totalAmount.toStringAsFixed(2)}',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.instance.black800,
+                          ),
+                        ],
+                      ),
+                      Gap(height: AppSize.height(value: 10)),
+                      if (shippingData != null) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              text: 'Billing Weight:',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                            AppText(
+                              text: '${shippingData['billingWeight'] ?? "N/A"}',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                          ],
+                        ),
+                        Gap(height: AppSize.height(value: 10)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              text: 'Transportation:',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                            AppText(
+                              text:
+                                  '\$${shippingData['transportationCharges'] ?? "N/A"}',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                          ],
+                        ),
+                        Gap(height: AppSize.height(value: 10)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              text: 'Service Options:',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                            AppText(
+                              text:
+                                  '\$${shippingData['serviceOptionsCharges'] ?? "N/A"}',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AppText(
+                              text: 'Shipping Charge:',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                            AppText(
+                              text: '\$${shippingCharge.toStringAsFixed(2)}',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.instance.black800,
+                            ),
+                          ],
+                        ),
+                      ],
+                      Gap(height: AppSize.height(value: 10)),
+                      Divider(color: AppColors.instance.black300),
+                      Gap(height: AppSize.height(value: 10)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppText(
+                            text: 'Total Amount:',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.instance.green500,
+                          ),
+                          AppText(
+                            text: () {
+                              double calculatedShippingCost = shippingCharge;
+                              if (shippingData != null) {
+                                double transportationCharges =
+                                    double.tryParse(
+                                      shippingData['transportationCharges']
+                                              ?.toString() ??
+                                          '0',
+                                    ) ??
+                                    0;
+                                double serviceOptionsCharges =
+                                    double.tryParse(
+                                      shippingData['serviceOptionsCharges']
+                                              ?.toString() ??
+                                          '0',
+                                    ) ??
+                                    0;
+                                calculatedShippingCost =
+                                    transportationCharges +
+                                    serviceOptionsCharges;
+                              }
+                              return '\$${(totalAmount + calculatedShippingCost).toStringAsFixed(2)}';
+                            }(),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.instance.green500,
+                          ),
+                        ],
+                      ),
+                      Gap(height: AppSize.height(value: 25)),
+                      AppButton(
+                        height: AppSize.height(value: 48),
+                        width: double.infinity,
+                        title: "Proceed to Payment",
+                        titleColor: AppColors.instance.white100,
+                        backgroundColor: AppColors.instance.green500,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          double calculatedShippingCost =
+                              shippingCharge; // Default fallback
+                          if (shippingData != null) {
+                            double transportationCharges =
+                                double.tryParse(
+                                  shippingData['transportationCharges']
+                                          ?.toString() ??
+                                      '0',
+                                ) ??
+                                0;
+                            double serviceOptionsCharges =
+                                double.tryParse(
+                                  shippingData['serviceOptionsCharges']
+                                          ?.toString() ??
+                                      '0',
+                                ) ??
+                                0;
+                            calculatedShippingCost =
+                                transportationCharges + serviceOptionsCharges;
+                          }
+                          controller.payOrder(orderId, calculatedShippingCost);
+                        },
+                      ),
+                      Gap(height: AppSize.height(value: 10)),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: AppText(
+                          text: "Cancel",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.instance.black300,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           );
@@ -283,8 +388,9 @@ class UserTrackOrder extends StatelessWidget {
             Obx(() {
               if (controller.isLoading.value) {
                 return Center(
-                  child: CircularProgressIndicator(
+                  child: LoadingAnimationWidget.threeArchedCircle(
                     color: AppColors.instance.green500,
+                    size: AppSize.height(value: 40),
                   ),
                 );
               }
@@ -404,7 +510,39 @@ class UserTrackOrder extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                              : SizedBox(),
+                              : (order.paymentStatus == 'paid' &&
+                                    order.trackingNumber != null &&
+                                    order.trackingNumber!.isNotEmpty)
+                              ? AppButton(
+                                  title: "Track",
+                                  fontSize: 12,
+                                  titleColor: AppColors.instance.white100,
+                                  backgroundColor: AppColors.instance.green500,
+                                  onTap: () {
+                                    Get.toNamed(
+                                      AppRoutes.userOrderProgress,
+                                      arguments: order.id,
+                                    );
+                                  },
+                                  height: AppSize.height(value: 40),
+                                  width: AppSize.width(value: 60),
+                                )
+                              : Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.instance.green100,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: AppText(
+                                    text: "Paid",
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.instance.green500,
+                                  ),
+                                ),
                         ],
                       ),
                     ),

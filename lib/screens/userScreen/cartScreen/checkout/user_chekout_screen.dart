@@ -27,7 +27,7 @@ class _UserCheckoutScreenState extends State<UserCheckoutScreen> {
   final UserCheckoutContoller controller = Get.put(UserCheckoutContoller());
   String _countryFlag = "🇺🇸"; // USA flag emoji
   String _selectedCountryCode =
-      "US"; // This will store the actual country code like "BD", "US"
+      "US"; 
 
   @override
   void initState() {

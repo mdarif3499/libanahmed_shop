@@ -91,7 +91,7 @@ class UserSearchScreen extends StatelessWidget {
                           crossAxisCount: 2,
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0,
-                          childAspectRatio: getResponsiveAspectRatio(context),
+                          childAspectRatio: getResponsiveAspectRatio(context: context,ratioAdjuster: 0.174,),
                         ),
                         itemCount: controller.searchResults.length,
                         itemBuilder: (context, index) {

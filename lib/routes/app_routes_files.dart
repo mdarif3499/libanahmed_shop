@@ -158,7 +158,10 @@ List<GetPage> appRoutesFile = <GetPage>[
   ),
   GetPage(name: AppRoutes.userTrackOrder, page: () => UserTrackOrder()),
   GetPage(name: AppRoutes.userOrderProgress, page: () => UserOrderProgress()),
-  GetPage(name: AppRoutes.viewOrder, page: () => UserViewOrder()),
+  GetPage(
+    name: AppRoutes.viewOrder,
+    page: () => UserViewOrder(orderId: Get.arguments ?? ''),
+  ),
   GetPage(name: AppRoutes.menuFavorites, page: () => UserManuFavourite()),
   GetPage(name: AppRoutes.menuOffers, page: () => UserMenuOffer()),
   GetPage(name: AppRoutes.menuCusSer, page: () => UserCustomerService()),

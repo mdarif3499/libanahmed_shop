@@ -1,66 +1,34 @@
 import 'dart:convert';
 
-class TrackOrderModel {
+class OwnerOrderDetailsModel {
   bool? success;
   String? message;
-  Meta? meta;
-  List<TrackOrderModelList>? data;
+  ViewOrderModelData? data;
 
-  TrackOrderModel({this.success, this.message, this.meta, this.data});
+  OwnerOrderDetailsModel({this.success, this.message, this.data});
 
-  factory TrackOrderModel.fromRawJson(String str) =>
-      TrackOrderModel.fromJson(json.decode(str));
+  factory OwnerOrderDetailsModel.fromRawJson(String str) =>
+      OwnerOrderDetailsModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory TrackOrderModel.fromJson(Map<String, dynamic> json) =>
-      TrackOrderModel(
+  factory OwnerOrderDetailsModel.fromJson(Map<String, dynamic> json) =>
+      OwnerOrderDetailsModel(
         success: json['success'],
         message: json['message'],
-        meta: json['meta'] != null ? Meta.fromJson(json['meta']) : null,
         data: json['data'] != null
-            ? List<TrackOrderModelList>.from(
-                json['data'].map((x) => TrackOrderModelList.fromJson(x)),
-              )
+            ? ViewOrderModelData.fromJson(json['data'])
             : null,
       );
 
   Map<String, dynamic> toJson() => {
     'success': success,
     'message': message,
-    'meta': meta?.toJson(),
-    'data': data?.map((v) => v.toJson()).toList(),
+    'data': data?.toJson(),
   };
 }
 
-class Meta {
-  int? page;
-  int? limit;
-  int? total;
-  int? totalPage;
-
-  Meta({this.page, this.limit, this.total, this.totalPage});
-
-  factory Meta.fromRawJson(String str) => Meta.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    page: json['page'],
-    limit: json['limit'],
-    total: json['total'],
-    totalPage: json['totalPage'],
-  );
-
-  Map<String, dynamic> toJson() => {
-    'page': page,
-    'limit': limit,
-    'total': total,
-    'totalPage': totalPage,
-  };
-}
-
-class TrackOrderModelList {
+class ViewOrderModelData {
   String? id;
   String? customerId;
   String? sellerId;
@@ -80,8 +48,9 @@ class TrackOrderModelList {
   String? createdAt;
   String? updatedAt;
   String? trackingNumber;
+  int? v;
 
-  TrackOrderModelList({
+  ViewOrderModelData({
     this.id,
     this.customerId,
     this.sellerId,
@@ -101,15 +70,16 @@ class TrackOrderModelList {
     this.createdAt,
     this.updatedAt,
     this.trackingNumber,
+    this.v,
   });
 
-  factory TrackOrderModelList.fromRawJson(String str) =>
-      TrackOrderModelList.fromJson(json.decode(str));
+  factory ViewOrderModelData.fromRawJson(String str) =>
+      ViewOrderModelData.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory TrackOrderModelList.fromJson(Map<String, dynamic> json) =>
-      TrackOrderModelList(
+  factory ViewOrderModelData.fromJson(Map<String, dynamic> json) =>
+      ViewOrderModelData(
         id: json['_id'],
         customerId: json['customerId'],
         sellerId: json['sellerId'],
@@ -133,6 +103,7 @@ class TrackOrderModelList {
         createdAt: json['createdAt'],
         updatedAt: json['updatedAt'],
         trackingNumber: json['tacking_number'],
+        v: json['__v'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -155,6 +126,7 @@ class TrackOrderModelList {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     'tacking_number': trackingNumber,
+    '__v': v,
   };
 }
 
@@ -242,7 +214,6 @@ class ProductId {
   String? createdAt;
   String? updatedAt;
   int? v;
-  String? trackingNumber;
 
   ProductId({
     this.id,
@@ -265,7 +236,6 @@ class ProductId {
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.trackingNumber,
   });
 
   factory ProductId.fromRawJson(String str) =>
@@ -294,7 +264,6 @@ class ProductId {
     createdAt: json['createdAt'],
     updatedAt: json['updatedAt'],
     v: json['__v'],
-    trackingNumber: json['tacking_number'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -318,6 +287,5 @@ class ProductId {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     '__v': v,
-    'tacking_number': trackingNumber,
   };
 }
