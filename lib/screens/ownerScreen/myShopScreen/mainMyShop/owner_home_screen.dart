@@ -2,6 +2,7 @@ import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
+import 'package:ahmed_shop/screens/ownerScreen/authScreen/storeVefication/controller/owner_store_verification_controller.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/controller/owner_shop_controller.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
@@ -27,7 +28,7 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
   @override
   Widget build(BuildContext context) {
     final OwnerShopController controller = Get.put(OwnerShopController());
-
+    Get.put(OwnerStoreVerificationController());
     return Scaffold(
       backgroundColor: AppColors.instance.ownerPhoneBackground,
       body: SingleChildScrollView(
@@ -51,7 +52,17 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
               fontWeight: FontWeight.w400,
             ),
             const Gap(height: 20),
-
+            //! Store Verificaton
+            AppButton(
+              title: "Create Shop",
+              titleColor: AppColors.instance.white,
+              backgroundColor: AppColors.instance.red500,
+              onTap: () {
+                Get.toNamed(AppRoutes.ownerStoreVerification);
+              },
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            ),
+            const Gap(height: 20),
             // Category buttons
             Obx(() {
               if (controller.isCategory.value) {
@@ -114,8 +125,7 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
               );
             }),
 
-            Gap(height: 20),
-
+            Gap(height: AppSize.height(value: 20)),
             // Products Grid
             Obx(() {
               // Show loading indicator
@@ -172,7 +182,10 @@ class _OwnerMyShopState extends State<OwnerMyShop> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
-                  childAspectRatio: getResponsiveAspectRatio(context: context,ratioAdjuster: 0.174,),
+                  childAspectRatio: getResponsiveAspectRatio(
+                    context: context,
+                    ratioAdjuster: 0.174,
+                  ),
                 ),
                 itemCount: productsToShow.length,
                 itemBuilder: (context, index) {

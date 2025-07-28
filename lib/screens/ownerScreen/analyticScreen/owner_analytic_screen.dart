@@ -1,6 +1,7 @@
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
+import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -26,14 +27,8 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
   @override
   void initState() {
     super.initState();
-    //! Fetch data when screen initializes
-    controller.fetchOverView();
-    controller.fetchIncomeRatio(); // Add this line to fetch income ratio data
-    totalOrder =
-        (controller.overViewList.value?.data?.totalOrder ?? 0) +
-        (controller.overViewList.value?.data?.totalPendingOrder ?? 0);
-
-    appLog(totalOrder);
+    // Data fetching is now handled in controller's onInit
+    totalOrder = 0; // Will be updated when data loads
   }
 
   @override
@@ -139,7 +134,7 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        Gap(height: AppSize.height(value: 8)),
         Text(
           value,
           style: const TextStyle(
@@ -175,20 +170,32 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText(
-                text: "TOTAL EARNING",
+                text: "Total Earning",
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
-              AppText(
-                text: "Last 7 days",
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+              Row(
+                children: [
+                  AppText(
+                    text: " Last 7 days",
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh, size: 20),
+                    onPressed: () => controller.fetchAllData(),
+                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.bug_report, size: 20),
+                  //   onPressed: () => controller.createTestData(),
+                  // ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          Gap(height: AppSize.height(value: 16)),
           SizedBox(
-            height: 200,
+            height: AppSize.height(value: 200),
             child: Obx(() {
               if (controller.isIncomeRatioLoading.value) {
                 return const Center(child: CircularProgressIndicator());
@@ -206,34 +213,55 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
                 );
               }
 
-              // Sort data by date
-              final sortedData = List.from(incomeData)
-                ..sort(
-                  (a, b) => (a.dateHour ?? DateTime.now()).compareTo(
-                    b.dateHour ?? DateTime.now(),
-                  ),
-                );
+              // Filter out null dates and sort data by date
+              final validData = incomeData
+                  .where((datum) => datum.dateHour != null)
+                  .toList();
+
+              final sortedData = List.from(validData)
+                ..sort((a, b) => a.dateHour!.compareTo(b.dateHour!));
+
+              // Debug logging
+              appLog("Chart data - Total items: ${incomeData.length}");
+              appLog("Chart data - Valid items: ${validData.length}");
+              appLog("Chart data - Sorted items: ${sortedData.length}");
 
               // Create FlSpot list from sorted data
               final spots = sortedData.asMap().entries.map((entry) {
                 final index = entry.key;
                 final datum = entry.value;
-                return FlSpot(
-                  index.toDouble(),
-                  (datum.totalIncome ?? 0).toDouble(),
-                );
+                final spot = FlSpot(index.toDouble(), datum.totalIncome ?? 0.0);
+                appLog("Chart spot: x=${spot.x}, y=${spot.y}");
+                return spot;
               }).toList();
 
               // Find max income for chart scaling (ensure minimum scale)
-              final maxIncome = sortedData.isEmpty
-                  ? 6.0
-                  : sortedData
-                        .map((d) => d.totalIncome ?? 0)
-                        .reduce((a, b) => a > b ? a : b)
-                        .toDouble();
+              final incomeValues = sortedData
+                  .map((d) => d.totalIncome ?? 0.0)
+                  .where((income) => income > 0)
+                  .toList();
 
-              // Set minimum scale to 6 if max income is less than 6
-              final chartMaxY = maxIncome < 6 ? 6.0 : maxIncome + 1;
+              final maxIncome = incomeValues.isEmpty
+                  ? 10.0
+                  : incomeValues.reduce((a, b) => a > b ? a : b);
+
+              // Set minimum scale to 10 if max income is less than 10
+              final chartMaxY = maxIncome < 10 ? 10.0 : maxIncome * 1.2;
+
+              // Debug chart scaling
+              appLog("Chart scaling - Max income: $maxIncome");
+              appLog("Chart scaling - Chart maxY: $chartMaxY");
+              appLog("Chart scaling - Spots count: ${spots.length}");
+
+              // If no valid spots, show message
+              if (spots.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "No valid data points to display",
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                );
+              }
 
               return LineChart(
                 LineChartData(
@@ -302,7 +330,9 @@ class _OwnerAnalyticScreenState extends State<OwnerAnalyticScreen> {
                   ),
                   borderData: FlBorderData(show: false),
                   minX: 0,
-                  maxX: (sortedData.length - 1).toDouble(),
+                  maxX: sortedData.isEmpty
+                      ? 1.0
+                      : (sortedData.length - 1).toDouble(),
                   minY: 0,
                   maxY: chartMaxY,
                   lineBarsData: [

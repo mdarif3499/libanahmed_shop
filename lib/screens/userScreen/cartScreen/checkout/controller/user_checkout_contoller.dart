@@ -1,3 +1,4 @@
+import 'package:ahmed_shop/screens/userScreen/cartScreen/cartHome/controller/user_cart_screen_controller.dart';
 import 'package:ahmed_shop/services/repository/order_repository/order_repository.dart';
 import 'package:ahmed_shop/widgets/app_snack_bar/app_snack_bar.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class UserCheckoutContoller extends GetxController {
         // Clear all fields after successful order
         _clearAllFields();
         // Navigate back or to success page
+        Get.find<CartController>().fetchCartProduct();
         Get.back();
       } else {
         AppSnackBar.error("Failed to create order. Please try again.");

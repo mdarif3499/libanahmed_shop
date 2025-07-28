@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
@@ -234,6 +233,8 @@ class OwnerStoreVerificationController extends GetxController {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 05, sigmaY: 05),
           child: AlertDialog(
+            contentPadding: const EdgeInsets.all(20),
+            actionsPadding: EdgeInsets.all(10),
             title: AppText(
               text: "Select Image Source",
               fontSize: 16,
@@ -243,19 +244,6 @@ class OwnerStoreVerificationController extends GetxController {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: AppButton(
-                    title: "Gallery (Multiple)",
-                    backgroundColor: AppColors.instance.red500,
-                    titleColor: AppColors.instance.white,
-                    onTap: () {
-                      Navigator.of(dialogContext).pop();
-                      pickStoreImages(context);
-                    },
-                  ),
-                ),
-
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: AppButton(
@@ -298,8 +286,10 @@ class OwnerStoreVerificationController extends GetxController {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 05, sigmaY: 05),
           child: AlertDialog(
+            contentPadding: const EdgeInsets.all(20),
+            actionsPadding: EdgeInsets.all(10),
             title: AppText(
-              text: "Select Document Image Source",
+              text: "Select License Image",
               fontSize: 16,
               fontWeight: FontWeight.w500,
               maxLines: 2,
@@ -309,19 +299,6 @@ class OwnerStoreVerificationController extends GetxController {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: AppButton(
-                      title: "Gallery (Multiple)",
-                      backgroundColor: AppColors.instance.red500,
-                      titleColor: AppColors.instance.white,
-                      onTap: () {
-                        Navigator.of(dialogContext).pop();
-                        pickDocumentImages(context);
-                      },
-                    ),
-                  ),
-
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: AppButton(
@@ -420,23 +397,21 @@ class OwnerStoreVerificationController extends GetxController {
   }
 
   //! Convert XFile to Uint8List
-  Future<Uint8List> _convertToBytes(XFile image) async {
-    File file = File(image.path);
-    return Uint8List.fromList(await file.readAsBytes());
-  }
+  // Future<Uint8List> _convertToBytes(XFile image) async {
+  //   File file = File(image.path);
+  //   return Uint8List.fromList(await file.readAsBytes());
+  // }
 
-  //! Submit form data with Uint8List
+  //! Submit form data
   Future<void> submitStoreVerification() async {
     if (!isFormValid.value) {
       AppSnackBar.error("Please fill all required fields");
       return;
     }
-
     if (storeImages.isEmpty) {
       AppSnackBar.error("Please select at least one store image");
       return;
     }
-
     if (documentImages.isEmpty) {
       AppSnackBar.error("Please select at least one document image");
       return;
@@ -444,15 +419,58 @@ class OwnerStoreVerificationController extends GetxController {
 
     try {
       isLoading.value = true;
-      //! Convert XFile to File for document images
+
+      // Validate form fields
+      String? nameError = validateStoreName(storeNameController.text);
+      if (nameError != null) {
+        AppSnackBar.error(nameError);
+        return;
+      }
+
+      String? addressError = validateStoreAddress(storeAddressController.text);
+      if (addressError != null) {
+        AppSnackBar.error(addressError);
+        return;
+      }
+
+      String? descriptionError = validateStoreDescription(
+        storeDescriptionController.text,
+      );
+      if (descriptionError != null) {
+        AppSnackBar.error(descriptionError);
+        return;
+      }
+
+      //! Convert XFile to File for store images
       List<File> storeImageFiles = storeImages
           .map((xFile) => File(xFile.path))
           .toList();
-
       //! Convert XFile to File for document images
       List<File> documentImageFiles = documentImages
           .map((xFile) => File(xFile.path))
           .toList();
+
+      // Validate files exist
+      for (File file in storeImageFiles) {
+        if (!await file.exists()) {
+          AppSnackBar.error("Store image file not found: ${file.path}");
+          return;
+        }
+      }
+
+      for (File file in documentImageFiles) {
+        if (!await file.exists()) {
+          AppSnackBar.error("Document file not found: ${file.path}");
+          return;
+        }
+      }
+
+      log("Submitting shop creation with:");
+      log("Name: ${storeNameController.text.trim()}");
+      log("Address: ${storeAddressController.text.trim()}");
+      log("Description: ${storeDescriptionController.text.trim()}");
+      log("Store images: ${storeImageFiles.length}");
+      log("Document images: ${documentImageFiles.length}");
 
       //! Call repository method with Dio Multipart files
       bool? result = await OwnerShopCreationRepository.shopCreation(
@@ -469,12 +487,12 @@ class OwnerStoreVerificationController extends GetxController {
         Get.offNamed(AppRoutes.ownerBottomNav);
       } else {
         AppSnackBar.error(
-          "Failed to submit store verification. Please try again.",
+          "Failed to submit store verification. Please check your data and try again.",
         );
       }
     } catch (e) {
       log("Error submitting store verification: $e");
-      AppSnackBar.error("An error occurred. Please try again.");
+      AppSnackBar.error("An error occurred: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -483,6 +501,7 @@ class OwnerStoreVerificationController extends GetxController {
   //! Clear form data
   void _clearForm() {
     storeNameController.clear();
+    storeAddressController.clear();
     storeDescriptionController.clear();
     storeImages.clear();
     documentImages.clear();
@@ -526,7 +545,6 @@ class OwnerStoreVerificationController extends GetxController {
   //! Check if all required images are selected
   bool get hasAllRequiredImages =>
       storeImages.isNotEmpty && documentImages.isNotEmpty;
-
   //! Get total number of selected images
   int get totalSelectedImages => storeImages.length + documentImages.length;
 }

@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:ahmed_shop/constant/app_api_end_point.dart';
 import 'package:ahmed_shop/constant/app_assert_image.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/utils/error_log.dart';
 import 'package:flutter/material.dart';
+
+import '../../constant/app_api_end_point.dart';
 
 // Enum to define image shapes
 enum ImageShape { rectangle, rounded, circle }
@@ -41,10 +42,7 @@ class AppImage extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       child: _buildImage(),
       transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
     );
   }
@@ -96,9 +94,7 @@ class AppImage extends StatelessWidget {
   Widget _applyShape(Widget child) {
     switch (shape) {
       case ImageShape.circle:
-        return ClipOval(
-          child: child,
-        );
+        return ClipOval(child: child);
       case ImageShape.rounded:
         return ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),
@@ -110,13 +106,7 @@ class AppImage extends StatelessWidget {
   }
 
   Widget _buildPlaceholder() {
-    return _applyShape(
-      Container(
-        width: width,
-        height: height,
-        color: color,
-      ),
-    );
+    return _applyShape(Container(width: width, height: height, color: color));
   }
 }
 

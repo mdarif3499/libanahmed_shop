@@ -32,7 +32,7 @@ class SellerIncomeRatioModel {
 
 class Datum {
   DateTime? dateHour;
-  int? totalIncome;
+  double? totalIncome;
 
   Datum({this.dateHour, this.totalIncome});
 
@@ -44,12 +44,13 @@ class Datum {
     dateHour: json["dateHour"] == null
         ? null
         : DateTime.parse(json["dateHour"]),
-    totalIncome: json["totalIncome"],
+    totalIncome: json["totalIncome"]?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
-    "dateHour":
-        "${dateHour!.year.toString().padLeft(4, '0')}-${dateHour!.month.toString().padLeft(2, '0')}-${dateHour!.day.toString().padLeft(2, '0')}",
+    "dateHour": dateHour != null
+        ? "${dateHour!.year.toString().padLeft(4, '0')}-${dateHour!.month.toString().padLeft(2, '0')}-${dateHour!.day.toString().padLeft(2, '0')}"
+        : null,
     "totalIncome": totalIncome,
   };
 }

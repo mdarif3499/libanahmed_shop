@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 String _getDomain() {
   // Check if the IP is accessible, if not, you might need to update this
   // to your actual server IP or domain
-  String liveServer = "http://10.10.7.30:5003";
-  String localServer = "http://10.10.7.30:5003";
+  String liveServer = "http://3.141.148.237:5003";
+  String localServer = "http://3.141.148.237:5003";
 
   // For testing, you can try using localhost if you're running on an emulator
   // String localServer = "http://localhost:5003";
@@ -36,7 +36,7 @@ class ApiUrls {
   final String liveServer = "https://";
 
   //Auth end point
-  final String imageBaseUrl = "http://10.10.7.30:5003/";
+  final String imageBaseUrl = "http://3.141.148.237:5003/";
   final String register = "/users/create";
   final String registerVerifyOtp = "/users/create-user-verify-otp";
   final String resendOtp = "/otp/resend-otp";

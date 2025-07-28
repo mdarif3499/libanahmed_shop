@@ -23,80 +23,6 @@ class OwnerCreateAccount extends StatelessWidget {
     if (arguments != null && arguments["isLogin"] == true) {
       controller.isLogin.value = true;
     }
-    void showShopRegistrationDialog(BuildContext context) {
-      showDialog(
-        context: context,
-        barrierDismissible: true, // Allow closing dialog by tapping outside
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            backgroundColor: AppColors.instance.white,
-            content: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Title
-                  AppText(
-                    text: "Your Shop is Registered?",
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                  ),
-
-                  SizedBox(height: 15),
-
-                  // Description
-                  AppText(
-                    text:
-                        "If your shop isn't registered, please register your shop. "
-                        "If you already register now, you can visit your shop screen.",
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    maxLines: 3,
-                    textAlign: TextAlign.center,
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // Buttons
-                  Column(
-                    children: [
-                      AppButton(
-                        title: "Register",
-                        titleColor: AppColors.instance.white,
-                        backgroundColor: AppColors.instance.red500,
-                        onTap: () {
-                          // Navigate to the shop registration screen
-                          // Get.toNamed(AppRoutes.userRegisterShop);
-                          Get.toNamed(AppRoutes.ownerStoreVerification);
-                        },
-                      ),
-                      Gap(height: 10),
-                      AppButton(
-                        title: "My Shop",
-                        titleColor: AppColors.instance.red500,
-                        backgroundColor: AppColors.instance.white,
-                        borderColor: AppColors.instance.red500,
-                        onTap: () {
-                          // Navigate to the user's shop screen
-                          // Get.toNamed(AppRoutes.userShopScreen);
-                          Get.toNamed(AppRoutes.ownerBottomNav);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
-
     return Scaffold(
       backgroundColor: AppColors.instance.ownerPhoneBackground,
       appBar: AppBar(
@@ -130,7 +56,6 @@ class OwnerCreateAccount extends StatelessWidget {
                 ),
               ),
               const Gap(height: 25),
-
               // Toggle Buttons
               Container(
                 padding: const EdgeInsets.all(2),
@@ -194,7 +119,6 @@ class OwnerCreateAccount extends StatelessWidget {
                 ),
               ),
               const Gap(height: 20),
-
               /// Sign Up Fields
               Obx(() {
                 if (!controller.isLogin.value) {
