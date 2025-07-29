@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class OwnerSingleProductModel {
   bool? success;
   String? message;
@@ -5,21 +7,23 @@ class OwnerSingleProductModel {
 
   OwnerSingleProductModel({this.success, this.message, this.data});
 
-  OwnerSingleProductModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    message = json['message'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
+  factory OwnerSingleProductModel.fromRawJson(String str) =>
+      OwnerSingleProductModel.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
-    data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
+  String toRawJson() => json.encode(toJson());
+
+  factory OwnerSingleProductModel.fromJson(Map<String, dynamic> json) =>
+      OwnerSingleProductModel(
+        success: json["success"],
+        message: json["message"],
+        data: json["data"] != null ? Data.fromJson(json["data"]) : null,
+      );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "data": data?.toJson(),
+  };
 }
 
 class Data {
@@ -34,7 +38,7 @@ class Data {
   int? stock;
   int? availableStock;
   List<String>? images;
-  int? weight;
+  double? weight;
   int? length;
   int? height;
   int? width;
@@ -69,53 +73,57 @@ class Data {
     this.isFavorite,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    sellerId = json['sellerId'];
-    shopId = json['shopId'];
-    categoryId = json['categoryId'];
-    categoryName = json['categoryName'];
-    name = json['name'];
-    details = json['details'];
-    price = json['price'];
-    stock = json['stock'];
-    availableStock = json['availableStock'];
-    images = json['images']?.cast<String>();
-    weight = json['weight'];
-    length = json['length'];
-    height = json['height'];
-    width = json['width'];
-    isDeleted = json['isDeleted'];
-    isOffer = json['isOffer'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    version = json['__v'];
-    isFavorite = json['isFavorite'];
-  }
+  factory Data.fromRawJson(String str) => Data.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = id;
-    data['sellerId'] = sellerId;
-    data['shopId'] = shopId;
-    data['categoryId'] = categoryId;
-    data['categoryName'] = categoryName;
-    data['name'] = name;
-    data['details'] = details;
-    data['price'] = price;
-    data['stock'] = stock;
-    data['availableStock'] = availableStock;
-    data['images'] = images;
-    data['weight'] = weight;
-    data['length'] = length;
-    data['height'] = height;
-    data['width'] = width;
-    data['isDeleted'] = isDeleted;
-    data['isOffer'] = isOffer;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['__v'] = version;
-    data['isFavorite'] = isFavorite;
-    return data;
-  }
+  String toRawJson() => json.encode(toJson());
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    id: json["_id"],
+    sellerId: json["sellerId"],
+    shopId: json["shopId"],
+    categoryId: json["categoryId"],
+    categoryName: json["categoryName"],
+    name: json["name"],
+    details: json["details"],
+    price: json["price"],
+    stock: json["stock"],
+    availableStock: json["availableStock"],
+    images: json["images"] == null
+        ? []
+        : List<String>.from(json["images"]!.map((x) => x)),
+    weight: json["weight"]?.toDouble(),
+    length: json["length"],
+    height: json["height"],
+    width: json["width"],
+    isDeleted: json["isDeleted"],
+    isOffer: json["isOffer"],
+    createdAt: json["createdAt"],
+    updatedAt: json["updatedAt"],
+    version: json["__v"],
+    isFavorite: json["isFavorite"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "sellerId": sellerId,
+    "shopId": shopId,
+    "categoryId": categoryId,
+    "categoryName": categoryName,
+    "name": name,
+    "details": details,
+    "price": price,
+    "stock": stock,
+    "availableStock": availableStock,
+    "images": images == null ? [] : List<dynamic>.from(images!.map((x) => x)),
+    "weight": weight,
+    "length": length,
+    "height": height,
+    "width": width,
+    "isDeleted": isDeleted,
+    "isOffer": isOffer,
+    "createdAt": createdAt,
+    "updatedAt": updatedAt,
+    "__v": version,
+    "isFavorite": isFavorite,
+  };
 }

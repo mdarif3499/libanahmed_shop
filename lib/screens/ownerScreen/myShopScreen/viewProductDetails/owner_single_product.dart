@@ -6,6 +6,7 @@ import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/routes/app_routes.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/controller/owner_edit_product_controller.dart';
+import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/app_image/app_image.dart';
@@ -14,6 +15,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OwnerSingleProductScreen extends StatelessWidget {
   const OwnerSingleProductScreen({super.key});
@@ -108,19 +110,60 @@ class OwnerSingleProductScreen extends StatelessWidget {
       ),
       backgroundColor: AppColors.instance.ownerPhoneBackground,
       body: Obx(() {
-        final productData = controller.singleProductDetails.value?.data;
+        final model = controller.singleProductDetails.value;
+        final productData = model?.data;
         final isLoading = controller.isLoading.value;
 
         if (isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: AppColors.instance.red400,
+              size: AppSize.height(value: 40),
+            ),
+          );
+        }
+
+        // Debug information
+        if (model != null) {
+          appLog("Model Success: ${model.success}");
+          appLog("Model Message: ${model.message}");
+          appLog("Model Data: ${model.data}");
+          appLog("Product Data null: ${productData == null}");
         }
 
         if (productData == null) {
-          return const Center(
-            child: AppText(
-              text: 'Failed to load product details',
-              fontSize: 16,
-              color: Colors.red,
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppText(
+                  text: 'Failed to load product details',
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
+                const Gap(height: 10),
+                AppText(
+                  text: 'Product ID: ${controller.productID.value}',
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+                const Gap(height: 10),
+                AppText(
+                  text:
+                      'Model: ${controller.singleProductDetails.value?.toString() ?? "null"}',
+                  fontSize: 12,
+                  color: Colors.grey,
+                  maxLines: 3,
+                ),
+                const Gap(height: 20),
+                AppButton(
+                  title: "Retry",
+                  onTap: () =>
+                      controller.loadProductData(controller.productID.value),
+                  backgroundColor: AppColors.instance.red500,
+                  titleColor: AppColors.instance.white,
+                ),
+              ],
             ),
           );
         }

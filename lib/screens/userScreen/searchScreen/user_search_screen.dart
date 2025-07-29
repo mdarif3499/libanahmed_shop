@@ -14,8 +14,9 @@ import 'package:get/get.dart';
 
 class UserSearchScreen extends StatelessWidget {
   UserSearchScreen({super.key});
-  final UserSearchScreenController controller =
-      Get.put(UserSearchScreenController());
+  final UserSearchScreenController controller = Get.put(
+    UserSearchScreenController(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +45,7 @@ class UserSearchScreen extends StatelessWidget {
                 },
               ),
             ),
-            Gap(
-              height: 20,
-            ),
+            Gap(height: 20),
             Obx(() {
               // Only show content if there's a search query or results
               if (controller.searchController.text.isEmpty &&
@@ -67,9 +66,7 @@ class UserSearchScreen extends StatelessWidget {
                       color: AppColors.instance.textColor,
                     ),
                   ),
-                  Gap(
-                    height: 20,
-                  ),
+                  Gap(height: 20),
                   // Show loading indicator
                   if (controller.isLoading.value)
                     Center(
@@ -91,7 +88,10 @@ class UserSearchScreen extends StatelessWidget {
                           crossAxisCount: 2,
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10.0,
-                          childAspectRatio: getResponsiveAspectRatio(context: context,ratioAdjuster: 0.174,),
+                          childAspectRatio: getResponsiveAspectRatio(
+                            context: context,
+                            ratioAdjuster: 0.260,
+                          ),
                         ),
                         itemCount: controller.searchResults.length,
                         itemBuilder: (context, index) {
@@ -109,7 +109,8 @@ class UserSearchScreen extends StatelessWidget {
                                 children: [
                                   Center(
                                     child: AppImage(
-                                      url: product.images != null &&
+                                      url:
+                                          product.images != null &&
                                               product.images!.isNotEmpty
                                           ? product.images![0]
                                           : '',
@@ -143,9 +144,10 @@ class UserSearchScreen extends StatelessWidget {
                                     iconSize: 15,
                                     onTap: () {
                                       controller.addtocart(
-                                          productId: product.id!);
+                                        productId: product.id!,
+                                      );
                                     },
-                                  )
+                                  ),
                                 ],
                               ),
                             ),

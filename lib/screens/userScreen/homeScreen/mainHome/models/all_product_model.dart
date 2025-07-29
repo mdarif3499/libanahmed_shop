@@ -15,8 +15,8 @@ class ProductAllModel {
 
   factory ProductAllModel.fromJson(Map<String, dynamic> json) =>
       ProductAllModel(
-        success: json["success"],
-        message: json["message"],
+        success: json["success"] as bool?,
+        message: json["message"] as String?,
         meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
         data: json["data"] == null
             ? []
@@ -45,7 +45,7 @@ class Datum {
   int? stock;
   int? availableStock;
   List<String>? images;
-  int? weight;
+  double? weight;
   int? length;
   int? height;
   int? width;
@@ -81,33 +81,33 @@ class Datum {
   String toRawJson() => json.encode(toJson());
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["_id"],
+    id: json["_id"] as String?,
     sellerId: json["sellerId"] == null
         ? null
         : SellerId.fromJson(json["sellerId"]),
-    shopId: json["shopId"],
-    categoryId: json["categoryId"],
-    categoryName: json["categoryName"],
-    name: json["name"],
-    details: json["details"],
-    price: json["price"],
-    stock: json["stock"],
-    availableStock: json["availableStock"],
+    shopId: json["shopId"] as String?,
+    categoryId: json["categoryId"] as String?,
+    categoryName: json["categoryName"] as String?,
+    name: json["name"] as String?,
+    details: json["details"] as String?,
+    price: json["price"] as int?,
+    stock: json["stock"] as int?,
+    availableStock: json["availableStock"] as int?,
     images: json["images"] == null
         ? []
-        : List<String>.from(json["images"]!.map((x) => x)),
-    weight: json["weight"],
-    length: json["length"],
-    height: json["height"],
-    width: json["width"],
-    isDeleted: json["isDeleted"],
+        : List<String>.from(json["images"]!.map((x) => x as String)),
+    weight: (json["weight"] as num?)?.toDouble(),
+    length: json["length"] as int?,
+    height: json["height"] as int?,
+    width: json["width"] as int?,
+    isDeleted: json["isDeleted"] as bool?,
     createdAt: json["createdAt"] == null
         ? null
         : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null
         ? null
         : DateTime.parse(json["updatedAt"]),
-    isOffer: json["isOffer"],
+    isOffer: json["isOffer"] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -178,27 +178,27 @@ class SellerId {
   String toRawJson() => json.encode(toJson());
 
   factory SellerId.fromJson(Map<String, dynamic> json) => SellerId(
-    id: json["_id"],
-    image: json["image"],
-    fullName: json["fullName"],
-    email: json["email"],
-    role: json["role"],
-    phone: json["phone"],
-    isActive: json["isActive"],
-    isDeleted: json["isDeleted"],
-    postalCode: json["postal_code"],
-    stateCode: json["state_code"],
-    countryCode: json["country_code"],
-    addressLine1: json["address_line1"],
-    addressLine2: json["address_line2"],
-    city: json["city"],
+    id: json["_id"] as String?,
+    image: json["image"] as String?,
+    fullName: json["fullName"] as String?,
+    email: json["email"] as String?,
+    role: json["role"] as String?,
+    phone: json["phone"] as String?,
+    isActive: json["isActive"] as bool?,
+    isDeleted: json["isDeleted"] as bool?,
+    postalCode: json["postal_code"] as String?,
+    stateCode: json["state_code"] as String?,
+    countryCode: json["country_code"] as String?,
+    addressLine1: json["address_line1"] as String?,
+    addressLine2: json["address_line2"] as String?,
+    city: json["city"] as String?,
     createdAt: json["createdAt"] == null
         ? null
         : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null
         ? null
         : DateTime.parse(json["updatedAt"]),
-    v: json["__v"],
+    v: json["__v"] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -235,10 +235,10 @@ class Meta {
   String toRawJson() => json.encode(toJson());
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-    page: json["page"],
-    limit: json["limit"],
-    total: json["total"],
-    totalPage: json["totalPage"],
+    page: json["page"] as int?,
+    limit: json["limit"] as int?,
+    total: json["total"] as int?,
+    totalPage: json["totalPage"] as int?,
   );
 
   Map<String, dynamic> toJson() => {

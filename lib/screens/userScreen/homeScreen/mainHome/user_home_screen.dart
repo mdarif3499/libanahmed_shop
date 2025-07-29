@@ -417,7 +417,7 @@ class UserHomeScreen extends StatelessWidget {
                     mainAxisSpacing: 15.0,
                     childAspectRatio: getResponsiveAspectRatio(
                       context: context,
-                      ratioAdjuster: 0.238,
+                      ratioAdjuster: 0.380,
                     ),
                   ),
                   itemCount: controller.productList.length,

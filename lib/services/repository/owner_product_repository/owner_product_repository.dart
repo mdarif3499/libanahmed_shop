@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ahmed_shop/constant/app_api_end_point.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_categroy_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_product_mode.dart';
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_overview_checking_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/viewProductDetails/models/owner_view_product_model.dart';
 import 'package:ahmed_shop/screens/ownerScreen/ownerMenu/menuOffer/models/create_offer_model.dart';
 import 'package:ahmed_shop/services/api/api_services.dart';
@@ -125,17 +126,30 @@ class OwnerProductRepository {
   ) async {
     try {
       String token = StorageServices.instance.getToken();
+      String url = "${ApiUrls.instance.ownerEditProduct}$productId";
+      appLog("Fetching product details from URL: $url");
+      appLog("Product ID: $productId");
+
       var response = await ApiServices.instance.apiGetServices(
-        "${ApiUrls.instance.ownerEditProduct}/$productId",
+        url,
         statusCode: 200,
         headers: {"Authorization": token},
       );
+
+      appLog("API Response: $response");
       if (response != null) {
-        return OwnerSingleProductModel.fromJson(response);
+        appLog("Parsing response to OwnerSingleProductModel");
+        var model = OwnerSingleProductModel.fromJson(response);
+        appLog(
+          "Parsed model - Success: ${model.success}, Data: ${model.data != null}",
+        );
+        return model;
       } else {
+        appLog("API response is null");
         return null;
       }
     } catch (e) {
+      appLog("Exception in fetchSingleProductDetails: $e");
       return null;
     }
   }
@@ -265,6 +279,33 @@ class OwnerProductRepository {
         return null;
       }
     } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<OwnerOverviewCheckingModel?> fetchOverView() async {
+    try {
+      String token = StorageServices.instance.getToken();
+      appLog("Fetching overview from: ${ApiUrls.instance.ownerOverviewCheck}");
+
+      var response = await ApiServices.instance.apiGetServices(
+        ApiUrls.instance.ownerOverviewCheck,
+        statusCode: 200,
+        headers: {"Authorization": token},
+      );
+
+      appLog("Overview response: $response");
+
+      if (response != null) {
+        var model = OwnerOverviewCheckingModel.fromJson(response);
+        appLog("Parsed overview model: ${model.toRawJson()}");
+        return model;
+      } else {
+        appLog("Overview response is null");
+        return null;
+      }
+    } catch (e) {
+      appLog("Error fetching overview: $e");
       return null;
     }
   }

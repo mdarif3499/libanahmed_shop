@@ -139,45 +139,45 @@ class UserProductDetailsScreen extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     color: AppColors.instance.white900,
                   ),
-                  Spacer(),
-                  AppButton(
-                    height: AppSize.height(value: 35),
-                    width: AppSize.width(value: 35),
-                    title: "-",
-                    titleColor: AppColors.instance.white,
-                    backgroundColor: AppColors.instance.green500,
-                    onTap: () {
-                      // Implement quantity decrease logic
-                    },
-                  ),
-                  Gap(width: 8),
-                  Container(
-                    height: AppSize.height(value: 35),
-                    width: AppSize.width(value: 53),
-                    decoration: BoxDecoration(
-                      color: AppColors.instance.blue2_50,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: AppText(
-                        text: "1",
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 1,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Gap(width: 8),
-                  AppButton(
-                    height: AppSize.height(value: 35),
-                    width: AppSize.width(value: 35),
-                    title: "+",
-                    titleColor: AppColors.instance.white,
-                    backgroundColor: AppColors.instance.green500,
-                    onTap: () {
-                      // Implement quantity increase logic
-                    },
-                  ),
+                  //Spacer(),
+                  // AppButton(
+                  //   height: AppSize.height(value: 35),
+                  //   width: AppSize.width(value: 35),
+                  //   title: "-",
+                  //   titleColor: AppColors.instance.white,
+                  //   backgroundColor: AppColors.instance.green500,
+                  //   onTap: () {
+                  //     // Implement quantity decrease logic
+                  //   },
+                  // ),
+                  // Gap(width: 8),
+                  // Container(
+                  //   height: AppSize.height(value: 35),
+                  //   width: AppSize.width(value: 53),
+                  //   decoration: BoxDecoration(
+                  //     color: AppColors.instance.blue2_50,
+                  //     borderRadius: BorderRadius.circular(10),
+                  //   ),
+                  //   child: Center(
+                  //     child: AppText(
+                  //       text: "1",
+                  //       fontWeight: FontWeight.w400,
+                  //       fontFamily: 1,
+                  //       fontSize: 16,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Gap(width: 8),
+                  // AppButton(
+                  //   height: AppSize.height(value: 35),
+                  //   width: AppSize.width(value: 35),
+                  //   title: "+",
+                  //   titleColor: AppColors.instance.white,
+                  //   backgroundColor: AppColors.instance.green500,
+                  //   onTap: () {
+                  //     // Implement quantity increase logic
+                  //   },
+                  // ),
                 ],
               ),
               Gap(height: 20),
@@ -206,6 +206,42 @@ class UserProductDetailsScreen extends StatelessWidget {
                 textAlign: TextAlign.justify,
                 color: AppColors.instance.textColor,
               ),
+              // Image gallery for multiple images
+              if (productData.images != null &&
+                  productData.images!.length > 1) ...[
+                Gap(height: 20),
+                AppText(
+                  text: "Product Images",
+                  fontSize: 16,
+                  fontFamily: 1,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.instance.textColor,
+                ),
+                Gap(height: 10),
+                SizedBox(
+                  height: AppSize.height(value: 100),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: productData.images!.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 10),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.instance.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: AppImage(
+                          url: productData.images![index],
+                          height: AppSize.height(value: 80),
+                          width: AppSize.width(value: 80),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+
               Gap(height: 20),
               AppButton(
                 height: AppSize.height(value: 48),

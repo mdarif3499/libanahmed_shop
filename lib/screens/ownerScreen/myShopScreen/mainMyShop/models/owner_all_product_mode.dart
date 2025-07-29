@@ -45,14 +45,14 @@ class Datum {
   int? stock;
   int? availableStock;
   List<String>? images;
-  int? weight;
+  double? weight;
   int? length;
   int? height;
   int? width;
   bool? isDeleted;
-  DateTime? createdAt;
-  DateTime? updatedAt;
   dynamic isOffer;
+  String? createdAt;
+  String? updatedAt;
 
   Datum({
     this.id,
@@ -71,9 +71,9 @@ class Datum {
     this.height,
     this.width,
     this.isDeleted,
+    this.isOffer,
     this.createdAt,
     this.updatedAt,
-    this.isOffer,
   });
 
   factory Datum.fromRawJson(String str) => Datum.fromJson(json.decode(str));
@@ -94,18 +94,14 @@ class Datum {
     images: json["images"] == null
         ? []
         : List<String>.from(json["images"]!.map((x) => x)),
-    weight: json["weight"],
+    weight: json["weight"]?.toDouble(),
     length: json["length"],
     height: json["height"],
     width: json["width"],
     isDeleted: json["isDeleted"],
-    createdAt: json["createdAt"] == null
-        ? null
-        : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null
-        ? null
-        : DateTime.parse(json["updatedAt"]),
     isOffer: json["isOffer"],
+    createdAt: json["createdAt"],
+    updatedAt: json["updatedAt"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -125,9 +121,9 @@ class Datum {
     "height": height,
     "width": width,
     "isDeleted": isDeleted,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
     "isOffer": isOffer,
+    "createdAt": createdAt,
+    "updatedAt": updatedAt,
   };
 }
 

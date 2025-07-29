@@ -23,13 +23,30 @@ class OwnerEditProductController extends GetxController {
   void loadProductData(String productID) async {
     try {
       isLoading(true);
+      appLog("Loading product data for ID: $productID");
+
       final result = await OwnerProductRepository.fetchSingleProductDetails(
         productID,
       );
+
+      appLog("API result: $result");
+
       if (result != null) {
+        appLog("Product data loaded successfully");
+        appLog("Success: ${result.success}");
+        appLog("Message: ${result.message}");
+        appLog("Data: ${result.data}");
+
         singleProductDetails.value = result;
+        appLog(
+          "singleProductDetails.value set to: ${singleProductDetails.value}",
+        );
+      } else {
+        appLog("API result is null");
+        Get.snackbar('Error', 'No data received from server');
       }
     } catch (e) {
+      appLog("Exception in loadProductData: $e");
       Get.snackbar('Error', 'Failed to load product details: $e');
     } finally {
       isLoading(false);

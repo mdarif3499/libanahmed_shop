@@ -80,4 +80,5 @@ class ApiUrls {
   final String ownerCreateOffer = "/product/all-product-for-offer";
   final String ownerConnectedPayment =
       "/payment/create-stripe-connected-account";
+  final String ownerOverviewCheck = "/product/seller-required-working";
 }

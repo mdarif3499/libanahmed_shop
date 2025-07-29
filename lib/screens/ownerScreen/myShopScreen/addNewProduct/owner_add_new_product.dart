@@ -2,6 +2,7 @@ import 'package:ahmed_shop/constant/app_assert_icons.dart';
 import 'package:ahmed_shop/constant/app_colors.dart';
 import 'package:ahmed_shop/constant/app_string.dart';
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/addNewProduct/controller/owner_add_new_product_controller.dart';
+import 'package:ahmed_shop/utils/app_size.dart';
 import 'package:ahmed_shop/utils/gap.dart';
 import 'package:ahmed_shop/widgets/buttons/app_button.dart';
 import 'package:ahmed_shop/widgets/inputs/app_input_widget.dart';
@@ -9,6 +10,7 @@ import 'package:ahmed_shop/widgets/texts/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OwnerAddNewProduct extends StatelessWidget {
   const OwnerAddNewProduct({super.key});
@@ -144,7 +146,10 @@ class OwnerAddNewProduct extends StatelessWidget {
                     ? Center(
                         child: Padding(
                           padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(),
+                          child: LoadingAnimationWidget.threeArchedCircle(
+                            color: AppColors.instance.red400,
+                            size: AppSize.height(value: 30),
+                          ),
                         ),
                       )
                     : DropdownButtonHideUnderline(

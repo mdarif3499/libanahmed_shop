@@ -2,6 +2,7 @@ import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/ow
     as OwnerAllCategoryModel;
 import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_all_product_mode.dart'
     as OwnerAllProductModel;
+import 'package:ahmed_shop/screens/ownerScreen/myShopScreen/mainMyShop/models/owner_overview_checking_model.dart';
 import 'package:ahmed_shop/services/repository/owner_product_repository/owner_product_repository.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
 import 'package:get/get.dart';
@@ -12,16 +13,19 @@ class OwnerShopController extends GetxController {
   RxBool isProduct = true.obs;
   RxBool isCategoryProductLoading = false.obs;
   RxBool isCategoryProductShowing = false.obs;
+  RxBool isOwnerOverviewCheckLoading = false.obs;
   var productList = <OwnerAllProductModel.Datum>[].obs;
   var categoryList = <OwnerAllCategoryModel.Datum>[].obs;
   // Changed to use the same product model type
   var categoryProductList = <OwnerAllProductModel.Datum>[].obs;
+  var ownerOverviewCheckList = Rxn<OwnerOverviewCheckingModel>();
 
   @override
   void onInit() {
     super.onInit();
     fetchAllProducts();
     fetchAllCategories();
+    ownerOverViewCheck();
   }
 
   void fetchAllProducts() async {
@@ -69,12 +73,14 @@ class OwnerShopController extends GetxController {
       categoryProductList.clear();
 
       // Hit the API to fetch products for this category
-      var categoryProducts =
-          await OwnerProductRepository.fetchCategoryProducts(categoryName);
+      var categoryProducts = await OwnerProductRepository.fetchCategoryProducts(
+        categoryName,
+      );
       if (categoryProducts != null && categoryProducts.data != null) {
         categoryProductList.assignAll(categoryProducts.data!);
         appLog(
-            'Fetched ${categoryProducts.data!.length} products for category: $categoryName');
+          'Fetched ${categoryProducts.data!.length} products for category: $categoryName',
+        );
       } else {
         categoryProductList.clear();
         appLog('No products found for category: $categoryName');
@@ -87,9 +93,40 @@ class OwnerShopController extends GetxController {
     }
   }
 
+  void ownerOverViewCheck() async {
+    try {
+      isOwnerOverviewCheckLoading(true);
+      appLog('Starting owner overview check...');
+
+      var result = await OwnerProductRepository.fetchOverView();
+      if (result != null) {
+        ownerOverviewCheckList.value = result;
+        appLog('Overview check completed successfully');
+        appLog('Profile Update: ${result.data?.profileUpdate}');
+        appLog('Shop Create Verify: ${result.data?.shopCreateVarify}');
+        appLog('Stripe Connected: ${result.data?.stripeConnectedAccount}');
+
+        // Check if fully setup
+        final isFullySetup =
+            (result.data?.profileUpdate ?? false) &&
+            (result.data?.shopCreateVarify ?? false) &&
+            (result.data?.stripeConnectedAccount ?? false);
+        appLog('Is Fully Setup: $isFullySetup');
+      } else {
+        ownerOverviewCheckList.value = null;
+        appLog('Overview check returned null');
+      }
+    } catch (e) {
+      appLog('Error fetching owner overview: $e');
+      ownerOverviewCheckList.value = null;
+    } finally {
+      isOwnerOverviewCheckLoading(false);
+    }
+  }
+
   void showAllProducts() {
-    isCategoryProductShowing(false);
-    isCategoryProductLoading(false);
+    isCategoryProductShowing.value = false;
+    isCategoryProductLoading.value = false;
   }
 
   void updateAllLoadingState() {
@@ -99,5 +136,6 @@ class OwnerShopController extends GetxController {
   void refreshData() {
     fetchAllProducts();
     fetchAllCategories();
+    ownerOverViewCheck();
   }
 }
