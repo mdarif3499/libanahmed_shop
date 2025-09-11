@@ -298,12 +298,10 @@ class _OwnerMyShopState extends State<OwnerMyShop> with WidgetsBindingObserver {
               ),
             );
           }
-
           // Determine which products to show
           final productsToShow = controller.isCategoryProductShowing.value
               ? controller.categoryProductList
               : controller.productList;
-
           // Check if productList is empty when no category is selected
           if (!controller.isCategoryProductShowing.value &&
               controller.productList.isEmpty) {
@@ -317,7 +315,6 @@ class _OwnerMyShopState extends State<OwnerMyShop> with WidgetsBindingObserver {
               ),
             );
           }
-
           // Check if categoryProductList is empty when a category is selected
           if (controller.isCategoryProductShowing.value &&
               controller.categoryProductList.isEmpty) {

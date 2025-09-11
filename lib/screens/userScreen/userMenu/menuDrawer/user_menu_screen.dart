@@ -105,10 +105,8 @@ class _UserMenuDrawerState extends State<UserMenuDrawer> {
                           try {
                             // Clear all stored user data
                             await StorageServices.instance.storageClear();
-
                             // Navigate to the onboarding screen
                             Get.offAllNamed(AppRoutes.onboardScreenTwo);
-
                             // Show success message
                             AppSnackBar.success("Logged out successfully.");
                           } catch (e) {
