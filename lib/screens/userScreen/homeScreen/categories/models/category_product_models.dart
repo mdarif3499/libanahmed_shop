@@ -74,22 +74,22 @@ class Datum {
     String toRawJson() => json.encode(toJson());
 
     factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        id: json["_id"],
+        id: json["_id"]?.toString(),
         sellerId: json["sellerId"] == null ? null : SellerId.fromJson(json["sellerId"]),
-        categoryId: json["categoryId"],
-        categoryName: json["categoryName"],
-        name: json["name"],
-        details: json["details"],
-        price: json["price"],
-        stock: json["stock"],
-        availableStock: json["availableStock"],
+        categoryId: json["categoryId"]?.toString(),
+        categoryName: json["categoryName"] as String?,
+        name: json["name"] as String?,
+        details: json["details"] as String?,
+        price: (json["price"] as num?)?.toInt(),
+        stock: (json["stock"] as num?)?.toInt(),
+        availableStock: (json["availableStock"] as num?)?.toInt(),
         images: json["images"] == null ? [] : List<String>.from(json["images"]!.map((x) => x)),
-        weight: json["weight"],
-        isDeleted: json["isDeleted"],
+        weight: json["weight"]?.toString(),
+        isDeleted: json["isDeleted"] as bool?,
         createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
         updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-        shopId: json["shopId"],
-        isOffer: json["isOffer"],
+        shopId: json["shopId"]?.toString(),
+        isOffer: (json["isOffer"] as num?)?.toInt(),
     );
 
     Map<String, dynamic> toJson() => {
