@@ -119,13 +119,13 @@ class Result {
     sellerId: json["sellerId"] as String?,
     customerId: json["customerId"] as String?,
     shopId: json["shopId"] as String?,
-    price: json["price"] as int?,
-    quantity: json["quantity"] as int?,
-    offer: json["offer"] as int?,
+    price: (json["price"] as num?)?.toInt(),
+    quantity: (json["quantity"] as num?)?.toInt(),
+    offer: (json["offer"] as num?)?.toInt(),
     weight: (json["weight"] as num?)?.toDouble(),
-    height: json["height"] as int?,
-    width: json["width"] as int?,
-    length: json["length"] as int?,
+    height: (json["height"] as num?)?.toInt(),
+    width: (json["width"] as num?)?.toInt(),
+    length: (json["length"] as num?)?.toInt(),
   );
 
   Map<String, dynamic> toJson() => {
