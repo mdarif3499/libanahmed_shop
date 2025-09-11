@@ -90,16 +90,16 @@ class Datum {
     categoryName: json["categoryName"] as String?,
     name: json["name"] as String?,
     details: json["details"] as String?,
-    price: json["price"] as int?,
-    stock: json["stock"] as int?,
-    availableStock: json["availableStock"] as int?,
+    price: (json["price"] as num?)?.toInt(),
+    stock: (json["stock"] as num?)?.toInt(),
+    availableStock: (json["availableStock"] as num?)?.toInt(),
     images: json["images"] == null
         ? []
         : List<String>.from(json["images"]!.map((x) => x as String)),
     weight: (json["weight"] as num?)?.toDouble(),
-    length: json["length"] as int?,
-    height: json["height"] as int?,
-    width: json["width"] as int?,
+    length: (json["length"] as num?)?.toInt(),
+    height: (json["height"] as num?)?.toInt(),
+    width: (json["width"] as num?)?.toInt(),
     isDeleted: json["isDeleted"] as bool?,
     createdAt: json["createdAt"] == null
         ? null
@@ -107,7 +107,7 @@ class Datum {
     updatedAt: json["updatedAt"] == null
         ? null
         : DateTime.parse(json["updatedAt"]),
-    isOffer: json["isOffer"] as int?,
+    isOffer: (json["isOffer"] as num?)?.toInt(),
   );
 
   Map<String, dynamic> toJson() => {

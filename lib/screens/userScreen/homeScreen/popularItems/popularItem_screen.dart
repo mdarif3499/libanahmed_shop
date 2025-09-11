@@ -47,7 +47,7 @@ class PopularitemScreen extends StatelessWidget {
                       size: AppSize.height(value: 40),
                     ));
         }
-        if (productController.productList.isEmpty) {
+        if (productController.productList.value?.data?.isEmpty != false) {
           return const Center(child: AppText(text: 'No products available'));
         }
         return SingleChildScrollView(
@@ -64,9 +64,9 @@ class PopularitemScreen extends StatelessWidget {
                   childAspectRatio: getResponsiveAspectRatio(
                       context: context,ratioAdjuster: 0.174,), // Adjust based on content
                 ),
-                itemCount: productController.productList.length,
+                itemCount: productController.productList.value?.data?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final product = productController.productList[index];
+                  final product = productController.productList.value!.data![index];
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(

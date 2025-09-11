@@ -1,8 +1,6 @@
-import 'package:ahmed_shop/screens/userScreen/homeScreen/categories/models/category_models.dart'
-    as CategoryModel;
-import 'package:ahmed_shop/screens/userScreen/homeScreen/categories/models/category_product_models.dart' as CategoryProductModel;
-import 'package:ahmed_shop/screens/userScreen/homeScreen/mainHome/models/all_product_model.dart'
-    as ProductModel;
+import 'package:ahmed_shop/screens/userScreen/homeScreen/categories/models/category_models.dart';
+import 'package:ahmed_shop/screens/userScreen/homeScreen/categories/models/category_product_models.dart';
+import 'package:ahmed_shop/screens/userScreen/homeScreen/mainHome/models/all_product_model.dart';
 import 'package:ahmed_shop/services/repository/cart_repository/cart_repository.dart';
 import 'package:ahmed_shop/services/repository/product_repository/product_repository.dart';
 import 'package:ahmed_shop/utils/app_log.dart';
@@ -15,10 +13,14 @@ class HomeScreenController extends GetxController {
   RxBool isCategoryLoading = true.obs;
   RxBool isCategoryProductLoading = true.obs;
   RxBool isAddToCart = false.obs;
-  RxBool isCategoryProductShowing = false.obs; 
-  var productList = <ProductModel.Datum>[].obs;
-  var categoryList = <CategoryModel.Datum>[].obs;
-  var categoryProductList = <CategoryProductModel.Datum>[].obs;
+  RxBool isCategoryProductShowing = false.obs;
+  final Rxn<ProductAllModel> productList = Rxn<ProductAllModel>();
+  final Rxn<CategoryAllModel> categoryList = Rxn<CategoryAllModel>();
+  final Rxn<CategoryProductModel> categoryProductList =
+      Rxn<CategoryProductModel>();
+  // var productList = <ProductModel.Datum>[].obs;
+  // var categoryList = <CategoryModel.Datum>[].obs;
+  // var categoryProductList = <CategoryProductModel.Datum>[].obs;
 
   @override
   void onInit() {
@@ -32,13 +34,13 @@ class HomeScreenController extends GetxController {
       isProductLoading(true);
       var products = await ProductRepository.fetchAllProducts();
       if (products != null && products.data != null) {
-        productList.assignAll(products.data!);
+        productList.value = products;
       } else {
-        productList.clear();
+        productList.value = ProductAllModel();
       }
     } catch (e) {
       appLog('Error fetching products: $e');
-      productList.clear();
+      productList.value = ProductAllModel();
     } finally {
       isProductLoading(false);
       _updateOverallLoadingState();
@@ -50,13 +52,13 @@ class HomeScreenController extends GetxController {
       isCategoryLoading(true);
       var categories = await ProductRepository.fetchAllCategories();
       if (categories != null && categories.data != null) {
-        categoryList.assignAll(categories.data!);
+        categoryList.value = categories;
       } else {
-        categoryList.clear();
+        categoryList.value = CategoryAllModel();
       }
     } catch (e) {
       appLog('Error fetching categories: $e');
-      categoryList.clear();
+      categoryList.value = CategoryAllModel();
     } finally {
       isCategoryLoading(false);
       _updateOverallLoadingState();
@@ -81,24 +83,28 @@ class HomeScreenController extends GetxController {
       isAddToCart(false);
     }
   }
-  
+
   void showCategoryProducts(String categoryName) async {
     try {
       isCategoryProductLoading(true);
-      isCategoryProductShowing(true); // Set to true when showing category products
-      var categoryProducts = await ProductRepository.fetchCategoryProducts(categoryName);
+      isCategoryProductShowing(
+        true,
+      ); // Set to true when showing category products
+      var categoryProducts = await ProductRepository.fetchCategoryProducts(
+        categoryName,
+      );
       if (categoryProducts != null && categoryProducts.data != null) {
-        categoryProductList.assignAll(categoryProducts.data!);
+        categoryProductList.value = categoryProducts;
       } else {
-        categoryProductList.clear();
+        categoryProductList.value = CategoryProductModel();
       }
     } catch (e) {
       appLog('Error fetching category products: $e');
-      categoryProductList.clear();
+      categoryProductList.value = CategoryProductModel();
     } finally {
       isCategoryProductLoading(false);
       _updateOverallLoadingState();
-    } 
+    }
   }
 
   // Add method to reset to show all products
@@ -107,7 +113,10 @@ class HomeScreenController extends GetxController {
   }
 
   void _updateOverallLoadingState() {
-    isLoading.value = isProductLoading.value || isCategoryLoading.value || isCategoryProductLoading.value;
+    isLoading.value =
+        isProductLoading.value ||
+        isCategoryLoading.value ||
+        isCategoryProductLoading.value;
   }
 
   // Method to refresh data

@@ -89,9 +89,9 @@ class UserHomeScreen extends StatelessWidget {
                 );
               }
 
-              final categoriesToShow = controller.categoryList.isNotEmpty
-                  ? controller.categoryList
-                  : [];
+              final categoriesToShow = controller.categoryList.value?.data?.isNotEmpty == true
+                  ? controller.categoryList.value!.data!
+                  : <dynamic>[];
 
               //! Show dynamic categories
               return SingleChildScrollView(
@@ -303,7 +303,7 @@ class UserHomeScreen extends StatelessWidget {
                     );
                   }
 
-                  if (controller.categoryProductList.isEmpty) {
+                  if (controller.categoryProductList.value?.data?.isEmpty != false) {
                     return const Center(
                       child: AppText(text: 'No products in this category'),
                     );
@@ -321,9 +321,9 @@ class UserHomeScreen extends StatelessWidget {
                         ratioAdjuster: 0.174,
                       ),
                     ),
-                    itemCount: controller.categoryProductList.length,
+                    itemCount: controller.categoryProductList.value?.data?.length ?? 0,
                     itemBuilder: (context, index) {
-                      final product = controller.categoryProductList[index];
+                      final product = controller.categoryProductList.value!.data![index];
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
@@ -402,7 +402,7 @@ class UserHomeScreen extends StatelessWidget {
                   );
                 }
 
-                if (controller.productList.isEmpty) {
+                if (controller.productList.value?.data?.isEmpty != false) {
                   return const Center(
                     child: AppText(text: 'No products available'),
                   );
@@ -420,9 +420,9 @@ class UserHomeScreen extends StatelessWidget {
                       ratioAdjuster: 0.380,
                     ),
                   ),
-                  itemCount: controller.productList.length,
+                  itemCount: controller.productList.value?.data?.length ?? 0,
                   itemBuilder: (context, index) {
-                    final product = controller.productList[index];
+                    final product = controller.productList.value!.data![index];
                     return InkWell(
                       onTap: () {
                         // Use the navigation controller to show product details within bottom nav

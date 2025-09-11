@@ -57,7 +57,7 @@ class CategoriesScreen extends StatelessWidget {
             }
 
             // Show empty state
-            if (controller.categoryList.isEmpty) {
+            if (controller.categoryList.value?.data?.isEmpty != false) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -93,9 +93,9 @@ class CategoriesScreen extends StatelessWidget {
                 mainAxisSpacing: 15.0,
                 childAspectRatio: getResponsiveAspectRatio(context: context,ratioAdjuster: 0.174,),
               ),
-              itemCount: controller.categoryList.length,
+              itemCount: controller.categoryList.value?.data?.length ?? 0,
               itemBuilder: (context, index) {
-                final category = controller.categoryList[index];
+                final category = controller.categoryList.value!.data![index];
                 return GestureDetector(
                   onTap: () {
                     appLog('Category tapped: ${category.name}');
